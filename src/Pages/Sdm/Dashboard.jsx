@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
+import DashKpiGrid from '../../Components/DashKpiGrid';
 import { AreaChart, StatBars } from '../../Components/Charts';
 
 export default function SdmDashboard({
@@ -22,38 +23,13 @@ export default function SdmDashboard({
                     </p>
                 </div>
 
-                <div className="dash-kpi-grid">
-                    <Link href="/sdm/applicants" className="dash-kpi">
-                        <span className="dash-kpi__icon" aria-hidden="true">
-                            <span className="material-symbols-outlined">group</span>
-                        </span>
-                        <div className="dash-kpi__content">
-                            <p className="dash-kpi__label">Applicants</p>
-                            <p className="dash-kpi__value">{applicantsCount}</p>
-                            <p className="dash-kpi__hint">In your department</p>
-                        </div>
-                    </Link>
-                    <Link href="/sdm/interviews" className="dash-kpi">
-                        <span className="dash-kpi__icon" aria-hidden="true">
-                            <span className="material-symbols-outlined">event_available</span>
-                        </span>
-                        <div className="dash-kpi__content">
-                            <p className="dash-kpi__label">Interviews</p>
-                            <p className="dash-kpi__value">{interviewsCount}</p>
-                            <p className="dash-kpi__hint">Scheduled & completed</p>
-                        </div>
-                    </Link>
-                    <Link href="/authorised/personnel-in-waiting" className="dash-kpi">
-                        <span className="dash-kpi__icon" aria-hidden="true">
-                            <span className="material-symbols-outlined">hourglass_top</span>
-                        </span>
-                        <div className="dash-kpi__content">
-                            <p className="dash-kpi__label">Personnel in waiting</p>
-                            <p className="dash-kpi__value">{personnelInWaitingCount}</p>
-                            <p className="dash-kpi__hint">Active waiting list</p>
-                        </div>
-                    </Link>
-                </div>
+                <DashKpiGrid
+                    items={[
+                        { label: 'Applicants', href: '/sdm/applicants', value: applicantsCount, hint: 'In your department', icon: 'group' },
+                        { label: 'Interviews', href: '/sdm/interviews', value: interviewsCount, hint: 'Scheduled & completed', icon: 'event_available' },
+                        { label: 'Personnel in waiting', href: '/authorised/personnel-in-waiting', value: personnelInWaitingCount, hint: 'Active waiting list', icon: 'hourglass_top' },
+                    ]}
+                />
 
                 {charts && (
                     <div className="dash-chart-grid dash-chart-grid--2">

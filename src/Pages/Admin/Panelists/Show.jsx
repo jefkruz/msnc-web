@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, usePage, router } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
 import ConfirmModal from '../../../Components/ConfirmModal';
+import ActionButton from '../../../Components/ActionButton';
 import { useCan } from '../../../lib/can';
 
 export default function PanelistsShow({ panelist }) {
@@ -22,12 +23,9 @@ export default function PanelistsShow({ panelist }) {
                         <div><dt className="text-slate-500 dark:text-text-muted">Department</dt><dd className="text-slate-900 dark:text-white font-medium">{panelist?.department?.name ?? '—'}</dd></div>
                     </dl>
                     <div className="mt-6 flex flex-wrap gap-3">
-                        <Link href={`/administrator/panelists/${panelist?.id}/edit`} className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-medium text-sm hover:bg-primary/90">
-                            <span className="material-symbols-outlined text-lg">edit</span>
-                            Edit Panelist
-                        </Link>
+                        <ActionButton action="edit" href={`/administrator/panelists/${panelist?.id}/edit`} size="" variant="primary" label="Edit Panelist" />
                         {can('panelists.delete') && panelist?.id && (
-                            <button type="button" className="btn btn-danger" onClick={() => setConfirmDelete(true)}>Delete</button>
+                            <ActionButton action="delete" size="" variant="danger" onClick={() => setConfirmDelete(true)} />
                         )}
                     </div>
                 </div>

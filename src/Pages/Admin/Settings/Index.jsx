@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
 import Alert from '../../../Components/Alert';
+import DashKpiGrid from '../../../Components/DashKpiGrid';
 import { useCan } from '../../../lib/can';
 
 const labelClass = 'block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1';
@@ -129,18 +130,17 @@ export default function SettingsIndex({ branding = {}, home = {}, kc = {}, setti
                 </div>
 
                 {can('roles.view') && (
-                    <div className="dash-kpi-grid dash-kpi-grid--3">
-                        <Link href="/administrator/roles" className="dash-kpi">
-                            <span className="dash-kpi__icon" aria-hidden="true">
-                                <span className="material-symbols-outlined">admin_panel_settings</span>
-                            </span>
-                            <div className="dash-kpi__content">
-                                <p className="dash-kpi__label">Roles &amp; permissions</p>
-                                <p className="dash-kpi__value">—</p>
-                                <p className="dash-kpi__hint">Create roles and assign permissions</p>
-                            </div>
-                        </Link>
-                    </div>
+                    <DashKpiGrid
+                        items={[
+                            {
+                                label: 'Roles & permissions',
+                                href: '/administrator/roles',
+                                value: '—',
+                                hint: 'Create roles and assign permissions',
+                                icon: 'admin_panel_settings',
+                            },
+                        ]}
+                    />
                 )}
 
                 <div className="flex flex-wrap gap-2 border-b border-slate-200 dark:border-border-dark pb-px">

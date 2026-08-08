@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { titleCaseLabel } from '../lib/titleCase';
 
 const baseInputClass = 'form-control';
 
@@ -15,7 +16,7 @@ export default function SearchableMultiSelect({
     required = false,
     className = '',
     getOptionValue = (opt) => opt?.id ?? opt?.value,
-    getOptionLabel = (opt) => opt?.name ?? opt?.label ?? String(opt),
+    getOptionLabel = titleCaseLabel,
     error,
 }) {
     const [open, setOpen] = useState(false);

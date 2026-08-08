@@ -1,5 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
+import ActionButton from '../../Components/ActionButton';
+import { formatStatusLabel } from '../../lib/formatStatus';
 
 function statusBadgeClass(status) {
     const s = (status || '').toLowerCase();
@@ -57,17 +59,11 @@ export default function SdmApplicants({ applicants = [] }) {
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{a.family?.name ?? a.category?.name ?? '—'}</td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase ${statusBadgeClass(a.status ?? 'Applied')}`}>
-                                                {a.status ?? 'Applied'}
+                                                {formatStatusLabel(a.status || 'Applied')}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <Link
-                                                href={`/authorised/view/${a.id}`}
-                                                className="p-2 rounded-lg hover:bg-primary/10 text-primary inline-flex"
-                                                title="View"
-                                            >
-                                                <span className="material-symbols-outlined">visibility</span>
-                                            </Link>
+                                            <ActionButton action="view" href={`/authorised/view/${a.id}`} />
                                         </td>
                                     </tr>
                                 ))}

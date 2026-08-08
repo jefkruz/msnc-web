@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Link, usePage, useForm, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import ConfirmModal from '../../Components/ConfirmModal';
+import ActionButton from '../../Components/ActionButton';
 import { storageUrl } from '../../lib/api';
 import { useCan } from '../../lib/can';
+import { formatStatusLabel } from '../../lib/formatStatus';
 
 const DOCUMENT_LABELS = {
     authorization_recruit_form: 'Authorization Recruit Form',
@@ -61,15 +63,9 @@ export default function ApplicantsView({ applicant }) {
                     <h2 className="text-xl font-bold text-slate-900 dark:text-white">Applicant Information</h2>
                     <div className="flex flex-wrap items-center gap-3">
                         {can('applicants.delete') && (
-                            <button type="button" className="btn btn-danger" onClick={() => setConfirmDelete(true)}>Delete</button>
+                            <ActionButton action="delete" size="" variant="danger" onClick={() => setConfirmDelete(true)} />
                         )}
-                        <Link
-                            href="/administrator/applicants"
-                            className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-                        >
-                            <span className="material-symbols-outlined text-lg">arrow_back</span>
-                            Back to list
-                        </Link>
+                        <ActionButton action="back" href="/administrator/applicants" size="" />
                     </div>
                 </div>
 
@@ -117,8 +113,8 @@ export default function ApplicantsView({ applicant }) {
                                         </li>
                                         <li className="flex justify-between gap-2">
                                             <span className="text-slate-500 dark:text-text-muted">Status</span>
-                                            <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold ${statusBadge(applicant.status)}`}>
-                                                {applicant.status ? String(applicant.status) : 'N/A'}
+                                            <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide uppercase ${statusBadge(applicant.status)}`}>
+                                                {formatStatusLabel(applicant.status, 'N/A')}
                                             </span>
                                         </li>
                                     </ul>
@@ -210,8 +206,8 @@ export default function ApplicantsView({ applicant }) {
                                                                 Download
                                                             </a>
                                                         ) : (
-                                                            <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-600 dark:text-amber-400">
-                                                                Pending
+                                                            <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide uppercase bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                                                                PENDING
                                                             </span>
                                                         )}
                                                     </td>

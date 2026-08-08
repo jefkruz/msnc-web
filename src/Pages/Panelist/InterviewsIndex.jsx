@@ -1,6 +1,9 @@
 import { Link, usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import EmptyState from '../../Components/EmptyState';
+import ActionButton from '../../Components/ActionButton';
+import { formatDisplayDate } from '../../lib/formatDate';
+import { formatStatusLabel } from '../../lib/formatStatus';
 
 export default function PanelistInterviewsIndex({ interviews = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -30,10 +33,14 @@ export default function PanelistInterviewsIndex({ interviews = [] }) {
                                     <tr key={inv.id} className="hover:bg-slate-50 dark:hover:bg-white/5">
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{i + 1}</td>
                                         <td className="px-6 py-4 text-slate-900 dark:text-white font-medium">{inv.applicant?.first_name} {inv.applicant?.last_name}</td>
-                                        <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{inv.date ? new Date(inv.date).toLocaleString() : '—'}</td>
-                                        <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{inv.status ?? '—'}</td>
+                                        <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{formatDisplayDate(inv.date)}</td>
+                                        <td className="px-6 py-4">
+                                            <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide uppercase bg-amber-500/15 text-amber-700 dark:text-amber-400">
+                                                {formatStatusLabel(inv.status)}
+                                            </span>
+                                        </td>
                                         <td className="px-6 py-4 text-right">
-                                            <Link href={`/panelist/interview/${inv.id}/manage`} className="p-2 rounded-lg hover:bg-primary/10 text-primary inline-flex"><span className="material-symbols-outlined">visibility</span></Link>
+                                            <ActionButton action="manage" href={`/panelist/interview/${inv.id}/manage`} />
                                         </td>
                                     </tr>
                                 ))}

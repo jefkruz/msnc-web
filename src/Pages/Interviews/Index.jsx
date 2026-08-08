@@ -1,9 +1,12 @@
 import { Link, usePage, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import ConfirmModal from '../../Components/ConfirmModal';
+import ActionButton, { ActionGroup } from '../../Components/ActionButton';
 import EmptyState from '../../Components/EmptyState';
 import { useState } from 'react';
 import { useCan } from '../../lib/can';
+import { formatDisplayDate } from '../../lib/formatDate';
+import { formatStatusLabel } from '../../lib/formatStatus';
 
 function statusBadge(s) {
     const v = (s || '').toLowerCase();
@@ -75,14 +78,16 @@ export default function InterviewsIndex({ interviews = [] }) {
                                             </td>
                                             <td>{inv.applicant?.department?.name ?? '—'}</td>
                                             <td>{Array.isArray(inv.panelist_names) ? inv.panelist_names.join(', ') : (Array.isArray(inv.panelists) ? inv.panelists.join(', ') : '—')}</td>
-                                            <td>{inv.date ? new Date(inv.date).toLocaleString() : '—'}</td>
-                                            <td><span className={statusBadge(inv.status)}>{inv.status || '—'}</span></td>
+                                            <td>{formatDisplayDate(inv.date)}</td>
+                                            <td><span className={statusBadge(inv.status)}>{formatStatusLabel(inv.status)}</span></td>
                                             <td className="admin-table-actions">
-                                                <Link href={`/administrator/interviews/edit/${inv.id}`} className="btn btn-secondary btn-sm">Edit</Link>
-                                                <Link href={`/authorised/manage/${inv.id}`} className="btn btn-outline-primary btn-sm">Manage</Link>
-                                                {can('interviews.delete') && (
-                                                    <button type="button" onClick={() => setDeleteId(inv.id)} className="btn btn-outline-danger btn-sm">Delete</button>
-                                                )}
+                                                <ActionGroup>
+                                                    <ActionButton action="edit" href={`/administrator/interviews/edit/${inv.id}`} />
+                                                    <ActionButton action="manage" href={`/authorised/manage/${inv.id}`} />
+                                                    {can('interviews.delete') && (
+                                                        <ActionButton action="delete" onClick={() => setDeleteId(inv.id)} />
+                                                    )}
+                                                </ActionGroup>
                                             </td>
                                         </tr>
                                     ))}

@@ -2,6 +2,7 @@ import { useForm } from '@inertiajs/react';
 import { usePage, Link } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
 import SearchableMultiSelect from '../../../Components/SearchableMultiSelect';
+import TitleCaseInput from '../../../Components/TitleCaseInput';
 
 export default function DirectorsCreate({ departments = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -14,7 +15,7 @@ export default function DirectorsCreate({ departments = [] }) {
                     <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-6 space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
-                            <input type="text" value={data.name} onChange={(e) => setData('name', e.target.value)} className="form-control" required />
+                            <TitleCaseInput value={data.name} onChange={(val) => setData('name', val)} className="form-control" required />
                             {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                         </div>
                         <div>

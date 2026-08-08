@@ -4,6 +4,7 @@ import Layout from '../../Components/Layout';
 import Modal from '../../Components/Modal';
 import ConfirmModal from '../../Components/ConfirmModal';
 import EmptyState from '../../Components/EmptyState';
+import ActionButton from '../../Components/ActionButton';
 import SearchableSelect from '../../Components/SearchableSelect';
 
 const API_BASE = '/administrator/questions';
@@ -107,13 +108,7 @@ export default function QuestionsIndex({ questions = [], families = [], administ
                                             {q.rank?.name ? ` (Admin: ${q.rank.name})` : ''}
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <button
-                                                type="button"
-                                                onClick={() => setDeleteId(q.id)}
-                                                className="p-2 rounded-lg hover:bg-red-500/10 text-red-500"
-                                            >
-                                                <span className="material-symbols-outlined">delete</span>
-                                            </button>
+                                            <ActionButton action="delete" onClick={() => setDeleteId(q.id)} />
                                         </td>
                                     </tr>
                                 ))}

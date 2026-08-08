@@ -3,7 +3,9 @@ import { useState } from 'react';
 import Layout from '../../../Components/Layout';
 import ConfirmModal from '../../../Components/ConfirmModal';
 import EmptyState from '../../../Components/EmptyState';
+import ActionButton, { ActionGroup } from '../../../Components/ActionButton';
 import { useCan } from '../../../lib/can';
+import { formatDate } from '../../../lib/formatDate';
 
 export default function PostingRecommendationsIndex({ postingRecommendations = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -65,25 +67,14 @@ export default function PostingRecommendationsIndex({ postingRecommendations = [
                                             <td className="px-4 sm:px-6 py-3 text-slate-700 dark:text-slate-300 tabular-nums">{i + 1}</td>
                                             <td className="px-4 sm:px-6 py-3 text-slate-900 dark:text-white font-medium">{applicantName(r)}</td>
                                             <td className="px-4 sm:px-6 py-3 text-slate-700 dark:text-slate-300 max-w-xs truncate">{r.memo_re || '—'}</td>
-                                            <td className="px-4 sm:px-6 py-3 text-slate-700 dark:text-slate-300">{r.memo_date ? new Date(r.memo_date).toLocaleDateString() : '—'}</td>
+                                            <td className="px-4 sm:px-6 py-3 text-slate-700 dark:text-slate-300">{formatDate(r.memo_date)}</td>
                                             <td className="px-4 sm:px-6 py-3 text-right">
-                                                <Link
-                                                    href={`/administrator/posting-recommendations/edit/${r.id}`}
-                                                    className="p-2 rounded-lg hover:bg-primary/10 text-primary inline-flex mr-1"
-                                                    title="Edit"
-                                                >
-                                                    <span className="material-symbols-outlined">edit</span>
-                                                </Link>
-                                                {can('posting-recommendations.delete') && (
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setDeleteId(r.id)}
-                                                        className="p-2 rounded-lg hover:bg-red-500/10 text-red-500 inline-flex"
-                                                        title="Delete"
-                                                    >
-                                                        <span className="material-symbols-outlined">delete</span>
-                                                    </button>
-                                                )}
+                                                <ActionGroup>
+                                                    <ActionButton action="edit" href={`/administrator/posting-recommendations/edit/${r.id}`} />
+                                                    {can('posting-recommendations.delete') && (
+                                                        <ActionButton action="delete" onClick={() => setDeleteId(r.id)} />
+                                                    )}
+                                                </ActionGroup>
                                             </td>
                                         </tr>
                                     ))}

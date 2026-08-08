@@ -4,6 +4,8 @@ import Modal from '../../../Components/Modal';
 import ConfirmModal from '../../../Components/ConfirmModal';
 import EmptyState from '../../../Components/EmptyState';
 import SearchableSelect from '../../../Components/SearchableSelect';
+import TitleCaseInput from '../../../Components/TitleCaseInput';
+import ActionButton, { ActionGroup } from '../../../Components/ActionButton';
 import { useState } from 'react';
 
 export default function PanelistsIndex({ panelists = [], departments = [] }) {
@@ -63,9 +65,11 @@ export default function PanelistsIndex({ panelists = [], departments = [] }) {
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{p.username}</td>
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{p.department?.name ?? '—'}</td>
                                         <td className="px-6 py-4 text-right">
-                                            <Link href={`/administrator/panelists/${p.id}`} className="p-2 rounded-lg hover:bg-primary/10 text-primary inline-flex mr-1"><span className="material-symbols-outlined">visibility</span></Link>
-                                            <Link href={`/administrator/panelists/${p.id}/edit`} className="p-2 rounded-lg hover:bg-blue-500/10 text-blue-500 inline-flex mr-1"><span className="material-symbols-outlined">edit</span></Link>
-                                            <button type="button" onClick={() => setDeleteId(p.id)} className="p-2 rounded-lg hover:bg-red-500/10 text-red-500 inline-flex"><span className="material-symbols-outlined">delete</span></button>
+                                            <ActionGroup>
+                                                <ActionButton action="view" href={`/administrator/panelists/${p.id}`} />
+                                                <ActionButton action="edit" href={`/administrator/panelists/${p.id}/edit`} />
+                                                <ActionButton action="delete" onClick={() => setDeleteId(p.id)} />
+                                            </ActionGroup>
                                         </td>
                                     </tr>
                                 ))}
@@ -89,10 +93,9 @@ export default function PanelistsIndex({ panelists = [], departments = [] }) {
                 <form id="panelist-create" onSubmit={handleCreateSubmit} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium mb-1">Full Name</label>
-                        <input
-                            type="text"
+                        <TitleCaseInput
                             value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
+                            onChange={(val) => setData('name', val)}
                             className="form-control"
                             required
                         />

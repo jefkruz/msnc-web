@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Link, useForm, usePage, router } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
 import ConfirmModal from '../../../Components/ConfirmModal';
+import ActionButton from '../../../Components/ActionButton';
 import SearchableSelect from '../../../Components/SearchableSelect';
+import TitleCaseInput from '../../../Components/TitleCaseInput';
 import { useCan } from '../../../lib/can';
 
 const inputClass = 'form-control';
@@ -37,10 +39,9 @@ export default function SdmsEdit({ sdm, departments = [] }) {
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
-                            <input
-                                type="text"
+                            <TitleCaseInput
                                 value={data.name}
-                                onChange={(e) => setData('name', e.target.value)}
+                                onChange={(val) => setData('name', val)}
                                 className={inputClass}
                                 required
                             />
@@ -75,7 +76,7 @@ export default function SdmsEdit({ sdm, departments = [] }) {
                             <Link href="/administrator/sdms" className="btn btn-secondary">Cancel</Link>
                             <button type="submit" disabled={processing} className="btn btn-primary">Update SDM</button>
                             {can('sdms.delete') && sdm?.id && (
-                                <button type="button" className="btn btn-danger" onClick={() => setConfirmDelete(true)}>Delete</button>
+                                <ActionButton action="delete" size="" variant="danger" onClick={() => setConfirmDelete(true)} />
                             )}
                         </div>
                     </form>

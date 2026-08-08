@@ -2,9 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import api, { readGetCache, writeGetCache, toSpaHref } from './api';
 import { PageProvider } from './inertia';
+import { rememberShare, readShare } from './shareShell';
+import Layout from '../Components/Layout';
 import PageLoader from '../Components/PageLoader';
 
 const EMPTY_PROPS = Object.freeze({});
+const GUEST_PATH = /\/(welcome|about|statement-of-faith|opportunity-to-work-in-ministry)/;
 
 function resolveEndpoint(endpoint, params) {
   if (typeof endpoint === 'function') {
@@ -18,6 +21,22 @@ function resolveEndpoint(endpoint, params) {
 function samePath(a, b) {
   const norm = (p) => String(p || '').split('?')[0].replace(/\/+$/, '') || '/';
   return norm(a) === norm(b);
+}
+
+function ShellLoader({ share }) {
+  return (
+    <PageProvider value={share}>
+      <Layout
+        auth={share.auth}
+        authRole={share.authRole}
+        menu={share.menu}
+        appName={share.appName}
+        pageTitle="Loading"
+      >
+        <PageLoader compact label="Loading page" />
+      </Layout>
+    </PageProvider>
+  );
 }
 
 export default function ApiPage({ endpoint, component: Component, staticProps = EMPTY_PROPS }) {
@@ -73,6 +92,7 @@ export default function ApiPage({ endpoint, component: Component, staticProps = 
           return;
         }
 
+        rememberShare(data);
         const next = { ...staticPropsRef.current, ...data };
         writeGetCache(url, data);
         fetchedFor.current = url;
@@ -119,6 +139,10 @@ export default function ApiPage({ endpoint, component: Component, staticProps = 
   }, [navigate, load]);
 
   if (pageLoading && !pageProps) {
+    const share = readShare();
+    if (share?.auth && !GUEST_PATH.test(url)) {
+      return <ShellLoader share={share} />;
+    }
     return <PageLoader />;
   }
 

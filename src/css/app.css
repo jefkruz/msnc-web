@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 /* Status badges for applicant tables */
+.status-badge-applied,
+.status-badge-review,
+.status-badge-hired,
+.status-badge-interview {
+  @apply uppercase tracking-wide;
+}
 .status-badge-applied {
   @apply bg-blue-500/10 text-blue-400 border border-blue-500/20;
 }

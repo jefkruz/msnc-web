@@ -4,6 +4,8 @@ import Layout from '../../Components/Layout';
 import Modal from '../../Components/Modal';
 import ConfirmModal from '../../Components/ConfirmModal';
 import EmptyState from '../../Components/EmptyState';
+import TitleCaseInput from '../../Components/TitleCaseInput';
+import ActionButton from '../../Components/ActionButton';
 
 const RANKS_BASE = '/administrator/ranks';
 
@@ -95,14 +97,7 @@ export default function RanksIndex() {
                                                 {r.name}
                                             </td>
                                             <td className="px-4 sm:px-6 py-3 sm:py-4 text-right">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setDeleteId(r.id)}
-                                                    className="p-2 rounded-lg hover:bg-red-500/10 text-red-500 transition-colors"
-                                                    title="Delete rank"
-                                                >
-                                                    <span className="material-symbols-outlined text-lg">delete</span>
-                                                </button>
+                                                <ActionButton action="delete" onClick={() => setDeleteId(r.id)} />
                                             </td>
                                         </tr>
                                     ))}
@@ -127,10 +122,9 @@ export default function RanksIndex() {
                 <form id="rank-create" onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium mb-1">Name</label>
-                        <input
-                            type="text"
+                        <TitleCaseInput
                             value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
+                            onChange={(val) => setData('name', val)}
                             className="form-control"
                             placeholder="e.g. Senior Manager"
                             required

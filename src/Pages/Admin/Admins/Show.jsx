@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, usePage, router } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
 import ConfirmModal from '../../../Components/ConfirmModal';
+import ActionButton from '../../../Components/ActionButton';
 import { useCan } from '../../../lib/can';
 
 export default function AdminsShow({ admin }) {
@@ -21,10 +22,10 @@ export default function AdminsShow({ admin }) {
                     </dl>
                 </div>
                 <div className="flex flex-wrap gap-3">
-                    <Link href={`/administrator/admins/${admin.id}/edit`} className="btn btn-primary">Edit</Link>
-                    <Link href="/administrator/admins" className="btn btn-secondary">Back to list</Link>
+                    <ActionButton action="edit" href={`/administrator/admins/${admin.id}/edit`} size="" variant="primary" />
+                    <ActionButton action="back" href="/administrator/admins" size="" />
                     {can('admins.delete') && (
-                        <button type="button" className="btn btn-danger ml-auto" onClick={() => setConfirmDelete(true)}>Delete</button>
+                        <ActionButton action="delete" size="" variant="danger" className="ml-auto" onClick={() => setConfirmDelete(true)} />
                     )}
                 </div>
                 <ConfirmModal

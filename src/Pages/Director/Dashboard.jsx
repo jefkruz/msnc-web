@@ -1,5 +1,6 @@
 import { usePage, Link } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
+import DashKpiGrid from '../../Components/DashKpiGrid';
 
 export default function DirectorDashboard({
     applicants = 0,
@@ -15,44 +16,24 @@ export default function DirectorDashboard({
                     <h2>Director Dashboard</h2>
                     <p>{auth?.name ? `Welcome, ${auth.name}.` : 'Welcome.'} Overview of recruitment metrics.</p>
                 </div>
-                <div className="dash-kpi-grid">
-                    <div className="dash-kpi">
-                        <span className="dash-kpi__icon" aria-hidden="true">
-                            <span className="material-symbols-outlined">group</span>
-                        </span>
-                        <div className="dash-kpi__content">
-                            <p className="dash-kpi__label">Applicants</p>
-                            <p className="dash-kpi__value">{applicants}</p>
+                <DashKpiGrid
+                    items={[
+                        { label: 'Applicants', value: applicants, icon: 'group', hint: 'All applications' },
+                        { label: 'Interviews', value: interviews, icon: 'event_available', hint: 'Scheduled & completed' },
+                        { label: 'Directors', value: directors, icon: 'supervisor_account', hint: 'Directorate accounts' },
+                    ]}
+                />
+                <div className="dash-panel">
+                    <div className="dash-panel__head">
+                        <h3>Quick links</h3>
+                    </div>
+                    <div className="dash-panel__body" style={{ padding: '1rem 1.25rem 1.25rem' }}>
+                        <div className="quick-actions">
+                            <Link href="/viewsdirector" className="quick-action">
+                                <span className="material-symbols-outlined">folder_open</span>
+                                View director documents
+                            </Link>
                         </div>
-                    </div>
-                    <div className="dash-kpi">
-                        <span className="dash-kpi__icon" aria-hidden="true">
-                            <span className="material-symbols-outlined">event_available</span>
-                        </span>
-                        <div className="dash-kpi__content">
-                            <p className="dash-kpi__label">Interviews</p>
-                            <p className="dash-kpi__value">{interviews}</p>
-                        </div>
-                    </div>
-                    <div className="dash-kpi">
-                        <span className="dash-kpi__icon" aria-hidden="true">
-                            <span className="material-symbols-outlined">supervisor_account</span>
-                        </span>
-                        <div className="dash-kpi__content">
-                            <p className="dash-kpi__label">Directors</p>
-                            <p className="dash-kpi__value">{directors}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="card">
-                    <div className="card-header">
-                        <h3 className="card-title">Quick links</h3>
-                    </div>
-                    <div className="card-body">
-                        <Link href="/viewsdirector" className="btn btn-outline-primary btn-sm">
-                            <span className="material-symbols-outlined">folder_open</span>
-                            View director documents
-                        </Link>
                     </div>
                 </div>
             </div>

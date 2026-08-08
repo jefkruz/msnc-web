@@ -1,6 +1,8 @@
 import { Link, usePage, router } from '@inertiajs/react';
 import Layout from '../Components/Layout';
 import SearchableSelect from '../Components/SearchableSelect';
+import ActionButton from '../Components/ActionButton';
+import { formatStatusLabel } from '../lib/formatStatus';
 
 const TYPE_BADGE = {
     applicant: 'badge badge-primary',
@@ -182,7 +184,7 @@ export default function ActivityLog({
                                             </td>
                                             <td className="admin-table-entity">{item.description}</td>
                                             <td>
-                                                <span className={statusBadge(item.status)}>{item.status || '—'}</span>
+                                                <span className={statusBadge(item.status)}>{formatStatusLabel(item.status)}</span>
                                             </td>
                                             <td>
                                                 <div>{item.when_label || '—'}</div>
@@ -191,9 +193,7 @@ export default function ActivityLog({
                                                 ) : null}
                                             </td>
                                             <td className="admin-table-actions">
-                                                <Link href={item.href || '#'} className="btn btn-outline-primary btn-sm">
-                                                    View
-                                                </Link>
+                                                <ActionButton action="view" href={item.href || '#'} />
                                             </td>
                                         </tr>
                                     ))

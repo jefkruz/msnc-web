@@ -4,8 +4,10 @@ import Modal from '../../../Components/Modal';
 import ConfirmModal from '../../../Components/ConfirmModal';
 import EmptyState from '../../../Components/EmptyState';
 import SearchableSelect from '../../../Components/SearchableSelect';
+import TitleCaseInput from '../../../Components/TitleCaseInput';
 import { useState } from 'react';
 import LoginAsButton from '../../../Components/LoginAsButton';
+import ActionButton, { ActionGroup } from '../../../Components/ActionButton';
 import { useCan } from '../../../lib/can';
 
 export default function SdmsIndex({ sdms = [], departments = [] }) {
@@ -66,12 +68,14 @@ export default function SdmsIndex({ sdms = [], departments = [] }) {
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{s.username}</td>
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{s.department?.name ?? '—'}</td>
                                         <td className="px-6 py-4 text-right">
-                                            <Link href={`/administrator/sdms/${s.id}`} className="p-2 rounded-lg hover:bg-primary/10 text-primary inline-flex mr-1"><span className="material-symbols-outlined">visibility</span></Link>
-                                            {can(['sdms.impersonate', 'sdms.view']) && (
-                                                <LoginAsButton compact href={`/administrator/sdms/${s.id}/login-as`} label={`Log in as ${s.name}`} className="mr-1" />
-                                            )}
-                                            <Link href={`/administrator/sdms/${s.id}/edit`} className="p-2 rounded-lg hover:bg-blue-500/10 text-blue-500 inline-flex mr-1"><span className="material-symbols-outlined">edit</span></Link>
-                                            <button type="button" onClick={() => setDeleteId(s.id)} className="p-2 rounded-lg hover:bg-red-500/10 text-red-500 inline-flex"><span className="material-symbols-outlined">delete</span></button>
+                                            <ActionGroup>
+                                                <ActionButton action="view" href={`/administrator/sdms/${s.id}`} />
+                                                {can(['sdms.impersonate', 'sdms.view']) && (
+                                                    <LoginAsButton compact href={`/administrator/sdms/${s.id}/login-as`} label={`Log in as ${s.name}`} />
+                                                )}
+                                                <ActionButton action="edit" href={`/administrator/sdms/${s.id}/edit`} />
+                                                <ActionButton action="delete" onClick={() => setDeleteId(s.id)} />
+                                            </ActionGroup>
                                         </td>
                                     </tr>
                                 ))}
@@ -95,10 +99,9 @@ export default function SdmsIndex({ sdms = [], departments = [] }) {
                 <form id="sdm-create" onSubmit={handleCreateSubmit} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium mb-1">Full Name</label>
-                        <input
-                            type="text"
+                        <TitleCaseInput
                             value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
+                            onChange={(val) => setData('name', val)}
                             className="form-control"
                             required
                         />

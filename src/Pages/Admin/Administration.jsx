@@ -1,17 +1,23 @@
-import { usePage, Link } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
+import DashKpiGrid from '../../Components/DashKpiGrid';
 
-const cards = [
-    { label: 'HQ Departments', valueKey: 'hqDept', href: '/administrator/departments/1', icon: 'apartment', hint: 'Headquarters departments' },
-    { label: 'Lagos Zones', valueKey: 'lagosDept', href: '/administrator/departments/56', icon: 'location_city', hint: 'Lagos zone departments' },
-    { label: 'Outstations', valueKey: 'outstations', href: '/administrator/departments/outstations', icon: 'business', hint: 'Outstation departments' },
-    { label: 'Job Families', valueKey: 'nomenclature', href: '/administrator/job-families', icon: 'work', hint: 'Nomenclature families' },
-    { label: 'Ranks', valueKey: 'ranks', href: '/administrator/ranks', icon: 'list', hint: 'Rank catalogue' },
-];
-
-export default function Administration(props) {
+export default function Administration({
+    hqDept = 0,
+    lagosDept = 0,
+    outstations = 0,
+    nomenclature = 0,
+    ranks = 0,
+}) {
     const { auth, authRole, menu, appName } = usePage().props;
-    const data = { ...props };
+
+    const cards = [
+        { label: 'HQ Departments', value: hqDept, href: '/administrator/departments/1', icon: 'apartment', hint: 'Headquarters departments' },
+        { label: 'Lagos Zones', value: lagosDept, href: '/administrator/departments/56', icon: 'location_city', hint: 'Lagos zone departments' },
+        { label: 'Outstations', value: outstations, href: '/administrator/departments/outstations', icon: 'business', hint: 'Outstation departments' },
+        { label: 'Job Families', value: nomenclature, href: '/administrator/job-families', icon: 'work', hint: 'Nomenclature families' },
+        { label: 'Ranks', value: ranks, href: '/administrator/ranks', icon: 'list', hint: 'Rank catalogue' },
+    ];
 
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Administration">
@@ -20,21 +26,7 @@ export default function Administration(props) {
                     <h2>Administration</h2>
                     <p>Configure departments, job families, and ranks.</p>
                 </div>
-
-                <div className="dash-kpi-grid dash-kpi-grid--3">
-                    {cards.map((card) => (
-                        <Link key={card.valueKey} href={card.href} className="dash-kpi">
-                            <span className="dash-kpi__icon" aria-hidden="true">
-                                <span className="material-symbols-outlined">{card.icon}</span>
-                            </span>
-                            <div className="dash-kpi__content">
-                                <p className="dash-kpi__label">{card.label}</p>
-                                <p className="dash-kpi__value">{card.hideCount ? '—' : (data[card.valueKey] ?? 0)}</p>
-                                <p className="dash-kpi__hint">{card.hint}</p>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
+                <DashKpiGrid items={cards} />
             </div>
         </Layout>
     );

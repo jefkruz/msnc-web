@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm, usePage, Link, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import ConfirmModal from '../../Components/ConfirmModal';
+import ActionButton from '../../Components/ActionButton';
 import SearchableSelect from '../../Components/SearchableSelect';
 import SearchableMultiSelect from '../../Components/SearchableMultiSelect';
 import { useCan } from '../../lib/can';
@@ -76,7 +77,7 @@ export default function InterviewsEdit({ interview, applicants = [], panelists =
                         <Link href="/administrator/interviews" className="btn btn-secondary">Cancel</Link>
                         <button type="submit" disabled={processing} className="btn btn-primary">Update Interview</button>
                         {can('interviews.delete') && interview?.id && (
-                            <button type="button" className="btn btn-danger ml-auto" onClick={() => setConfirmDelete(true)}>Delete</button>
+                            <ActionButton action="delete" size="" variant="danger" className="ml-auto" onClick={() => setConfirmDelete(true)} />
                         )}
                     </div>
                 </form>

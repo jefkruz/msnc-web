@@ -1,6 +1,7 @@
 import { useForm } from '@inertiajs/react';
 import PublicLayout from '../../Components/PublicLayout';
 import SearchableSelect from '../../Components/SearchableSelect';
+import TitleCaseInput from '../../Components/TitleCaseInput';
 import { countryOptions } from '../../data/countries';
 
 const titleOptions = [
@@ -141,20 +142,18 @@ export default function MissionaryPosting({ branding = {}, home = {} }) {
                                 </Field>
 
                                 <Field label="First name" error={errors.first_name}>
-                                    <input
-                                        type="text"
+                                    <TitleCaseInput
                                         value={data.first_name}
-                                        onChange={(e) => setData('first_name', e.target.value)}
+                                        onChange={(val) => setData('first_name', val)}
                                         className={inputClass(errors.first_name)}
                                         autoComplete="given-name"
                                     />
                                 </Field>
 
                                 <Field label="Last name" error={errors.last_name}>
-                                    <input
-                                        type="text"
+                                    <TitleCaseInput
                                         value={data.last_name}
-                                        onChange={(e) => setData('last_name', e.target.value)}
+                                        onChange={(val) => setData('last_name', val)}
                                         className={inputClass(errors.last_name)}
                                         autoComplete="family-name"
                                     />

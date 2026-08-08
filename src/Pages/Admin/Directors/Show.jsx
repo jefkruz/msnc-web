@@ -3,6 +3,7 @@ import { Link, usePage, router } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
 import ConfirmModal from '../../../Components/ConfirmModal';
 import LoginAsButton from '../../../Components/LoginAsButton';
+import ActionButton from '../../../Components/ActionButton';
 import { useCan } from '../../../lib/can';
 
 export default function DirectorsShow({ director }) {
@@ -25,10 +26,10 @@ export default function DirectorsShow({ director }) {
                     {can(['directors.impersonate', 'directors.view']) && (
                         <LoginAsButton href={`/administrator/directors/${director.id}/login-as`} label={`Log in as ${director.name}`} />
                     )}
-                    <Link href={`/administrator/directors/${director.id}/edit`} className="btn btn-primary">Edit</Link>
-                    <Link href="/administrator/directors" className="btn btn-secondary">Back to list</Link>
+                    <ActionButton action="edit" href={`/administrator/directors/${director.id}/edit`} size="" variant="primary" />
+                    <ActionButton action="back" href="/administrator/directors" size="" />
                     {can('directors.delete') && (
-                        <button type="button" className="btn btn-danger ml-auto" onClick={() => setConfirmDelete(true)}>Delete</button>
+                        <ActionButton action="delete" size="" variant="danger" className="ml-auto" onClick={() => setConfirmDelete(true)} />
                     )}
                 </div>
                 <ConfirmModal

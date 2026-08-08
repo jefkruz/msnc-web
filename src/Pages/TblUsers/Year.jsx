@@ -1,5 +1,6 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
+import ActionButton from '../../Components/ActionButton';
 
 export default function TblUsersYear({ year, yearLabel, users = {}, search: initialSearch = '' }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -80,13 +81,7 @@ export default function TblUsersYear({ year, yearLabel, users = {}, search: init
                                                 </span>
                                             </td>
                                             <td className="px-4 sm:px-6 py-3 text-right">
-                                                <Link
-                                                    href={`/administrator/tbl-users/${u.id}`}
-                                                    className="p-2 rounded-lg hover:bg-primary/10 text-primary inline-flex"
-                                                    title="View"
-                                                >
-                                                    <span className="material-symbols-outlined text-lg">visibility</span>
-                                                </Link>
+                                                <ActionButton action="view" href={`/administrator/tbl-users/${u.id}`} />
                                             </td>
                                         </tr>
                                     ))}

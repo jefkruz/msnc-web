@@ -5,6 +5,8 @@ import Modal from '../../../Components/Modal';
 import ConfirmModal from '../../../Components/ConfirmModal';
 import EmptyState from '../../../Components/EmptyState';
 import SearchableSelect from '../../../Components/SearchableSelect';
+import TitleCaseInput from '../../../Components/TitleCaseInput';
+import ActionButton, { ActionGroup } from '../../../Components/ActionButton';
 import { useCan } from '../../../lib/can';
 
 export default function AdminsIndex({ admins = [], departments = [] }) {
@@ -85,34 +87,15 @@ export default function AdminsIndex({ admins = [], departments = [] }) {
                                             {admin.department?.name ?? 'ALL'}
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <Link
-                                                    href={`/administrator/admins/${admin.id}`}
-                                                    className="p-2 rounded-lg hover:bg-primary/10 text-primary"
-                                                    title="View"
-                                                >
-                                                    <span className="material-symbols-outlined">visibility</span>
-                                                </Link>
+                                            <ActionGroup>
+                                                <ActionButton action="view" href={`/administrator/admins/${admin.id}`} />
                                                 {can('admins.update') && (
-                                                <Link
-                                                    href={`/administrator/admins/${admin.id}/edit`}
-                                                    className="p-2 rounded-lg hover:bg-blue-500/10 text-blue-500"
-                                                    title="Edit"
-                                                >
-                                                    <span className="material-symbols-outlined">edit</span>
-                                                </Link>
+                                                    <ActionButton action="edit" href={`/administrator/admins/${admin.id}/edit`} />
                                                 )}
                                                 {can('admins.delete') && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setDeleteId(admin.id)}
-                                                    className="p-2 rounded-lg hover:bg-red-500/10 text-red-500"
-                                                    title="Delete"
-                                                >
-                                                    <span className="material-symbols-outlined">delete</span>
-                                                </button>
+                                                    <ActionButton action="delete" onClick={() => setDeleteId(admin.id)} />
                                                 )}
-                                            </div>
+                                            </ActionGroup>
                                         </td>
                                     </tr>
                                 ))}
@@ -136,10 +119,9 @@ export default function AdminsIndex({ admins = [], departments = [] }) {
                 <form id="admin-create" onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium mb-1">Full Name</label>
-                        <input
-                            type="text"
+                        <TitleCaseInput
                             value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
+                            onChange={(val) => setData('name', val)}
                             className="form-control"
                             required
                         />

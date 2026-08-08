@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useForm, usePage, router } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
 import ConfirmModal from '../../../Components/ConfirmModal';
+import ActionButton from '../../../Components/ActionButton';
 import PostingRecommendationForm from '../../../Components/PostingRecommendationForm';
 import { useCan } from '../../../lib/can';
 
@@ -67,7 +68,7 @@ export default function PostingRecommendationsEdit({ postingRecommendation, appl
                         Back to Posting Recommendations
                     </Link>
                     {can('posting-recommendations.delete') && r.id && (
-                        <button type="button" className="btn btn-danger" onClick={() => setConfirmDelete(true)}>Delete</button>
+                        <ActionButton action="delete" size="" variant="danger" onClick={() => setConfirmDelete(true)} />
                     )}
                 </div>
 

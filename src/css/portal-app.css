@@ -989,13 +989,14 @@
   gap: 0.25rem;
   font-weight: 600;
   font-size: 0.72rem;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
   line-height: 1.2;
   padding: 0.38em 0.78em;
   border-radius: 999px;
   border: 1px solid transparent;
   vertical-align: middle;
   white-space: nowrap;
+  text-transform: uppercase;
 }
 
 .app-content .badge-pill.px-3.py-2,

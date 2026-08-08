@@ -1,28 +1,60 @@
 import axios from 'axios';
+import { clearShare } from './shareShell';
 
 const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 
 const getCache = new Map();
 const PUBLIC_CACHE_MS = 90_000;
+const AUTH_CACHE_MS = 25_000;
 const PUBLIC_PATH = /\/(welcome|about|statement-of-faith|opportunity-to-work-in-ministry)(\/success)?(\?|$)/;
+const SKIP_CACHE = /\/(logout|login|sanctum)(\/|\?|$)/;
 
-export function readGetCache(url) {
-  const hit = getCache.get(url);
+function cacheTtl(url) {
+  return PUBLIC_PATH.test(String(url)) ? PUBLIC_CACHE_MS : AUTH_CACHE_MS;
+}
+
+function cacheKey(url, params) {
+  return `${url}?${JSON.stringify(params || {})}`;
+}
+
+function stripFlash(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    return data;
+  }
+  return {
+    ...data,
+    flash: { message: null, error: null },
+  };
+}
+
+export function readGetCache(url, params) {
+  const hit = getCache.get(cacheKey(url, params));
   if (!hit) return null;
-  if (Date.now() - hit.at > PUBLIC_CACHE_MS) {
-    getCache.delete(url);
+  if (Date.now() - hit.at > cacheTtl(url)) {
+    getCache.delete(cacheKey(url, params));
     return null;
   }
   return hit.data;
 }
 
-export function writeGetCache(url, data) {
-  if (!PUBLIC_PATH.test(String(url))) return;
-  getCache.set(url, { data, at: Date.now() });
+export function writeGetCache(url, data, params) {
+  if (SKIP_CACHE.test(String(url))) return;
+  getCache.set(cacheKey(url, params), { data: stripFlash(data), at: Date.now() });
 }
 
 export function clearGetCache() {
   getCache.clear();
+}
+
+export function prefetchGet(path) {
+  if (!path || path === '#' || SKIP_CACHE.test(path) || /^https?:|mailto:|tel:/i.test(path)) {
+    return;
+  }
+  const url = path.startsWith('/') ? path : `/${path}`;
+  if (readGetCache(url)) return;
+  api.get(url)
+    .then(({ data }) => writeGetCache(url, data))
+    .catch(() => {});
 }
 
 export const api = axios.create({
@@ -37,7 +69,7 @@ export const api = axios.create({
 const inflightGets = new Map();
 const originalGet = api.get.bind(api);
 api.get = function get(url, config) {
-  const key = `${url}?${JSON.stringify(config?.params || {})}`;
+  const key = cacheKey(url, config?.params);
   if (inflightGets.has(key)) {
     return inflightGets.get(key);
   }
@@ -82,12 +114,23 @@ api.interceptors.request.use(async (config) => {
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const method = (response.config?.method || 'get').toLowerCase();
+    const url = String(response.config?.url || '');
+    if (['post', 'put', 'patch', 'delete'].includes(method)) {
+      clearGetCache();
+    }
+    if (url.includes('logout')) {
+      clearGetCache();
+      clearShare();
+    }
+    return response;
+  },
   (error) => {
     const status = error.response?.status;
-    const redirect = error.response?.data?.redirect;
     if (status === 401) {
       clearGetCache();
+      clearShare();
     }
     return Promise.reject(error);
   }

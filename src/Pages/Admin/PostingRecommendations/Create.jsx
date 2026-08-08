@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Layout from '../../../Components/Layout';
 import PostingRecommendationForm from '../../../Components/PostingRecommendationForm';
 import SearchableSelect from '../../../Components/SearchableSelect';
+import { formatDisplayDate } from '../../../lib/formatDate';
 
 export default function PostingRecommendationsCreate({ applicants = [], interviews = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -93,7 +94,7 @@ export default function PostingRecommendationsCreate({ applicants = [], intervie
                                 options={interviewList}
                                 placeholder="Select an interview"
                                 getOptionValue={(i) => i?.id ?? ''}
-                                getOptionLabel={(i) => `${i?.applicant_name ?? '—'} – ${i?.date ?? ''} (${i?.department_name ?? '—'})`}
+                                getOptionLabel={(i) => `${i?.applicant_name ?? '—'} – ${formatDisplayDate(i?.date, i?.date || '—')} (${i?.department_name ?? '—'})`}
                             />
                         </div>
                         <button

@@ -1,6 +1,8 @@
 import { Link, usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import { storageUrl } from '../../lib/api';
+import { formatDisplayDate } from '../../lib/formatDate';
+import { formatStatusLabel } from '../../lib/formatStatus';
 
 const DOCUMENT_LABELS = {
     authorization_recruit_form: 'Authorization & Recruit Form',
@@ -24,7 +26,7 @@ export default function InterviewsManage({ interview, applicant, panelistNames =
     const doc = applicant?.document || {};
     const fullName = applicant ? [applicant.first_name, applicant.last_name].filter(Boolean).join(' ') : '—';
     const imageUrl = applicant?.image || '/images/default.png';
-    const interviewDate = interview?.date ? new Date(interview.date).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' }) : '—';
+    const interviewDate = formatDisplayDate(interview?.date);
 
     const hasDocuments = Object.keys(DOCUMENT_LABELS).some((field) => doc[field]);
 
@@ -204,13 +206,13 @@ export default function InterviewsManage({ interview, applicant, panelistNames =
                                 <div className="flex justify-between items-center">
                                     <span className="text-slate-500 dark:text-text-muted">Interview Status</span>
                                     <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-600 dark:text-amber-400">
-                                        {interview?.status ? String(interview.status) : '—'}
+                                        {formatStatusLabel(interview?.status)}
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <span className="text-slate-500 dark:text-text-muted">Applicant Status</span>
                                     <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-primary/20 text-primary">
-                                        {applicant?.status ? String(applicant.status) : '—'}
+                                        {formatStatusLabel(applicant?.status)}
                                     </span>
                                 </div>
                             </div>

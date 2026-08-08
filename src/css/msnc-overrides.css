@@ -283,6 +283,15 @@ html.dark .hero__lead {
   background: var(--mca-background, #f5f8fc);
 }
 
+.page-loader--inline {
+  min-height: 42vh;
+  background: transparent;
+}
+
+html.dark .page-loader--inline {
+  background: transparent;
+}
+
 html.dark .page-loader {
   background: #0b1220;
 }

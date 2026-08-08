@@ -3,6 +3,7 @@ import { usePage, Link } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../../Components/Layout';
 import SearchableSelect from '../../Components/SearchableSelect';
+import { formatDisplayDate } from '../../lib/formatDate';
 
 export default function PanelistInterviewManage({
     interview,
@@ -133,7 +134,7 @@ export default function PanelistInterviewManage({
                         </div>
                     </div>
                     <p className="text-text-muted text-sm mb-6">
-                        Date: {interview?.date ? new Date(interview.date).toLocaleString() : '—'}
+                        Date: {formatDisplayDate(interview?.date)}
                     </p>
                     {applicant?.category && (
                         <p className="text-text-muted text-sm">

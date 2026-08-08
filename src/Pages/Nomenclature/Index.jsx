@@ -5,6 +5,9 @@ import Modal from '../../Components/Modal';
 import ConfirmModal from '../../Components/ConfirmModal';
 import EmptyState from '../../Components/EmptyState';
 import SearchableSelect from '../../Components/SearchableSelect';
+import DashKpiGrid from '../../Components/DashKpiGrid';
+import TitleCaseInput from '../../Components/TitleCaseInput';
+import ActionButton, { ActionGroup } from '../../Components/ActionButton';
 
 const BASE = '/administrator/job-families';
 
@@ -37,9 +40,9 @@ export default function NomenclatureIndex() {
 
 
     const statCards = [
-        { label: 'Categories', value: safeStats.total_categories, icon: 'folder', color: 'bg-primary' },
-        { label: 'Groups', value: safeStats.total_groups, icon: 'layers', color: 'bg-emerald-500' },
-        { label: 'Ranks', value: safeStats.total_ranks, icon: 'star', color: 'bg-amber-500' },
+        { label: 'Categories', value: safeStats.total_categories, icon: 'folder', hint: 'Job families' },
+        { label: 'Groups', value: safeStats.total_groups, icon: 'layers', hint: 'Nomenclature groups' },
+        { label: 'Ranks', value: safeStats.total_ranks, icon: 'star', hint: 'Nomenclature ranks' },
     ];
 
     const toggleCategory = (id) => {
@@ -133,24 +136,7 @@ export default function NomenclatureIndex() {
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Job Families & Nomenclature">
             <div className="space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {statCards.map((s) => (
-                        <div
-                            key={s.label}
-                            className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-6"
-                        >
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-text-muted">{s.label}</p>
-                                    <p className="text-2xl font-bold text-slate-900 dark:text-white">{s.value}</p>
-                                </div>
-                                <div className={`w-12 h-12 rounded-full ${s.color} flex items-center justify-center text-white`}>
-                                    <span className="material-symbols-outlined">{s.icon}</span>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                <DashKpiGrid items={statCards} />
 
                 <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
                     <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark flex flex-wrap items-center justify-between gap-3">
@@ -235,23 +221,11 @@ export default function NomenclatureIndex() {
                                                         expand_more
                                                     </span>
                                                 </button>
-                                                <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setEditCategory({ id: category.id, name: category.name })}
-                                                        className="p-2 rounded-lg hover:bg-primary/10 text-primary"
-                                                        title="Edit category"
-                                                    >
-                                                        <span className="material-symbols-outlined text-lg">edit</span>
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setDeleteTarget({ type: 'category', id: category.id, name: category.name })}
-                                                        className="p-2 rounded-lg hover:bg-red-500/10 text-red-500"
-                                                        title="Delete category"
-                                                    >
-                                                        <span className="material-symbols-outlined text-lg">delete</span>
-                                                    </button>
+                                                <div className="flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                                                    <ActionGroup>
+                                                        <ActionButton action="edit" onClick={() => setEditCategory({ id: category.id, name: category.name })} />
+                                                        <ActionButton action="delete" onClick={() => setDeleteTarget({ type: 'category', id: category.id, name: category.name })} />
+                                                    </ActionGroup>
                                                 </div>
                                             </div>
                                             {isCategoryOpen && (
@@ -305,27 +279,15 @@ export default function NomenclatureIndex() {
                                                                                     expand_more
                                                                                 </span>
                                                                             </button>
-                                                                            <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-                                                                                <button
-                                                                                    type="button"
-                                                                                    onClick={() => setEditGroup({
+                                                                            <div className="flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                                                                                <ActionGroup>
+                                                                                    <ActionButton action="edit" onClick={() => setEditGroup({
                                                                                         id: group.id,
                                                                                         nomenclature_category_id: String(group.nomenclature_category_id ?? category.id),
                                                                                         name: group.name,
-                                                                                    })}
-                                                                                    className="p-2 rounded-lg hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                                                                                    title="Edit group"
-                                                                                >
-                                                                                    <span className="material-symbols-outlined text-lg">edit</span>
-                                                                                </button>
-                                                                                <button
-                                                                                    type="button"
-                                                                                    onClick={() => setDeleteTarget({ type: 'group', id: group.id, name: group.name })}
-                                                                                    className="p-2 rounded-lg hover:bg-red-500/10 text-red-500"
-                                                                                    title="Delete group"
-                                                                                >
-                                                                                    <span className="material-symbols-outlined text-lg">delete</span>
-                                                                                </button>
+                                                                                    })} />
+                                                                                    <ActionButton action="delete" onClick={() => setDeleteTarget({ type: 'group', id: group.id, name: group.name })} />
+                                                                                </ActionGroup>
                                                                             </div>
                                                                         </div>
                                                                         {isGroupOpen && (
@@ -359,27 +321,15 @@ export default function NomenclatureIndex() {
                                                                                                         {rank.name}
                                                                                                     </span>
                                                                                                 </div>
-                                                                                                <div className="flex items-center gap-1 opacity-0 group-hover/rank:opacity-100 transition-opacity flex-shrink-0">
-                                                                                                    <button
-                                                                                                        type="button"
-                                                                                                        onClick={() => setEditRank({
+                                                                                                <div className="flex-shrink-0 opacity-0 group-hover/rank:opacity-100 transition-opacity">
+                                                                                                    <ActionGroup>
+                                                                                                        <ActionButton action="edit" onClick={() => setEditRank({
                                                                                                             id: rank.id,
                                                                                                             nomenclature_group_id: String(rank.nomenclature_group_id ?? group.id),
                                                                                                             name: rank.name,
-                                                                                                        })}
-                                                                                                        className="p-1.5 rounded hover:bg-amber-500/20 text-amber-600 dark:text-amber-400"
-                                                                                                        title="Edit rank"
-                                                                                                    >
-                                                                                                        <span className="material-symbols-outlined text-sm">edit</span>
-                                                                                                    </button>
-                                                                                                    <button
-                                                                                                        type="button"
-                                                                                                        onClick={() => setDeleteTarget({ type: 'rank', id: rank.id, name: rank.name })}
-                                                                                                        className="p-1.5 rounded hover:bg-red-500/20 text-red-500"
-                                                                                                        title="Delete rank"
-                                                                                                    >
-                                                                                                        <span className="material-symbols-outlined text-sm">delete</span>
-                                                                                                    </button>
+                                                                                                        })} />
+                                                                                                        <ActionButton action="delete" onClick={() => setDeleteTarget({ type: 'rank', id: rank.id, name: rank.name })} />
+                                                                                                    </ActionGroup>
                                                                                                 </div>
                                                                                             </li>
                                                                                         ))}
@@ -418,10 +368,9 @@ export default function NomenclatureIndex() {
                 <form id="nomen-create-category" onSubmit={handleCreateCategory} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium mb-1">Name</label>
-                        <input
-                            type="text"
+                        <TitleCaseInput
                             value={createCategoryForm.data.name}
-                            onChange={(e) => createCategoryForm.setData('name', e.target.value)}
+                            onChange={(val) => createCategoryForm.setData('name', val)}
                             className="form-control"
                             placeholder="e.g. Engineering"
                             required
@@ -459,10 +408,9 @@ export default function NomenclatureIndex() {
                     </div>
                     <div>
                         <label className="block text-sm font-medium mb-1">Group name</label>
-                        <input
-                            type="text"
+                        <TitleCaseInput
                             value={createGroupForm.data.name}
-                            onChange={(e) => createGroupForm.setData('name', e.target.value)}
+                            onChange={(val) => createGroupForm.setData('name', val)}
                             className="form-control"
                             placeholder="e.g. Software Development"
                             required
@@ -502,10 +450,9 @@ export default function NomenclatureIndex() {
                     </div>
                     <div>
                         <label className="block text-sm font-medium mb-1">Rank name</label>
-                        <input
-                            type="text"
+                        <TitleCaseInput
                             value={createRankForm.data.name}
-                            onChange={(e) => createRankForm.setData('name', e.target.value)}
+                            onChange={(val) => createRankForm.setData('name', val)}
                             className="form-control"
                             placeholder="e.g. Senior"
                             required
@@ -533,10 +480,9 @@ export default function NomenclatureIndex() {
                     <form id="nomen-edit-category" onSubmit={handleUpdateCategory} className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium mb-1">Name</label>
-                            <input
-                                type="text"
+                            <TitleCaseInput
                                 value={editCategory.name}
-                                onChange={(e) => setEditCategory((p) => ({ ...p, name: e.target.value }))}
+                                onChange={(val) => setEditCategory((p) => ({ ...p, name: val }))}
                                 className="form-control"
                                 required
                             />
@@ -571,10 +517,9 @@ export default function NomenclatureIndex() {
                         </div>
                         <div>
                             <label className="block text-sm font-medium mb-1">Group name</label>
-                            <input
-                                type="text"
+                            <TitleCaseInput
                                 value={editGroup.name}
-                                onChange={(e) => setEditGroup((p) => ({ ...p, name: e.target.value }))}
+                                onChange={(val) => setEditGroup((p) => ({ ...p, name: val }))}
                                 className="form-control"
                                 required
                             />
@@ -611,10 +556,9 @@ export default function NomenclatureIndex() {
                         </div>
                         <div>
                             <label className="block text-sm font-medium mb-1">Rank name</label>
-                            <input
-                                type="text"
+                            <TitleCaseInput
                                 value={editRank.name}
-                                onChange={(e) => setEditRank((p) => ({ ...p, name: e.target.value }))}
+                                onChange={(val) => setEditRank((p) => ({ ...p, name: val }))}
                                 className="form-control"
                                 required
                             />

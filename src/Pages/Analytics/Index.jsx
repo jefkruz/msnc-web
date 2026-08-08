@@ -1,6 +1,7 @@
 import { router, usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import SearchableSelect from '../../Components/SearchableSelect';
+import DashKpiGrid from '../../Components/DashKpiGrid';
 import { useEffect, useMemo, useState } from 'react';
 
 const MONTHS = [
@@ -102,23 +103,13 @@ export default function AnalyticsIndex({
 
                 <div>
                     <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">{periodLabel}</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-5 shadow-sm">
-                            <p className="text-xs font-semibold text-slate-500 dark:text-text-muted uppercase tracking-wider">Applicants</p>
-                            <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{totalApplicants}</p>
-                            <p className="text-xs text-slate-500 dark:text-text-muted mt-1">Registered in this period</p>
-                        </div>
-                        <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-5 shadow-sm">
-                            <p className="text-xs font-semibold text-slate-500 dark:text-text-muted uppercase tracking-wider">Personnel in waiting</p>
-                            <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{totalPersonnel}</p>
-                            <p className="text-xs text-slate-500 dark:text-text-muted mt-1">Added in this period</p>
-                        </div>
-                        <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-5 shadow-sm">
-                            <p className="text-xs font-semibold text-slate-500 dark:text-text-muted uppercase tracking-wider">Interviewed</p>
-                            <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{totalInterviewed}</p>
-                            <p className="text-xs text-slate-500 dark:text-text-muted mt-1">In this period</p>
-                        </div>
-                    </div>
+                    <DashKpiGrid
+                        items={[
+                            { label: 'Applicants', value: totalApplicants, icon: 'group', hint: 'Registered in this period' },
+                            { label: 'Personnel in waiting', value: totalPersonnel, icon: 'hourglass_top', hint: 'Added in this period' },
+                            { label: 'Interviewed', value: totalInterviewed, icon: 'event_available', hint: 'In this period' },
+                        ]}
+                    />
                 </div>
 
                 {monthsWithData.length > 0 && (

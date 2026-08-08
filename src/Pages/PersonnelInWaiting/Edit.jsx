@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useForm, usePage, Link, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import ConfirmModal from '../../Components/ConfirmModal';
+import ActionButton from '../../Components/ActionButton';
 import SearchableSelect from '../../Components/SearchableSelect';
+import TitleCaseInput from '../../Components/TitleCaseInput';
 import { TITLE_OPTIONS } from '../../lib/selectOptions';
 import { useCan } from '../../lib/can';
 
@@ -51,12 +53,12 @@ export default function PersonnelInWaitingEdit({ person, departments = [] }) {
                             </div>
                             <div>
                                 <label className={labelClass}>First name <span className="text-red-500">*</span></label>
-                                <input type="text" value={data.firstname} onChange={(e) => setData('firstname', e.target.value)} className={inputClass} required />
+                                <TitleCaseInput value={data.firstname} onChange={(val) => setData('firstname', val)} className={inputClass} required />
                                 {errors.firstname && <p className="text-red-500 text-xs mt-1">{errors.firstname}</p>}
                             </div>
                             <div>
                                 <label className={labelClass}>Last name <span className="text-red-500">*</span></label>
-                                <input type="text" value={data.lastname} onChange={(e) => setData('lastname', e.target.value)} className={inputClass} required />
+                                <TitleCaseInput value={data.lastname} onChange={(val) => setData('lastname', val)} className={inputClass} required />
                                 {errors.lastname && <p className="text-red-500 text-xs mt-1">{errors.lastname}</p>}
                             </div>
                             <div>
@@ -97,7 +99,7 @@ export default function PersonnelInWaitingEdit({ person, departments = [] }) {
                         <Link href={`${base}/${id}`} className="btn btn-secondary">Cancel</Link>
                         <button type="submit" disabled={processing} className="btn btn-primary">Update</button>
                         {can('personnel-in-waiting.delete') && id && (
-                            <button type="button" className="btn btn-danger ml-auto" onClick={() => setConfirmDelete(true)}>Delete</button>
+                            <ActionButton action="delete" size="" variant="danger" className="ml-auto" onClick={() => setConfirmDelete(true)} />
                         )}
                     </div>
                 </form>

@@ -2,6 +2,7 @@ import { useForm } from '@inertiajs/react';
 import { usePage, Link } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import SearchableSelect from '../../Components/SearchableSelect';
+import TitleCaseInput from '../../Components/TitleCaseInput';
 import { TITLE_OPTIONS } from '../../lib/selectOptions';
 
 const inputClass =
@@ -44,10 +45,9 @@ export default function PersonnelInWaitingCreate({ departments = [] }) {
                             </div>
                             <div>
                                 <label className={labelClass}>First name <span className="text-red-500">*</span></label>
-                                <input
-                                    type="text"
+                                <TitleCaseInput
                                     value={data.firstname}
-                                    onChange={(e) => setData('firstname', e.target.value)}
+                                    onChange={(val) => setData('firstname', val)}
                                     className={inputClass}
                                     required
                                 />
@@ -55,10 +55,9 @@ export default function PersonnelInWaitingCreate({ departments = [] }) {
                             </div>
                             <div>
                                 <label className={labelClass}>Last name <span className="text-red-500">*</span></label>
-                                <input
-                                    type="text"
+                                <TitleCaseInput
                                     value={data.lastname}
-                                    onChange={(e) => setData('lastname', e.target.value)}
+                                    onChange={(val) => setData('lastname', val)}
                                     className={inputClass}
                                     required
                                 />

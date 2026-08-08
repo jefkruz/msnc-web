@@ -133,8 +133,9 @@
   border: 1px solid transparent;
   font-weight: 600;
   font-size: 0.72rem;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
   padding: 0.38em 0.78em;
+  text-transform: uppercase;
 }
 
 .status-badge-applied {

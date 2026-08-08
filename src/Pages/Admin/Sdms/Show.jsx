@@ -3,6 +3,7 @@ import { Link, usePage, router } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
 import ConfirmModal from '../../../Components/ConfirmModal';
 import LoginAsButton from '../../../Components/LoginAsButton';
+import ActionButton from '../../../Components/ActionButton';
 import { useCan } from '../../../lib/can';
 
 export default function SdmsShow({ sdm }) {
@@ -26,12 +27,9 @@ export default function SdmsShow({ sdm }) {
                         {can(['sdms.impersonate', 'sdms.view']) && sdm?.id && (
                             <LoginAsButton href={`/administrator/sdms/${sdm.id}/login-as`} label={`Log in as ${sdm.name || 'SDM'}`} />
                         )}
-                        <Link href={`/administrator/sdms/${sdm?.id}/edit`} className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-medium text-sm hover:bg-primary/90">
-                            <span className="material-symbols-outlined text-lg">edit</span>
-                            Edit SDM
-                        </Link>
+                        <ActionButton action="edit" href={`/administrator/sdms/${sdm?.id}/edit`} size="" variant="primary" label="Edit SDM" />
                         {can('sdms.delete') && sdm?.id && (
-                            <button type="button" className="btn btn-danger" onClick={() => setConfirmDelete(true)}>Delete</button>
+                            <ActionButton action="delete" size="" variant="danger" onClick={() => setConfirmDelete(true)} />
                         )}
                     </div>
                 </div>

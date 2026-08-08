@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
-import { toSpaHref } from '../lib/api';
+import { prefetchGet, toSpaHref } from '../lib/api';
 import { toggleTheme, getTheme } from '../theme';
 
 const iconMap = {
@@ -166,6 +166,8 @@ export default function Sidebar({ menu = [], appName, auth, authRole, onClose })
                                                 key={sub.route}
                                                 href={getHref(sub)}
                                                 onClick={closeOnNavigate}
+                                                onMouseEnter={() => prefetchGet(getHref(sub))}
+                                                onFocus={() => prefetchGet(getHref(sub))}
                                                 className={`app-nav-link is-nested${sub.active === 'active' ? ' is-active' : ''}`}
                                             >
                                                 {sub.name}
@@ -182,6 +184,8 @@ export default function Sidebar({ menu = [], appName, auth, authRole, onClose })
                             key={item.route}
                             href={getHref(item)}
                             onClick={closeOnNavigate}
+                            onMouseEnter={() => prefetchGet(getHref(item))}
+                            onFocus={() => prefetchGet(getHref(item))}
                             className={`app-nav-link${item.active === 'active' ? ' is-active' : ''}`}
                         >
                             <span className="material-symbols-outlined">{getMaterialIcon(item.icon)}</span>

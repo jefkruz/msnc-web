@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useForm, usePage, Link, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import ConfirmModal from '../../Components/ConfirmModal';
+import ActionButton from '../../Components/ActionButton';
 import SearchableSelect from '../../Components/SearchableSelect';
+import TitleCaseInput from '../../Components/TitleCaseInput';
 import { useCan } from '../../lib/can';
 
 export default function ApplicantsEdit({ applicant, families = [], departments = [], ranks = [], groups = [], nomenclature_ranks = [] }) {
@@ -35,12 +37,12 @@ export default function ApplicantsEdit({ applicant, families = [], departments =
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">First Name</label>
-                                <input type="text" value={data.first_name} onChange={(e) => setData('first_name', e.target.value)} className="form-control" required />
+                                <TitleCaseInput value={data.first_name} onChange={(val) => setData('first_name', val)} className="form-control" required />
                                 {errors.first_name && <p className="text-red-500 text-xs mt-1">{errors.first_name}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Last Name</label>
-                                <input type="text" value={data.last_name} onChange={(e) => setData('last_name', e.target.value)} className="form-control" required />
+                                <TitleCaseInput value={data.last_name} onChange={(val) => setData('last_name', val)} className="form-control" required />
                                 {errors.last_name && <p className="text-red-500 text-xs mt-1">{errors.last_name}</p>}
                             </div>
                             <div>
@@ -122,7 +124,7 @@ export default function ApplicantsEdit({ applicant, families = [], departments =
                         <Link href={`/authorised/view/${applicant.id}`} className="btn btn-secondary">Cancel</Link>
                         <button type="submit" disabled={processing} className="btn btn-primary">Update Applicant</button>
                         {can('applicants.delete') && applicant?.id && (
-                            <button type="button" className="btn btn-danger ml-auto" onClick={() => setConfirmDelete(true)}>Delete</button>
+                            <ActionButton action="delete" size="" variant="danger" className="ml-auto" onClick={() => setConfirmDelete(true)} />
                         )}
                     </div>
                 </form>

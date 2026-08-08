@@ -1,16 +1,29 @@
-import { Link, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
+import DashKpiGrid from '../../Components/DashKpiGrid';
 
 export default function TblUsersIndex({ years = [], totalUsers = 0, tableMissing = false }) {
     const { auth, authRole, menu, appName } = usePage().props;
 
+    const cards = (Array.isArray(years) ? years : []).map((y) => {
+        const total = Number(y.total) || 0;
+        return {
+            id: String(y.year),
+            label: y.label || String(y.year),
+            value: total,
+            hint: total === 1 ? 'user' : 'users',
+            icon: 'calendar_month',
+            href: `/administrator/tbl-users/year/${y.year}`,
+        };
+    });
+
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Users">
-            <div className="space-y-6">
-                <div>
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Users</h2>
-                    <p className="text-sm text-slate-500 dark:text-text-muted mt-1">
-                        Browse users by year. {tableMissing ? '' : `${totalUsers.toLocaleString()} total.`}
+            <div className="dash-page">
+                <div className="dash-page__header">
+                    <h2>Users</h2>
+                    <p>
+                        Browse users by year.{tableMissing ? '' : ` ${Number(totalUsers).toLocaleString()} total.`}
                     </p>
                 </div>
 
@@ -25,34 +38,7 @@ export default function TblUsersIndex({ years = [], totalUsers = 0, tableMissing
                         No users found.
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {years.map((y) => {
-                            const label = y.label || String(y.year);
-                            return (
-                                <Link
-                                    key={y.year}
-                                    href={`/administrator/tbl-users/year/${y.year}`}
-                                    className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-6 shadow-sm hover:shadow-md hover:border-primary/40 transition-all group"
-                                >
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400">
-                                            <span className="material-symbols-outlined">calendar_month</span>
-                                        </div>
-                                        <span className="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">
-                                            arrow_forward
-                                        </span>
-                                    </div>
-                                    <p className="text-slate-500 dark:text-text-muted text-sm font-medium">{label}</p>
-                                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
-                                        {Number(y.total).toLocaleString()}
-                                    </h3>
-                                    <p className="text-xs text-slate-400 dark:text-text-muted mt-1">
-                                        {Number(y.total) === 1 ? 'user' : 'users'}
-                                    </p>
-                                </Link>
-                            );
-                        })}
-                    </div>
+                    <DashKpiGrid items={cards} />
                 )}
             </div>
         </Layout>

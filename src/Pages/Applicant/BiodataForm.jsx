@@ -1,6 +1,8 @@
 import { useForm, usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import SearchableSelect from '../../Components/SearchableSelect';
+import TitleCaseInput from '../../Components/TitleCaseInput';
+import { monthName } from '../../lib/formatDate';
 
 const inputClass =
     'form-control';
@@ -17,25 +19,9 @@ const defaultWorkEntry = () => ({
     reason_for_leaving: '',
 });
 
-const monthNames = {
-    1: 'January',
-    2: 'February',
-    3: 'March',
-    4: 'April',
-    5: 'May',
-    6: 'June',
-    7: 'July',
-    8: 'August',
-    9: 'September',
-    10: 'October',
-    11: 'November',
-    12: 'December',
-};
-
 function formatBirthday(day, month) {
     if (!day || !month) return '—';
-    const monthLabel = monthNames[Number(month)] || month;
-    return `${day} ${monthLabel}`;
+    return `${Number(day)} ${monthName(month)}`;
 }
 
 export default function BiodataForm({ biodata = null, applicant = null }) {
@@ -141,7 +127,7 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
                             </div>
                             <div>
                                 <label className={labelClass}>Other names</label>
-                                <input type="text" value={data.other_names} onChange={(e) => setData('other_names', e.target.value)} className={inputClass} placeholder="Other names" />
+                                <TitleCaseInput value={data.other_names} onChange={(val) => setData('other_names', val)} className={inputClass} placeholder="Other names" />
                             </div>
                             <div>
                                 <label className={labelClass}>Marital status</label>
@@ -232,7 +218,7 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className={labelClass}>Current local assembly</label>
-                                    <input type="text" value={data.current_assembly} onChange={(e) => setData('current_assembly', e.target.value)} className={inputClass} placeholder="Assembly name" />
+                                    <TitleCaseInput value={data.current_assembly} onChange={(val) => setData('current_assembly', val)} className={inputClass} placeholder="Assembly name" />
                                 </div>
                                 <div>
                                     <label className={labelClass}>Date joined current assembly</label>
@@ -263,7 +249,7 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
                                 <div key={i} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label className={labelClass}>Referee {i} – Name</label>
-                                        <input type="text" value={data[`referee${i}_name`]} onChange={(e) => setData(`referee${i}_name`, e.target.value)} className={inputClass} placeholder={`Referee ${i} name`} />
+                                        <TitleCaseInput value={data[`referee${i}_name`]} onChange={(val) => setData(`referee${i}_name`, val)} className={inputClass} placeholder={`Referee ${i} name`} />
                                     </div>
                                     <div className="sm:col-span-2">
                                         <label className={labelClass}>Referee {i} – Contact (address, email, phone)</label>
@@ -299,7 +285,7 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div className="sm:col-span-2">
                                             <label className={labelClass}>Organisation (name + address, city/state)</label>
-                                            <input type="text" value={entry.organisation} onChange={(e) => setWorkHistory(index, 'organisation', e.target.value)} className={inputClass} placeholder="Organisation name" />
+                                            <TitleCaseInput value={entry.organisation} onChange={(val) => setWorkHistory(index, 'organisation', val)} className={inputClass} placeholder="Organisation name" />
                                         </div>
                                         <div>
                                             <label className={labelClass}>Address</label>
@@ -307,7 +293,7 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
                                         </div>
                                         <div>
                                             <label className={labelClass}>City / State</label>
-                                            <input type="text" value={entry.city_state} onChange={(e) => setWorkHistory(index, 'city_state', e.target.value)} className={inputClass} placeholder="City, State" />
+                                            <TitleCaseInput value={entry.city_state} onChange={(val) => setWorkHistory(index, 'city_state', val)} className={inputClass} placeholder="City, State" />
                                         </div>
                                         <div>
                                             <label className={labelClass}>Period from (e.g. month/year)</label>
@@ -319,7 +305,7 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
                                         </div>
                                         <div>
                                             <label className={labelClass}>Designation</label>
-                                            <input type="text" value={entry.designation} onChange={(e) => setWorkHistory(index, 'designation', e.target.value)} className={inputClass} placeholder="Job title" />
+                                            <TitleCaseInput value={entry.designation} onChange={(val) => setWorkHistory(index, 'designation', val)} className={inputClass} placeholder="Job title" />
                                         </div>
                                         <div>
                                             <label className={labelClass}>Monthly package</label>

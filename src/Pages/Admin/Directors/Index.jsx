@@ -5,6 +5,7 @@ import EmptyState from '../../../Components/EmptyState';
 import { useState } from 'react';
 import { useCan } from '../../../lib/can';
 import LoginAsButton from '../../../Components/LoginAsButton';
+import ActionButton, { ActionGroup } from '../../../Components/ActionButton';
 
 export default function DirectorsIndex({ directors = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -54,16 +55,18 @@ export default function DirectorsIndex({ directors = [] }) {
                                             )) : <span className="text-text-muted">No departments</span>}
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <Link href={`/administrator/directors/${d.id}`} className="p-2 rounded-lg hover:bg-primary/10 text-primary inline-flex mr-1" title="View"><span className="material-symbols-outlined">visibility</span></Link>
-                                            {can(['directors.impersonate', 'directors.view']) && (
-                                                <LoginAsButton compact href={`/administrator/directors/${d.id}/login-as`} label={`Log in as ${d.name}`} className="mr-1" />
-                                            )}
-                                            {can('directors.update') && (
-                                            <Link href={`/administrator/directors/${d.id}/edit`} className="p-2 rounded-lg hover:bg-blue-500/10 text-blue-500 inline-flex mr-1" title="Edit"><span className="material-symbols-outlined">edit</span></Link>
-                                            )}
-                                            {can('directors.delete') && (
-                                            <button type="button" onClick={() => setDeleteId(d.id)} className="p-2 rounded-lg hover:bg-red-500/10 text-red-500 inline-flex" title="Delete"><span className="material-symbols-outlined">delete</span></button>
-                                            )}
+                                            <ActionGroup>
+                                                <ActionButton action="view" href={`/administrator/directors/${d.id}`} />
+                                                {can(['directors.impersonate', 'directors.view']) && (
+                                                    <LoginAsButton compact href={`/administrator/directors/${d.id}/login-as`} label={`Log in as ${d.name}`} />
+                                                )}
+                                                {can('directors.update') && (
+                                                    <ActionButton action="edit" href={`/administrator/directors/${d.id}/edit`} />
+                                                )}
+                                                {can('directors.delete') && (
+                                                    <ActionButton action="delete" onClick={() => setDeleteId(d.id)} />
+                                                )}
+                                            </ActionGroup>
                                         </td>
                                     </tr>
                                 ))}

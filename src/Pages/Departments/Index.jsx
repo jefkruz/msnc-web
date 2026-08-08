@@ -5,6 +5,8 @@ import Modal from '../../Components/Modal';
 import ConfirmModal from '../../Components/ConfirmModal';
 import EmptyState from '../../Components/EmptyState';
 import SearchableSelect from '../../Components/SearchableSelect';
+import TitleCaseInput from '../../Components/TitleCaseInput';
+import ActionButton, { ActionGroup } from '../../Components/ActionButton';
 
 const COMPANY_OPTIONS = [{ value: 'AMDL', label: 'AMDL' }, { value: 'MSNC', label: 'MSNC' }];
 
@@ -93,8 +95,10 @@ export default function DepartmentsIndex({ regionId, departments = [], regionNam
                                         <td className="px-6 py-4 text-slate-900 dark:text-white font-medium">{d.name}</td>
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{d.company ?? '—'}</td>
                                         <td className="px-6 py-4 text-right">
-                                            <button type="button" onClick={() => openEdit(d)} className="p-2 rounded-lg hover:bg-primary/10 text-primary mr-1"><span className="material-symbols-outlined">edit</span></button>
-                                            <button type="button" onClick={() => setDeleteId(d.id)} className="p-2 rounded-lg hover:bg-red-500/10 text-red-500"><span className="material-symbols-outlined">delete</span></button>
+                                            <ActionGroup>
+                                                <ActionButton action="edit" onClick={() => openEdit(d)} />
+                                                <ActionButton action="delete" onClick={() => setDeleteId(d.id)} />
+                                            </ActionGroup>
                                         </td>
                                     </tr>
                                 ))}
@@ -122,7 +126,7 @@ export default function DepartmentsIndex({ regionId, departments = [], regionNam
                     )}
                     <div>
                         <label className="block text-sm font-medium mb-1">Name</label>
-                        <input type="text" value={data.name} onChange={(e) => setData('name', e.target.value)} className="form-control" required />
+                        <TitleCaseInput value={data.name} onChange={(val) => setData('name', val)} className="form-control" required />
                         {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                     </div>
                     <div>
@@ -157,7 +161,7 @@ export default function DepartmentsIndex({ regionId, departments = [], regionNam
                     )}
                     <div>
                         <label className="block text-sm font-medium mb-1">Name</label>
-                        <input type="text" value={editData.name} onChange={(e) => setEditData('name', e.target.value)} className="form-control" required />
+                        <TitleCaseInput value={editData.name} onChange={(val) => setEditData('name', val)} className="form-control" required />
                         {editErrors.name && <p className="text-red-500 text-xs mt-1">{editErrors.name}</p>}
                     </div>
                     <div>

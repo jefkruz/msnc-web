@@ -1,6 +1,8 @@
 import { Link, usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import EmptyState from '../../Components/EmptyState';
+import { formatDisplayDate } from '../../lib/formatDate';
+import { formatStatusLabel } from '../../lib/formatStatus';
 
 function finalRecBadge(value) {
     const v = (value || '').toLowerCase();
@@ -68,9 +70,7 @@ export default function PanelistRecommendationsIndex({
                                                         {applicantName}
                                                     </p>
                                                     <p className="text-sm text-text-muted">
-                                                        {interview?.date
-                                                            ? new Date(interview.date).toLocaleString()
-                                                            : '—'}
+                                                        {formatDisplayDate(interview?.date)}
                                                         {applicant?.category && ` · ${applicant.category.name}`}
                                                     </p>
                                                 </div>
@@ -146,7 +146,7 @@ export default function PanelistRecommendationsIndex({
                                                                 finalRec.final_recommendation
                                                             )}`}
                                                         >
-                                                            {String(finalRec.final_recommendation).replace(/_/g, ' ')}
+                                                            {formatStatusLabel(finalRec.final_recommendation)}
                                                         </span>
                                                     )}
                                                 </div>

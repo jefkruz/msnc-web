@@ -2,8 +2,11 @@ import { Link, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
 import Layout from '../../Components/Layout';
 import ConfirmModal from '../../Components/ConfirmModal';
+import ActionButton, { ActionGroup } from '../../Components/ActionButton';
 import SearchableSelect from '../../Components/SearchableSelect';
 import { useCan } from '../../lib/can';
+import { formatDate } from '../../lib/formatDate';
+import { formatStatusLabel } from '../../lib/formatStatus';
 
 const MONTH_NAMES = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -18,7 +21,7 @@ function statusBadgeClass(status) {
 function formatInterviewSummary(interviews) {
     if (!Array.isArray(interviews) || interviews.length === 0) return '—';
     const first = interviews[0];
-    const dateStr = first.date ? new Date(first.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+    const dateStr = first.date ? formatDate(first.date, '') : '';
     const status = first.status || 'scheduled';
     const extra = interviews.length > 1 ? ` (+${interviews.length - 1})` : '';
     return dateStr ? `${dateStr} – ${status}${extra}` : (status + extra) || '—';
@@ -156,16 +159,18 @@ export default function Index({ applicants = [], departments = [], search: initi
                                             <td>{applicant.family?.name ?? '—'}</td>
                                             <td>
                                                 <span className={statusBadgeClass(applicant.status ?? 'Applied')}>
-                                                    {applicant.status || 'Applied'}
+                                                    {formatStatusLabel(applicant.status || 'Applied')}
                                                 </span>
                                             </td>
                                             <td>{formatInterviewSummary(applicant.interviews)}</td>
                                             <td className="admin-table-actions">
-                                                <Link href={`/authorised/view/${applicant.id}`} className="btn btn-outline-primary btn-sm" title="View">View</Link>
-                                                <Link href={`/administrator/applicants/edit/${applicant.id}`} className="btn btn-secondary btn-sm" title="Edit">Edit</Link>
-                                                {can('applicants.delete') && (
-                                                <button type="button" onClick={() => setDeleteId(applicant.id)} className="btn btn-outline-danger btn-sm" title="Delete">Delete</button>
-                                                )}
+                                                <ActionGroup>
+                                                    <ActionButton action="view" href={`/authorised/view/${applicant.id}`} />
+                                                    <ActionButton action="edit" href={`/administrator/applicants/edit/${applicant.id}`} />
+                                                    {can('applicants.delete') && (
+                                                        <ActionButton action="delete" onClick={() => setDeleteId(applicant.id)} />
+                                                    )}
+                                                </ActionGroup>
                                             </td>
                                         </tr>
                                     ))

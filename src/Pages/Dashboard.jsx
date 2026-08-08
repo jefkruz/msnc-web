@@ -1,5 +1,6 @@
 import { usePage, Link } from '@inertiajs/react';
 import Layout from '../Components/Layout';
+import DashKpiGrid from '../Components/DashKpiGrid';
 import { AreaChart, StatBars } from '../Components/Charts';
 
 export default function Dashboard({
@@ -37,20 +38,7 @@ export default function Dashboard({
                     </p>
                 </div>
 
-                <div className="dash-kpi-grid dash-kpi-grid--3">
-                    {kpis.map((kpi) => (
-                        <Link key={kpi.label} href={kpi.href} className="dash-kpi">
-                            <span className="dash-kpi__icon" aria-hidden="true">
-                                <span className="material-symbols-outlined">{kpi.icon}</span>
-                            </span>
-                            <div className="dash-kpi__content">
-                                <p className="dash-kpi__label">{kpi.label}</p>
-                                <p className="dash-kpi__value">{kpi.value ?? 0}</p>
-                                <p className="dash-kpi__hint">{kpi.hint}</p>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
+                <DashKpiGrid items={kpis} />
 
                 {chartData && (
                     <div className="dash-chart-grid dash-chart-grid--2">

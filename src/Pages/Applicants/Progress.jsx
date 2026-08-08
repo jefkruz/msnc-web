@@ -3,20 +3,17 @@ import { useForm, usePage, Link } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import Modal from '../../Components/Modal';
 import SearchableSelect from '../../Components/SearchableSelect';
+import { formatDate } from '../../lib/formatDate';
+import { formatStatusLabel } from '../../lib/formatStatus';
 
 const POSTING_DECLINED_ACCEPTED_NAME = 'Posting declined or Posting accepted';
 
 function statusBadge(status) {
     const s = (status || 'pending').toLowerCase();
-    if (s === 'completed') return { label: 'Completed', class: 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' };
-    if (s === 'in_progress') return { label: 'In Progress', class: 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30' };
-    return { label: 'Pending', class: 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30' };
-}
-
-function formatDate(val) {
-    if (!val) return null;
-    const d = new Date(val);
-    return isNaN(d.getTime()) ? null : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const label = formatStatusLabel(status || 'pending');
+    if (s === 'completed') return { label, class: 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' };
+    if (s === 'in_progress') return { label, class: 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30' };
+    return { label, class: 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30' };
 }
 
 function dateInputValue(val) {
@@ -100,8 +97,8 @@ export default function ApplicantsProgress({ applicant, progressSteps = [] }) {
                                     const pivot = applicantProgressMap[progress.id] || {};
                                     const status = pivot.status || 'pending';
                                     const badge = statusBadge(status);
-                                    const startedAt = formatDate(pivot.started_at);
-                                    const completedAt = formatDate(pivot.completed_at);
+                                    const startedAt = formatDate(pivot.started_at, null);
+                                    const completedAt = formatDate(pivot.completed_at, null);
                                     const isLast = index === steps.length - 1;
 
                                     return (
@@ -131,7 +128,7 @@ export default function ApplicantsProgress({ applicant, progressSteps = [] }) {
                                                 <div className="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden">
                                                     <div className="px-4 py-3 flex items-center justify-between flex-wrap gap-2 border-b border-slate-200 dark:border-border-dark">
                                                         <h4 className="font-semibold text-slate-900 dark:text-white">{progress.name}</h4>
-                                                        <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold border ${badge.class}`}>
+                                                        <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide uppercase border ${badge.class}`}>
                                                             {badge.label}
                                                         </span>
                                                     </div>
@@ -199,7 +196,7 @@ export default function ApplicantsProgress({ applicant, progressSteps = [] }) {
                                                 <td className="px-6 py-3 text-center text-slate-600 dark:text-slate-400 tabular-nums">{index + 1}</td>
                                                 <td className="px-6 py-3 font-medium text-slate-900 dark:text-white">{progress.name}</td>
                                                 <td className="px-6 py-3">
-                                                    <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold border ${badge.class}`}>
+                                                    <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide uppercase border ${badge.class}`}>
                                                         {badge.label}
                                                     </span>
                                                 </td>

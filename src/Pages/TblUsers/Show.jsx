@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
+import { formatDisplayDate, monthName } from '../../lib/formatDate';
 
 function hasValue(v) {
     if (v === null || v === undefined) return false;
@@ -17,9 +18,12 @@ function formatGender(g) {
 
 function formatDob(user) {
     if (user?.dob_day && user?.dob_month && user?.dob_year) {
-        return `${user.dob_day} ${user.dob_month} ${user.dob_year}`;
+        return `${Number(user.dob_day)} ${monthName(user.dob_month)} ${user.dob_year}`;
     }
-    return user?.dob || null;
+    if (user?.dob_day && user?.dob_month) {
+        return `${Number(user.dob_day)} ${monthName(user.dob_month)}`;
+    }
+    return formatDisplayDate(user?.dob, null) || user?.dob || null;
 }
 
 function initials(user) {
@@ -254,7 +258,7 @@ export default function TblUsersShow({ user }) {
                             <Field label="Supervisor" value={user.supervisor} />
                             <Field label="Account" value={user.acct} />
                             <Field label="App status" value={user.app_status} />
-                            <Field label="Date created" value={user.dateCreated} />
+                            <Field label="Date created" value={formatDisplayDate(user.dateCreated, user.dateCreated || null)} />
                             <div className="sm:col-span-2">
                                 <Field label="Application purpose" value={user.applicationPurpose} />
                             </div>
@@ -273,8 +277,8 @@ export default function TblUsersShow({ user }) {
                             <Field label="Office year" value={user.min_office_yr} />
                             <Field label="Membership year" value={user.min_mem_yr} />
                             <Field label="Foundation year" value={user.foundation_year} />
-                            <Field label="Born again" value={user.datebornagain} />
-                            <Field label="Baptized" value={user.datebaptized} />
+                            <Field label="Born again" value={formatDisplayDate(user.datebornagain, user.datebornagain || null)} />
+                            <Field label="Baptized" value={formatDisplayDate(user.datebaptized, user.datebaptized || null)} />
                             <div className="sm:col-span-2">
                                 <Field label="Partnership arms" value={user.partnershipArms} />
                             </div>

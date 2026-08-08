@@ -3,7 +3,10 @@ import { usePage, Link, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import Modal from '../../Components/Modal';
 import ConfirmModal from '../../Components/ConfirmModal';
+import ActionButton from '../../Components/ActionButton';
 import { useCan } from '../../lib/can';
+import { formatDate } from '../../lib/formatDate';
+import { formatStatusLabel } from '../../lib/formatStatus';
 
 const STATUS_LABELS = {
     in_progress: 'In progress',
@@ -13,11 +16,6 @@ const STATUS_LABELS = {
     extended: 'Extended',
 };
 
-function formatDate(d) {
-    if (!d) return '—';
-    const date = typeof d === 'string' ? new Date(d) : d;
-    return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-}
 
 export default function PersonnelInWaitingShow({ person, departments = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -80,7 +78,7 @@ export default function PersonnelInWaitingShow({ person, departments = [] }) {
                             <span className="material-symbols-outlined text-lg">edit</span> Edit
                         </Link>
                         {can('personnel-in-waiting.delete') && id && (
-                            <button type="button" className="btn btn-danger" onClick={() => setConfirmDelete(true)}>Delete</button>
+                            <ActionButton action="delete" size="" variant="danger" onClick={() => setConfirmDelete(true)} />
                         )}
                         {canAct && (
                             <>
@@ -114,7 +112,7 @@ export default function PersonnelInWaitingShow({ person, departments = [] }) {
                     <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark">
                         <h2 className="text-lg font-bold text-slate-900 dark:text-white">{name || '—'}</h2>
                         <p className="text-sm text-slate-500 dark:text-text-muted mt-1">
-                            Status: <span className="font-medium text-slate-700 dark:text-slate-300">{STATUS_LABELS[person?.status] || person?.status}</span>
+                            Status: <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide bg-slate-100 text-slate-700 dark:bg-white/10 dark:text-slate-200">{formatStatusLabel(person?.status, STATUS_LABELS[person?.status] || '—')}</span>
                         </p>
                     </div>
                     <dl className="px-6 py-4 space-y-3">

@@ -1,5 +1,8 @@
 import { Link, usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
+import ActionButton from '../../Components/ActionButton';
+import { formatDisplayDate } from '../../lib/formatDate';
+import { formatStatusLabel } from '../../lib/formatStatus';
 
 function statusClass(s) {
     const v = (s || '').toLowerCase();
@@ -58,21 +61,15 @@ export default function SdmInterviews({ interviews = [] }) {
                                             {Array.isArray(inv.panelist_names) && inv.panelist_names.length > 0 ? inv.panelist_names.join(', ') : '—'}
                                         </td>
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">
-                                            {inv.date ? new Date(inv.date).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}
+                                            {formatDisplayDate(inv.date)}
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase ${statusClass(inv.status)}`}>
-                                                {inv.status ?? '—'}
+                                                {formatStatusLabel(inv.status)}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <Link
-                                                href={`/authorised/manage/${inv.id}`}
-                                                className="p-2 rounded-lg hover:bg-primary/10 text-primary inline-flex"
-                                                title="Manage"
-                                            >
-                                                <span className="material-symbols-outlined">visibility</span>
-                                            </Link>
+                                            <ActionButton action="manage" href={`/authorised/manage/${inv.id}`} />
                                         </td>
                                     </tr>
                                 ))}

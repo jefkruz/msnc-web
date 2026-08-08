@@ -3,6 +3,7 @@ import { useForm, usePage, router } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import SearchableSelect from '../../Components/SearchableSelect';
+import TitleCaseInput from '../../Components/TitleCaseInput';
 import { TITLE_OPTIONS } from '../../lib/selectOptions';
 
 const inputClass =
@@ -91,10 +92,9 @@ export default function Create({ families = [], departments = [], groups = [], n
                             </div>
                             <div>
                                 <label className={labelClass}>First name <span className="text-red-500">*</span></label>
-                                <input
-                                    type="text"
+                                <TitleCaseInput
                                     value={data.first_name}
-                                    onChange={(e) => setData('first_name', e.target.value)}
+                                    onChange={(val) => setData('first_name', val)}
                                     placeholder="e.g. John"
                                     className={inputClass}
                                     required
@@ -103,10 +103,9 @@ export default function Create({ families = [], departments = [], groups = [], n
                             </div>
                             <div>
                                 <label className={labelClass}>Last name <span className="text-red-500">*</span></label>
-                                <input
-                                    type="text"
+                                <TitleCaseInput
                                     value={data.last_name}
-                                    onChange={(e) => setData('last_name', e.target.value)}
+                                    onChange={(val) => setData('last_name', val)}
                                     placeholder="e.g. Doe"
                                     className={inputClass}
                                     required

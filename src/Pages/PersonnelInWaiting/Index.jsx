@@ -2,23 +2,21 @@ import { Link, usePage, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import ConfirmModal from '../../Components/ConfirmModal';
 import EmptyState from '../../Components/EmptyState';
+import ActionButton, { ActionGroup } from '../../Components/ActionButton';
 import SearchableSelect from '../../Components/SearchableSelect';
 import { useRef, useState } from 'react';
 import { useCan } from '../../lib/can';
+import { formatDate } from '../../lib/formatDate';
+import { formatStatusLabel } from '../../lib/formatStatus';
 
 const STATUS_LABELS = {
-    in_progress: { label: 'In progress', class: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' },
-    due: { label: 'Due', class: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' },
-    completed: { label: 'Completed', class: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' },
-    rejected: { label: 'Rejected', class: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' },
-    extended: { label: 'Extended', class: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' },
+    in_progress: { label: formatStatusLabel('in_progress'), class: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' },
+    due: { label: formatStatusLabel('due'), class: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' },
+    completed: { label: formatStatusLabel('completed'), class: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' },
+    rejected: { label: formatStatusLabel('rejected'), class: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' },
+    extended: { label: formatStatusLabel('extended'), class: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' },
 };
 
-function formatDate(d) {
-    if (!d) return '—';
-    const date = typeof d === 'string' ? new Date(d) : d;
-    return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-}
 
 export default function PersonnelInWaitingIndex({ personnel = [], departments = [], search: initialSearch = '', status: initialStatus = '' }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -145,28 +143,19 @@ export default function PersonnelInWaitingIndex({ personnel = [], departments = 
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className={`inline-flex px-2 py-1 rounded text-xs font-medium ${statusStyle.class}`}>
-                                                    {statusStyle.label}
+                                                    {formatStatusLabel(p.status, statusStyle.label)}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-right">
-                                                <Link href={`${base}/${p.id}`} className="p-2 rounded-lg hover:bg-primary/10 text-primary inline-flex mr-1" title="View">
-                                                    <span className="material-symbols-outlined">visibility</span>
-                                                </Link>
-                                                {can('personnel-in-waiting.update') && (
-                                                <Link href={`${base}/${p.id}/edit`} className="p-2 rounded-lg hover:bg-blue-500/10 text-blue-500 inline-flex mr-1" title="Edit">
-                                                    <span className="material-symbols-outlined">edit</span>
-                                                </Link>
-                                                )}
-                                                {can('personnel-in-waiting.delete') && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setDeleteId(p.id)}
-                                                    className="p-2 rounded-lg hover:bg-red-500/10 text-red-500 inline-flex"
-                                                    title="Delete"
-                                                >
-                                                    <span className="material-symbols-outlined">delete</span>
-                                                </button>
-                                                )}
+                                                <ActionGroup>
+                                                    <ActionButton action="view" href={`${base}/${p.id}`} />
+                                                    {can('personnel-in-waiting.update') && (
+                                                        <ActionButton action="edit" href={`${base}/${p.id}/edit`} />
+                                                    )}
+                                                    {can('personnel-in-waiting.delete') && (
+                                                        <ActionButton action="delete" onClick={() => setDeleteId(p.id)} />
+                                                    )}
+                                                </ActionGroup>
                                             </td>
                                         </tr>
                                     );

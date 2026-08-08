@@ -254,12 +254,13 @@ label,
   gap: 0.25rem;
   font-weight: 600;
   font-size: 0.72rem;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
   line-height: 1.2;
   padding: 0.38em 0.78em;
   border-radius: 999px;
   border: 1px solid transparent;
   white-space: nowrap;
+  text-transform: uppercase;
 }
 
 .d-flex { display: flex; }
@@ -326,6 +327,26 @@ label,
 .admin-table-actions {
   text-align: right;
   white-space: nowrap;
+}
+
+.action-btn,
+.btn.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.action-btn .material-symbols-outlined {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.action-btn-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
 }
 
 .dash-kpi-grid--3 {
