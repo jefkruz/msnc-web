@@ -9,7 +9,7 @@ import {
   forwardRef,
 } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import api, { apiPath, ensureCsrf } from './api';
+import api, { apiPath, ensureCsrf, toSpaHref } from './api';
 
 const PageContext = createContext({
   props: {},
@@ -44,19 +44,20 @@ export const Link = forwardRef(function Link(
   { href = '#', children, className, onClick, ...rest },
   ref
 ) {
+  const to = typeof href === 'string' ? toSpaHref(href) : href;
   const isExternal =
-    typeof href === 'string' && /^(https?:|mailto:|tel:)/i.test(href);
+    typeof to === 'string' && /^(https?:|mailto:|tel:)/i.test(to);
 
-  if (isExternal || href === '#') {
+  if (isExternal || to === '#') {
     return (
-      <a ref={ref} href={href} className={className} onClick={onClick} {...rest}>
+      <a ref={ref} href={to} className={className} onClick={onClick} {...rest}>
         {children}
       </a>
     );
   }
 
   return (
-    <RouterLink ref={ref} to={href} className={className} onClick={onClick} {...rest}>
+    <RouterLink ref={ref} to={to} className={className} onClick={onClick} {...rest}>
       {children}
     </RouterLink>
   );
@@ -64,7 +65,7 @@ export const Link = forwardRef(function Link(
 
 function handleRedirect(data, navigate) {
   if (data?.redirect) {
-    navigate(data.redirect);
+    navigate(toSpaHref(data.redirect));
     return true;
   }
   return false;
@@ -81,7 +82,7 @@ async function visit(url, options = {}) {
     _navigate,
   } = options;
 
-  const path = apiPath(url);
+  const path = apiPath(toSpaHref(url));
 
   try {
     let response;

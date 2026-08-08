@@ -1,4 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
+import { toSpaHref } from '../lib/api';
 
 const iconMap = {
     'solar:home-smile-angle-outline': 'dashboard',
@@ -22,6 +23,7 @@ function getMaterialIcon(icon) {
 
 const routeToPath = {
     admin: '/administrator',
+    'admin.activity-log': '/administrator/activity-log',
     'applicants.index': '/administrator/applicants',
     'interviews.index': '/administrator/interviews',
     'administration': '/administrator/menu',
@@ -38,8 +40,8 @@ const routeToPath = {
 
 function getHref(item) {
     const href = item?.href;
-    if (href && href !== '#') return href;
-    return routeToPath[item?.route] || href || '#';
+    if (href && href !== '#') return toSpaHref(href);
+    return routeToPath[item?.route] || '#';
 }
 
 // First 4 items only; 5th slot is "Menu" (opens side menu) for admin

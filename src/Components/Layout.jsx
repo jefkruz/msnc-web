@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import ImpersonationBanner from './ImpersonationBanner';
 
 export default function Layout({ auth, authRole, menu, appName, children, pageTitle }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -36,6 +37,7 @@ export default function Layout({ auth, authRole, menu, appName, children, pageTi
             />
 
             <div className="app-main">
+                <ImpersonationBanner />
                 <Header
                     pageTitle={pageTitle}
                     onOpenSidebar={() => setSidebarOpen(true)}

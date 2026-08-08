@@ -9,7 +9,7 @@ const cards = [
     { label: 'Ranks', valueKey: 'ranks', href: '/administrator/ranks', icon: 'list', color: 'bg-blue-500' },
     { label: 'Interview Questions', valueKey: 'questions', href: '/administrator/questions', icon: 'help', color: 'bg-primary' },
     { label: 'Posting Recommendations', valueKey: 'postingRecommendations', href: '/administrator/posting-recommendations', icon: 'recommend', color: 'bg-amber-500' },
-    { label: 'Website Settings', valueKey: 'settings', href: '/administrator/settings', icon: 'settings', color: 'bg-indigo-500', hideCount: true, description: 'Homepage content, logo & favicon' },
+    { label: 'Settings', valueKey: 'settings', href: '/administrator/settings', icon: 'settings', color: 'bg-indigo-500', hideCount: true, description: 'Site branding, content & KingsChat notifications' },
     { label: 'Roles & Permissions', valueKey: 'roles', href: '/administrator/roles', icon: 'admin_panel_settings', color: 'bg-rose-500', hideCount: true, description: 'Create roles and assign permissions' },
 ];
 

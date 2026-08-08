@@ -99,6 +99,34 @@ export function apiPath(path = '/') {
   return path.startsWith('/') ? path : `/${path}`;
 }
 
+function stripApiPrefix(path = '') {
+  if (path === '/api') return '/';
+  if (path.startsWith('/api/')) return path.slice(4) || '/';
+  return path;
+}
+
+/** SPA paths must not include the Laravel `/api` prefix. */
+export function toSpaHref(href = '') {
+  if (!href || href === '#') return href;
+  if (/^(mailto:|tel:)/i.test(href)) return href;
+
+  try {
+    if (/^https?:\/\//i.test(href)) {
+      const u = new URL(href);
+      const next = stripApiPrefix(u.pathname) + u.search + u.hash;
+      const apiHost = API_URL ? new URL(API_URL, window.location.origin).host : '';
+      if (!apiHost || u.host === window.location.host || u.host === apiHost) {
+        return next || '/';
+      }
+      return href;
+    }
+  } catch {
+    // fall through
+  }
+
+  return stripApiPrefix(href);
+}
+
 export function storageUrl(path) {
   if (!path) return null;
   if (path.startsWith('http://') || path.startsWith('https://')) return path;

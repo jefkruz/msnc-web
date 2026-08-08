@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
 import Alert from '../../../Components/Alert';
@@ -30,8 +31,12 @@ function Field({ label, className = '', children }) {
     );
 }
 
-export default function SettingsIndex({ branding = {}, home = {}, settingsReady = true }) {
+export default function SettingsIndex({ branding = {}, home = {}, kc = {}, settingsReady = true }) {
     const { auth, authRole, menu, appName, flash } = usePage().props;
+    const [tab, setTab] = useState(() => {
+        if (typeof window === 'undefined') return 'site';
+        return new URLSearchParams(window.location.search).get('tab') === 'kc' ? 'kc' : 'site';
+    });
 
     const { data, setData, post, processing, errors } = useForm({
         site_name: branding.site_name ?? '',
@@ -79,34 +84,177 @@ export default function SettingsIndex({ branding = {}, home = {}, settingsReady 
         });
     };
 
+    const kcForm = useForm({
+        enabled: !!kc.enabled,
+        access_token: '',
+        events: {
+            interview_scheduled: kc.events?.interview_scheduled ?? true,
+            interview_updated: kc.events?.interview_updated ?? true,
+            documents_confirmed: kc.events?.documents_confirmed ?? true,
+            progress_updated: kc.events?.progress_updated ?? false,
+        },
+        templates: {
+            interview_scheduled: kc.templates?.interview_scheduled ?? '',
+            interview_updated: kc.templates?.interview_updated ?? '',
+            documents_confirmed: kc.templates?.documents_confirmed ?? '',
+            progress_updated: kc.templates?.progress_updated ?? '',
+        },
+    });
+
+    const submitKc = (e) => {
+        e.preventDefault();
+        kcForm.post('/administrator/settings/kc', { preserveScroll: true });
+    };
+
+    const switchTab = (next) => {
+        setTab(next);
+        if (typeof window !== 'undefined') {
+            const url = new URL(window.location.href);
+            if (next === 'kc') url.searchParams.set('tab', 'kc');
+            else url.searchParams.delete('tab');
+            window.history.replaceState({}, '', url);
+        }
+    };
+
     return (
-        <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Website Settings">
-            <form onSubmit={submit} className="space-y-6 max-w-5xl">
+        <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Settings">
+            <div className="max-w-5xl space-y-6">
+                <div>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Settings</h2>
+                    <p className="text-sm text-slate-500 dark:text-text-muted mt-1">
+                        Manage site branding, public content, and KingsChat applicant notifications.
+                    </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2 border-b border-slate-200 dark:border-border-dark pb-px">
+                    <button
+                        type="button"
+                        onClick={() => switchTab('site')}
+                        className={`px-4 py-2 text-sm font-semibold rounded-t-lg ${
+                            tab === 'site'
+                                ? 'bg-white dark:bg-surface-dark text-primary border border-b-white dark:border-b-surface-dark border-slate-200 dark:border-border-dark -mb-px'
+                                : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
+                        }`}
+                    >
+                        Site settings
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => switchTab('kc')}
+                        className={`px-4 py-2 text-sm font-semibold rounded-t-lg ${
+                            tab === 'kc'
+                                ? 'bg-white dark:bg-surface-dark text-primary border border-b-white dark:border-b-surface-dark border-slate-200 dark:border-border-dark -mb-px'
+                                : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'
+                        }`}
+                    >
+                        KingsChat notifications
+                    </button>
+                </div>
+
                 {flash?.message && <Alert type="success" message={flash.message} />}
                 {!settingsReady && (
                     <Alert
                         type="error"
-                        message="Website settings storage is not set up on this server. Run the portal_settings migration, then refresh this page."
+                        message="Settings storage is not set up on this server. Run the portal_settings migration, then refresh this page."
                     />
                 )}
+
+            {tab === 'kc' ? (
+                <form onSubmit={submitKc} className="space-y-6">
+                    {(kcForm.errors.settings || errors.settings) && (
+                        <Alert type="error" message={kcForm.errors.settings || errors.settings} />
+                    )}
+                    <div className="flex justify-end">
+                        <button
+                            type="submit"
+                            disabled={kcForm.processing}
+                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white font-semibold text-sm hover:bg-primary/90 disabled:opacity-60"
+                        >
+                            <span className="material-symbols-outlined text-lg">save</span>
+                            {kcForm.processing ? 'Saving…' : 'Save notifications'}
+                        </button>
+                    </div>
+                    <Section title="Delivery" icon="chat">
+                        <Field label="Send KingsChat messages" className="md:col-span-2">
+                            <label className="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                                <input
+                                    type="checkbox"
+                                    checked={!!kcForm.data.enabled}
+                                    onChange={(e) => kcForm.setData('enabled', e.target.checked)}
+                                />
+                                Enable applicant notifications over KingsChat
+                            </label>
+                        </Field>
+                        <Field label="KingsChat access token" className="md:col-span-2">
+                            <input
+                                type="password"
+                                autoComplete="off"
+                                value={kcForm.data.access_token}
+                                onChange={(e) => kcForm.setData('access_token', e.target.value)}
+                                className={inputClass}
+                                placeholder={kc.has_token ? `Saved token ${kc.token_hint || ''} — leave blank to keep` : 'Paste a KingsChat access token'}
+                            />
+                            <p className="text-xs text-slate-500 dark:text-text-muted mt-1">
+                                Used to send messages as your KingsChat app/user. Stored encrypted. Never share this token.
+                            </p>
+                        </Field>
+                    </Section>
+                    <Section title="Events" icon="notifications">
+                        {[
+                            ['interview_scheduled', 'Interview scheduled'],
+                            ['interview_updated', 'Interview rescheduled'],
+                            ['documents_confirmed', 'Documents confirmed'],
+                            ['progress_updated', 'Application progress updated'],
+                        ].map(([key, label]) => (
+                            <Field key={key} label={label} className="md:col-span-2">
+                                <label className="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                                    <input
+                                        type="checkbox"
+                                        checked={!!kcForm.data.events[key]}
+                                        onChange={(e) =>
+                                            kcForm.setData('events', { ...kcForm.data.events, [key]: e.target.checked })
+                                        }
+                                    />
+                                    Notify the applicant
+                                </label>
+                            </Field>
+                        ))}
+                    </Section>
+                    <Section title="Message templates" icon="edit_note">
+                        <p className="md:col-span-2 text-xs text-slate-500 dark:text-text-muted -mt-1">
+                            Placeholders: {'{name}'}, {'{site}'}, {'{date}'}, {'{time}'}, {'{step}'}, {'{status}'}
+                        </p>
+                        {[
+                            ['interview_scheduled', 'Interview scheduled'],
+                            ['interview_updated', 'Interview rescheduled'],
+                            ['documents_confirmed', 'Documents confirmed'],
+                            ['progress_updated', 'Progress updated'],
+                        ].map(([key, label]) => (
+                            <Field key={key} label={label} className="md:col-span-2">
+                                <textarea
+                                    value={kcForm.data.templates[key]}
+                                    onChange={(e) =>
+                                        kcForm.setData('templates', { ...kcForm.data.templates, [key]: e.target.value })
+                                    }
+                                    className={textareaClass}
+                                    rows={3}
+                                />
+                            </Field>
+                        ))}
+                    </Section>
+                </form>
+            ) : (
+            <form onSubmit={submit} className="space-y-6">
                 {errors.settings && <Alert type="error" message={errors.settings} />}
 
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                            Website Settings
-                        </h2>
-                        <p className="text-sm text-slate-500 dark:text-text-muted mt-1">
-                            Manage homepage content, logo, favicon, and hero image for the public site.
-                        </p>
-                    </div>
+                <div className="flex justify-end">
                     <button
                         type="submit"
                         disabled={processing}
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white font-semibold text-sm hover:bg-primary/90 disabled:opacity-60"
                     >
                         <span className="material-symbols-outlined text-lg">save</span>
-                        {processing ? 'Saving…' : 'Save changes'}
+                        {processing ? 'Saving…' : 'Save site settings'}
                     </button>
                 </div>
 
@@ -434,10 +582,12 @@ export default function SettingsIndex({ branding = {}, home = {}, settingsReady 
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white font-semibold text-sm hover:bg-primary/90 disabled:opacity-60"
                     >
                         <span className="material-symbols-outlined text-lg">save</span>
-                        {processing ? 'Saving…' : 'Save changes'}
+                        {processing ? 'Saving…' : 'Save site settings'}
                     </button>
                 </div>
             </form>
+            )}
+            </div>
         </Layout>
     );
 }

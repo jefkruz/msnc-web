@@ -1,8 +1,11 @@
 import { Link, usePage } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
+import LoginAsButton from '../../../Components/LoginAsButton';
+import { useCan } from '../../../lib/can';
 
 export default function SdmsShow({ sdm }) {
     const { auth, authRole, menu, appName } = usePage().props;
+    const { can } = useCan();
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle={sdm?.name ?? 'SDM'}>
             <div className="max-w-xl mx-auto space-y-6">
@@ -16,7 +19,10 @@ export default function SdmsShow({ sdm }) {
                         <div><dt className="text-slate-500 dark:text-text-muted">Username</dt><dd className="text-slate-900 dark:text-white font-medium">{sdm?.username ?? '—'}</dd></div>
                         <div><dt className="text-slate-500 dark:text-text-muted">Department</dt><dd className="text-slate-900 dark:text-white font-medium">{sdm?.department?.name ?? '—'}</dd></div>
                     </dl>
-                    <div className="mt-6">
+                    <div className="mt-6 flex flex-wrap gap-3">
+                        {can(['sdms.impersonate', 'sdms.view']) && sdm?.id && (
+                            <LoginAsButton href={`/administrator/sdms/${sdm.id}/login-as`} label={`Log in as ${sdm.name || 'SDM'}`} />
+                        )}
                         <Link href={`/administrator/sdms/${sdm?.id}/edit`} className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-medium text-sm hover:bg-primary/90">
                             <span className="material-symbols-outlined text-lg">edit</span>
                             Edit SDM

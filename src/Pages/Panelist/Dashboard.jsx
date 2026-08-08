@@ -13,14 +13,24 @@ export default function PanelistDashboard({ stats = {} }) {
                 </div>
                 <div className="dash-kpi-grid">
                     <Link href="/panelist/interviews" className="dash-kpi">
-                        <p className="dash-kpi__label">My interviews</p>
-                        <p className="dash-kpi__value">{stats.interviews ?? 0}</p>
-                        <p className="dash-kpi__hint">Assigned panels</p>
+                        <span className="dash-kpi__icon" aria-hidden="true">
+                            <span className="material-symbols-outlined">event_available</span>
+                        </span>
+                        <div className="dash-kpi__content">
+                            <p className="dash-kpi__label">My interviews</p>
+                            <p className="dash-kpi__value">{stats.interviews ?? 0}</p>
+                            <p className="dash-kpi__hint">Assigned panels</p>
+                        </div>
                     </Link>
                     <Link href="/panelist/recommendations" className="dash-kpi">
-                        <p className="dash-kpi__label">Recommendations</p>
-                        <p className="dash-kpi__value">{stats.recommendations ?? 0}</p>
-                        <p className="dash-kpi__hint">Submitted reviews</p>
+                        <span className="dash-kpi__icon" aria-hidden="true">
+                            <span className="material-symbols-outlined">rate_review</span>
+                        </span>
+                        <div className="dash-kpi__content">
+                            <p className="dash-kpi__label">Recommendations</p>
+                            <p className="dash-kpi__value">{stats.recommendations ?? 0}</p>
+                            <p className="dash-kpi__hint">Submitted reviews</p>
+                        </div>
                     </Link>
                 </div>
             </div>

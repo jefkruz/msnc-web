@@ -4,6 +4,7 @@ import ConfirmModal from '../../../Components/ConfirmModal';
 import EmptyState from '../../../Components/EmptyState';
 import { useState } from 'react';
 import { useCan } from '../../../lib/can';
+import LoginAsButton from '../../../Components/LoginAsButton';
 
 export default function DirectorsIndex({ directors = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -54,6 +55,9 @@ export default function DirectorsIndex({ directors = [] }) {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <Link href={`/administrator/directors/${d.id}`} className="p-2 rounded-lg hover:bg-primary/10 text-primary inline-flex mr-1" title="View"><span className="material-symbols-outlined">visibility</span></Link>
+                                            {can(['directors.impersonate', 'directors.view']) && (
+                                                <LoginAsButton compact href={`/administrator/directors/${d.id}/login-as`} label={`Log in as ${d.name}`} className="mr-1" />
+                                            )}
                                             {can('directors.update') && (
                                             <Link href={`/administrator/directors/${d.id}/edit`} className="p-2 rounded-lg hover:bg-blue-500/10 text-blue-500 inline-flex mr-1" title="Edit"><span className="material-symbols-outlined">edit</span></Link>
                                             )}

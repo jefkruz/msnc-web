@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
+import { toSpaHref } from '../lib/api';
 import { toggleTheme, getTheme } from '../theme';
 
 const iconMap = {
@@ -14,6 +15,7 @@ const iconMap = {
     'fa fa-question-circle': 'help',
     'fa fa-users-rectangle': 'group',
     'fa fa-clock': 'schedule',
+    'fa fa-history': 'history',
     'fa fa-power-off': 'logout',
     'solar:case-outline': 'work',
     'solar:users-group-rounded-outline': 'group',
@@ -41,15 +43,30 @@ const routeToPath = {
     'roles.index': '/administrator/roles',
     administration: '/administrator/menu',
     admin: '/administrator',
+    'admin.activity-log': '/administrator/activity-log',
     'applicants.index': '/administrator/applicants',
     'interviews.index': '/administrator/interviews',
     'personnel-in-waiting.index': '/authorised/personnel-in-waiting',
+    'admin.analytics': '/administrator/analytics',
+    'tbl-users.index': '/administrator/tbl-users',
+    'settings.edit': '/administrator/settings',
+    'settings.kc': '/administrator/settings?tab=kc',
+    'posting-recommendations.index': '/administrator/posting-recommendations',
+    sdmHome: '/sdm',
+    'sdm.activity-log': '/sdm/activity-log',
+    'sdm.applicants': '/sdm/applicants',
+    'sdm.interviews': '/sdm/interviews',
+    'sdm.analytics': '/sdm/analytics',
+    adminpanelistuser: '/panelist',
+    'panelist.interviews.index': '/panelist/interviews',
+    'panelist.recommendations.index': '/panelist/recommendations',
+    'director.index': '/director',
 };
 
 function getHref(item) {
     const href = item?.href;
-    if (href && href !== '#') return href;
-    return routeToPath[item?.route] || href || '#';
+    if (href && href !== '#') return toSpaHref(href);
+    return routeToPath[item?.route] || '#';
 }
 
 function initials(name = '') {

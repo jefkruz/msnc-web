@@ -240,7 +240,11 @@
 
 .app-nav-link.is-active {
   background: rgba(255, 255, 255, 0.15);
-  color: var(--mca-gold);
+  color: #fff;
+}
+
+.app-nav-link.is-active .material-symbols-outlined {
+  color: #fff;
 }
 
 .app-nav-link.is-nested {
@@ -283,8 +287,8 @@
   color: #fff;
 }
 
-.app-nav-group__btn.is-active {
-  color: var(--mca-gold);
+.app-nav-group__btn.is-active .material-symbols-outlined {
+  color: #fff;
 }
 
 .app-nav-group__chevron {
@@ -400,6 +404,40 @@
 
 .app-alerts {
   padding: 0.85rem 1.25rem 0;
+}
+
+.impersonation-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem 1rem;
+  padding: 0.65rem 1.25rem;
+  background: #136dec;
+  color: #fff;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.impersonation-banner__text strong {
+  font-weight: 700;
+}
+
+.impersonation-banner__btn {
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.impersonation-banner__btn:hover {
+  background: #fff;
+  color: #136dec;
 }
 
 .app-content {
@@ -1299,12 +1337,14 @@ html.dark .app-content .dataTables_wrapper .dataTables_paginate .paginate_button
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .dash-page__header h2 {
   margin: 0;
   font-family: var(--font-headline);
-  font-size: 1.85rem;
+  font-size: clamp(1.35rem, 4vw, 1.85rem);
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--mca-on-surface);
@@ -1320,6 +1360,17 @@ html.dark .app-content .dataTables_wrapper .dataTables_paginate .paginate_button
   display: grid;
   gap: 0.75rem;
   grid-template-columns: 1fr;
+}
+
+@media (max-width: 575.98px) {
+  .dash-page {
+    gap: 1.25rem;
+  }
+
+  .dash-chart-svg {
+    max-height: 180px;
+    aspect-ratio: 16 / 9;
+  }
 }
 
 @media (min-width: 576px) {
@@ -1342,7 +1393,31 @@ html.dark .app-content .dataTables_wrapper .dataTables_paginate .paginate_button
   text-decoration: none !important;
   color: inherit;
   transition: border-color .15s ease;
-  display: block;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.dash-kpi__icon {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(19, 109, 236, 0.12);
+  color: var(--mca-gold, #136dec);
+}
+
+.dash-kpi__icon .material-symbols-outlined {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.dash-kpi__content {
+  min-width: 0;
+  flex: 1;
 }
 
 a.dash-kpi:hover {
@@ -1638,13 +1713,16 @@ html.dark .dash-roles__more {
   display: grid;
   gap: 1rem;
   grid-template-columns: 1fr;
+  min-width: 0;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 768px) {
   .dash-chart-grid--2 {
     grid-template-columns: repeat(2, 1fr);
   }
+}
 
+@media (min-width: 1200px) {
   .dash-chart-grid--3 {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -1654,29 +1732,116 @@ html.dark .dash-roles__more {
   border-radius: 0.75rem;
   border: 1px solid var(--mca-outline-variant);
   background: var(--mca-panel);
-  padding: 1.25rem;
+  padding: 1rem 1.1rem 1.15rem;
   min-width: 0;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .dash-chart-card {
+    padding: 1.25rem;
+  }
 }
 
 .dash-chart-card__title {
   margin: 0;
   font-family: var(--font-headline);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--mca-on-surface);
 }
 
 .dash-chart-card__subtitle {
   margin: 0.25rem 0 0;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--mca-on-surface-variant);
 }
 
 .dash-chart-card__body {
-  margin-top: 1rem;
-  height: 16rem;
+  margin-top: 0.85rem;
   width: 100%;
+  min-width: 0;
   position: relative;
+}
+
+.dash-chart-card__body--bars {
+  height: auto;
+  min-height: 0;
+}
+
+.dash-chart-frame {
+  width: 100%;
+  min-width: 0;
+}
+
+.dash-chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  aspect-ratio: 12 / 5;
+}
+
+.dash-chart-rule {
+  stroke: var(--mca-outline-variant);
+  stroke-width: 1;
+}
+
+.dash-chart-axis {
+  fill: currentColor;
+  font-size: 10px;
+  opacity: 0.62;
+}
+
+.dash-hbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.dash-hbar__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.3rem 0.65rem;
+  align-items: center;
+}
+
+.dash-hbar__label {
+  font-size: 0.78rem;
+  color: var(--mca-on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dash-hbar__value {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: right;
+  min-width: 1.25rem;
+}
+
+.dash-hbar__track {
+  grid-column: 1 / -1;
+  height: 0.55rem;
+  background: var(--mca-soft-bg);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.dash-hbar__fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+@media (min-width: 520px) {
+  .dash-hbar__row {
+    grid-template-columns: minmax(5.5rem, 7.5rem) 1fr 2rem;
+  }
+
+  .dash-hbar__track {
+    grid-column: auto;
+  }
 }
 
 .dash-chart-card__body canvas {
@@ -1687,10 +1852,10 @@ html.dark .dash-roles__more {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  min-height: 8rem;
   margin: 0;
-  font-size: 0.875rem;
   color: var(--mca-on-surface-variant);
+  font-size: 0.875rem;
 }
 
 .dash-panel {

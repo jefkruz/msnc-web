@@ -18,7 +18,7 @@ export default function Login({ role = 'admin', authLoginUrl = '#' }) {
             : 'Welcome back. Use KingsChat to sign in and access your dashboard.';
 
     return (
-        <GuestLayout title={title} appName={appName}>
+        <GuestLayout title={title} appName={appName} variant="signin">
             {flash?.error && (
                 <div className="portal-alert alert-danger" style={{ marginBottom: '1rem' }}>
                     <div className="portal-alert__body">

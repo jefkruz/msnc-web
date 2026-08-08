@@ -810,9 +810,14 @@ html.dark .eyebrow {
 
 /* Login page themed shell */
 .login-page.mca-login {
-  background-color: var(--mca-background) !important;
-  background-image: radial-gradient(var(--mca-dot) 1px, transparent 1px) !important;
-  background-size: 20px 20px !important;
+  background-color: #eef3fb !important;
+  background-image:
+    radial-gradient(ellipse 90% 70% at 8% -10%, rgba(19, 109, 236, 0.22), transparent 58%),
+    radial-gradient(ellipse 70% 55% at 108% 110%, rgba(212, 175, 55, 0.2), transparent 52%),
+    repeating-linear-gradient(60deg, transparent 0, transparent 18px, rgba(16, 26, 56, 0.055) 18px, rgba(16, 26, 56, 0.055) 19px),
+    repeating-linear-gradient(-60deg, transparent 0, transparent 18px, rgba(19, 109, 236, 0.06) 18px, rgba(19, 109, 236, 0.06) 19px) !important;
+  background-size: auto !important;
+  background-attachment: fixed;
 }
 
 .login-page.mca-login .login-box .card {

@@ -6,9 +6,12 @@ import EmptyState from '../../../Components/EmptyState';
 import Alert from '../../../Components/Alert';
 import SearchableSelect from '../../../Components/SearchableSelect';
 import { useState } from 'react';
+import LoginAsButton from '../../../Components/LoginAsButton';
+import { useCan } from '../../../lib/can';
 
 export default function SdmsIndex({ sdms = [], departments = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
+    const { can } = useCan();
     const [showModal, setShowModal] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -68,6 +71,9 @@ export default function SdmsIndex({ sdms = [], departments = [] }) {
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{s.department?.name ?? '—'}</td>
                                         <td className="px-6 py-4 text-right">
                                             <Link href={`/administrator/sdms/${s.id}`} className="p-2 rounded-lg hover:bg-primary/10 text-primary inline-flex mr-1"><span className="material-symbols-outlined">visibility</span></Link>
+                                            {can(['sdms.impersonate', 'sdms.view']) && (
+                                                <LoginAsButton compact href={`/administrator/sdms/${s.id}/login-as`} label={`Log in as ${s.name}`} className="mr-1" />
+                                            )}
                                             <Link href={`/administrator/sdms/${s.id}/edit`} className="p-2 rounded-lg hover:bg-blue-500/10 text-blue-500 inline-flex mr-1"><span className="material-symbols-outlined">edit</span></Link>
                                             <button type="button" onClick={() => setDeleteId(s.id)} className="p-2 rounded-lg hover:bg-red-500/10 text-red-500 inline-flex"><span className="material-symbols-outlined">delete</span></button>
                                         </td>

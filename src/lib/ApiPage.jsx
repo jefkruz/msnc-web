@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import api, { readGetCache, writeGetCache } from './api';
+import api, { readGetCache, writeGetCache, toSpaHref } from './api';
 import { PageProvider } from './inertia';
 import PageLoader from '../Components/PageLoader';
 
@@ -50,7 +50,7 @@ export default function ApiPage({ endpoint, component: Component, staticProps = 
         const { data } = await api.get(url, { signal });
 
         if (data?.redirect && !samePath(data.redirect, location.pathname) && !samePath(data.redirect, url)) {
-          navigate(data.redirect);
+          navigate(toSpaHref(data.redirect));
           return;
         }
 
@@ -65,7 +65,7 @@ export default function ApiPage({ endpoint, component: Component, staticProps = 
         const status = err.response?.status;
         const redirect = err.response?.data?.redirect;
         if (redirect && !samePath(redirect, location.pathname)) {
-          navigate(redirect);
+          navigate(toSpaHref(redirect));
           return;
         }
         setError({ status: status || 500, message: err.response?.data?.message || err.message });

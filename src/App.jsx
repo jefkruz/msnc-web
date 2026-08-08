@@ -17,6 +17,7 @@ import Error500 from './Pages/Errors/500';
 
 import {
   Dashboard,
+  ActivityLog,
   Administration,
   Stakeholders,
   SettingsIndex,
@@ -103,6 +104,7 @@ export default function App() {
 
       {/* Admin */}
       <Route path="/administrator" element={<ApiPage endpoint="/administrator" component={Dashboard} />} />
+      <Route path="/administrator/activity-log" element={<ApiPage endpoint="/administrator/activity-log" component={ActivityLog} />} />
       <Route path="/administrator/analytics" element={<ApiPage endpoint="/administrator/analytics" component={AnalyticsIndex} />} />
       <Route path="/administrator/menu" element={<ApiPage endpoint="/administrator/menu" component={Administration} />} />
       <Route path="/administrator/stakeholders" element={<ApiPage endpoint="/administrator/stakeholders" component={Stakeholders} />} />
@@ -160,6 +162,7 @@ export default function App() {
 
       {/* SDM */}
       <Route path="/sdm" element={<ApiPage endpoint="/sdm" component={SdmDashboard} />} />
+      <Route path="/sdm/activity-log" element={<ApiPage endpoint="/sdm/activity-log" component={ActivityLog} />} />
       <Route path="/sdm/analytics" element={<ApiPage endpoint="/sdm/analytics" component={AnalyticsIndex} />} />
       <Route path="/sdm/applicants" element={<ApiPage endpoint="/sdm/applicants" component={SdmApplicants} />} />
       <Route path="/sdm/interviews" element={<ApiPage endpoint="/sdm/interviews" component={SdmInterviews} />} />

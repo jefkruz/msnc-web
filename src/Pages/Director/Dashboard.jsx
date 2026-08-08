@@ -17,16 +17,31 @@ export default function DirectorDashboard({
                 </div>
                 <div className="dash-kpi-grid">
                     <div className="dash-kpi">
-                        <p className="dash-kpi__label">Applicants</p>
-                        <p className="dash-kpi__value">{applicants}</p>
+                        <span className="dash-kpi__icon" aria-hidden="true">
+                            <span className="material-symbols-outlined">group</span>
+                        </span>
+                        <div className="dash-kpi__content">
+                            <p className="dash-kpi__label">Applicants</p>
+                            <p className="dash-kpi__value">{applicants}</p>
+                        </div>
                     </div>
                     <div className="dash-kpi">
-                        <p className="dash-kpi__label">Interviews</p>
-                        <p className="dash-kpi__value">{interviews}</p>
+                        <span className="dash-kpi__icon" aria-hidden="true">
+                            <span className="material-symbols-outlined">event_available</span>
+                        </span>
+                        <div className="dash-kpi__content">
+                            <p className="dash-kpi__label">Interviews</p>
+                            <p className="dash-kpi__value">{interviews}</p>
+                        </div>
                     </div>
                     <div className="dash-kpi">
-                        <p className="dash-kpi__label">Directors</p>
-                        <p className="dash-kpi__value">{directors}</p>
+                        <span className="dash-kpi__icon" aria-hidden="true">
+                            <span className="material-symbols-outlined">supervisor_account</span>
+                        </span>
+                        <div className="dash-kpi__content">
+                            <p className="dash-kpi__label">Directors</p>
+                            <p className="dash-kpi__value">{directors}</p>
+                        </div>
                     </div>
                 </div>
                 <div className="card">

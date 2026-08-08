@@ -1,8 +1,11 @@
 import { Link, usePage } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
+import LoginAsButton from '../../../Components/LoginAsButton';
+import { useCan } from '../../../lib/can';
 
 export default function DirectorsShow({ director }) {
     const { auth, authRole, menu, appName } = usePage().props;
+    const { can } = useCan();
     if (!director) return null;
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle={director.name}>
@@ -15,7 +18,10 @@ export default function DirectorsShow({ director }) {
                         <div><dt className="text-xs font-medium text-text-muted uppercase">Departments</dt><dd className="text-slate-900 dark:text-white">{director.departments?.map((d) => d.name).join(', ') || 'None'}</dd></div>
                     </dl>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
+                    {can(['directors.impersonate', 'directors.view']) && (
+                        <LoginAsButton href={`/administrator/directors/${director.id}/login-as`} label={`Log in as ${director.name}`} />
+                    )}
                     <Link href={`/administrator/directors/${director.id}/edit`} className="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90">Edit</Link>
                     <Link href="/administrator/directors" className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">Back to list</Link>
                 </div>

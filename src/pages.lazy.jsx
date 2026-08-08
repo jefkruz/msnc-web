@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 
 export const Dashboard = lazy(() => import('./Pages/Dashboard'));
+export const ActivityLog = lazy(() => import('./Pages/ActivityLog'));
 export const Administration = lazy(() => import('./Pages/Admin/Administration'));
 export const Stakeholders = lazy(() => import('./Pages/Admin/Stakeholders'));
 export const SettingsIndex = lazy(() => import('./Pages/Admin/Settings/Index'));
