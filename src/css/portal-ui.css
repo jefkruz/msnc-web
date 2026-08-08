@@ -370,10 +370,12 @@ label,
 
 .msnc-data-table__entity a {
   font-weight: 600;
-  color: var(--mca-cyan, #136dec);
+  color: var(--mca-on-surface);
+  text-decoration: none;
 }
 
 .msnc-data-table__entity a:hover {
+  color: var(--mca-cyan, #136dec);
   text-decoration: underline;
 }
 

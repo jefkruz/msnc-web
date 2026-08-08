@@ -43,3 +43,13 @@ export function titleCaseLabel(opt) {
     const raw = opt?.name ?? opt?.label ?? (opt == null ? '' : String(opt));
     return titleCase(raw);
 }
+
+export function personName(...parts) {
+    const text = parts.filter((part) => part && part !== '—').join(' ').replace(/\s+/g, ' ').trim();
+    return text ? titleCase(text) : '—';
+}
+
+export function departmentName(value) {
+    const text = typeof value === 'string' ? value : (value?.name ?? '');
+    return text ? titleCase(text) : '—';
+}

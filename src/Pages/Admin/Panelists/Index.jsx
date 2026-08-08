@@ -9,6 +9,7 @@ import ActionButton, { ActionGroup } from '../../../Components/ActionButton';
 import SearchExportBar from '../../../Components/SearchExportBar';
 import { useState } from 'react';
 import { useCan } from '../../../lib/can';
+import { departmentName, personName } from '../../../lib/titleCase';
 
 export default function PanelistsIndex({ panelists = [], departments = [], search = '' }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -76,9 +77,9 @@ export default function PanelistsIndex({ panelists = [], departments = [], searc
                                 {panelists.map((p, i) => (
                                     <tr key={p.id} className="hover:bg-slate-50 dark:hover:bg-white/5">
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{i + 1}</td>
-                                        <td className="px-6 py-4"><Link href={`/administrator/panelists/${p.id}`} className="font-medium text-primary hover:underline">{p.name}</Link></td>
+                                        <td className="px-6 py-4"><Link href={`/administrator/panelists/${p.id}`} className="font-medium text-primary hover:underline">{personName(p.name)}</Link></td>
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{p.username}</td>
-                                        <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{p.department?.name ?? '—'}</td>
+                                        <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{departmentName(p.department)}</td>
                                         <td className="px-6 py-4 text-right">
                                             <ActionGroup>
                                                 <ActionButton action="view" href={`/administrator/panelists/${p.id}`} />

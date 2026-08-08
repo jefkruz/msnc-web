@@ -6,6 +6,7 @@ import ConfirmModal from '../../Components/ConfirmModal';
 import EmptyState from '../../Components/EmptyState';
 import SearchableSelect from '../../Components/SearchableSelect';
 import TitleCaseInput from '../../Components/TitleCaseInput';
+import { departmentName } from '../../lib/titleCase';
 import ActionButton, { ActionGroup } from '../../Components/ActionButton';
 
 const COMPANY_OPTIONS = [{ value: 'AMDL', label: 'AMDL' }, { value: 'MSNC', label: 'MSNC' }];
@@ -92,7 +93,7 @@ export default function DepartmentsIndex({ regionId, departments = [], regionNam
                                 {filteredDepartments.map((d, i) => (
                                     <tr key={d.id} className="hover:bg-slate-50 dark:hover:bg-white/5">
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{i + 1}</td>
-                                        <td className="px-6 py-4 text-slate-900 dark:text-white font-medium">{d.name}</td>
+                                        <td className="px-6 py-4 text-slate-900 dark:text-white font-medium">{departmentName(d)}</td>
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{d.company ?? '—'}</td>
                                         <td className="px-6 py-4 text-right">
                                             <ActionGroup>

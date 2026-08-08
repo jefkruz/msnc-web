@@ -10,6 +10,7 @@ import LoginAsButton from '../../../Components/LoginAsButton';
 import ActionButton, { ActionGroup } from '../../../Components/ActionButton';
 import SearchExportBar from '../../../Components/SearchExportBar';
 import { useCan } from '../../../lib/can';
+import { departmentName, personName } from '../../../lib/titleCase';
 
 export default function SdmsIndex({ sdms = [], departments = [], search = '' }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -77,9 +78,9 @@ export default function SdmsIndex({ sdms = [], departments = [], search = '' }) 
                                 {sdms.map((s, i) => (
                                     <tr key={s.id} className="hover:bg-slate-50 dark:hover:bg-white/5">
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{i + 1}</td>
-                                        <td className="px-6 py-4"><Link href={`/administrator/sdms/${s.id}`} className="font-medium text-primary hover:underline">{s.name}</Link></td>
+                                        <td className="px-6 py-4"><Link href={`/administrator/sdms/${s.id}`} className="font-medium text-primary hover:underline">{personName(s.name)}</Link></td>
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{s.username}</td>
-                                        <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{s.department?.name ?? '—'}</td>
+                                        <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{departmentName(s.department)}</td>
                                         <td className="px-6 py-4 text-right">
                                             <ActionGroup>
                                                 <ActionButton action="view" href={`/administrator/sdms/${s.id}`} />

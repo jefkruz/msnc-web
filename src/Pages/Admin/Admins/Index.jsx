@@ -8,6 +8,7 @@ import SearchableSelect from '../../../Components/SearchableSelect';
 import TitleCaseInput from '../../../Components/TitleCaseInput';
 import ActionButton, { ActionGroup } from '../../../Components/ActionButton';
 import { useCan } from '../../../lib/can';
+import { departmentName, personName } from '../../../lib/titleCase';
 
 export default function AdminsIndex({ admins = [], departments = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -79,12 +80,12 @@ export default function AdminsIndex({ admins = [], departments = [] }) {
                                                 href={`/administrator/admins/${admin.id}`}
                                                 className="font-medium text-primary hover:underline"
                                             >
-                                                {admin.name}
+                                                {personName(admin.name)}
                                             </Link>
                                         </td>
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{admin.username}</td>
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">
-                                            {admin.department?.name ?? 'ALL'}
+                                            {admin.department ? departmentName(admin.department) : 'ALL'}
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <ActionGroup>

@@ -7,6 +7,7 @@ import { useCan } from '../../../lib/can';
 import LoginAsButton from '../../../Components/LoginAsButton';
 import ActionButton, { ActionGroup } from '../../../Components/ActionButton';
 import SearchExportBar from '../../../Components/SearchExportBar';
+import { departmentName, personName } from '../../../lib/titleCase';
 
 export default function DirectorsIndex({ directors = [], search = '' }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -59,12 +60,12 @@ export default function DirectorsIndex({ directors = [], search = '' }) {
                                     <tr key={d.id} className="hover:bg-slate-50 dark:hover:bg-white/5">
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{i + 1}</td>
                                         <td className="px-6 py-4">
-                                            <Link href={`/administrator/directors/${d.id}`} className="font-medium text-primary hover:underline">{d.name}</Link>
+                                            <Link href={`/administrator/directors/${d.id}`} className="font-medium text-primary hover:underline">{personName(d.name)}</Link>
                                         </td>
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{d.username}</td>
                                         <td className="px-6 py-4">
                                             {d.departments?.length ? d.departments.map((dept) => (
-                                                <span key={dept.id} className="inline-block px-2 py-0.5 rounded bg-primary/10 text-primary text-xs font-medium mr-1 mb-1">{dept.name}</span>
+                                                <span key={dept.id} className="inline-block px-2 py-0.5 rounded bg-primary/10 text-primary text-xs font-medium mr-1 mb-1">{departmentName(dept)}</span>
                                             )) : <span className="text-text-muted">No departments</span>}
                                         </td>
                                         <td className="px-6 py-4 text-right">

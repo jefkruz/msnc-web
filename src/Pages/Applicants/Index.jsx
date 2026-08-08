@@ -8,6 +8,7 @@ import SearchableSelect from '../../Components/SearchableSelect';
 import { useCan } from '../../lib/can';
 import { formatDate } from '../../lib/formatDate';
 import { formatStatusLabel } from '../../lib/formatStatus';
+import { departmentName, personName } from '../../lib/titleCase';
 
 const MONTH_NAMES = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -29,7 +30,7 @@ function formatInterviewSummary(interviews) {
 }
 
 function applicantName(applicant) {
-    return [applicant.title, applicant.first_name, applicant.last_name].filter(Boolean).join(' ') || '—';
+    return personName(applicant.title, applicant.first_name, applicant.last_name);
 }
 
 function applicantContact(applicant) {
@@ -176,7 +177,7 @@ export default function Index({
                                                     <Link href={`/authorised/view/${applicant.id}`}>{applicantName(applicant)}</Link>
                                                     <div className="msnc-data-table__meta">KingsChat: {applicantContact(applicant)}</div>
                                                 </td>
-                                                <td data-label="Department">{applicant.department?.name ?? '—'}</td>
+                                                <td data-label="Department">{departmentName(applicant.department)}</td>
                                                 <td data-label="Job family">{applicant.family?.name ?? '—'}</td>
                                                 <td data-label="Status">
                                                     <span className={statusBadgeClass(applicant.status ?? 'Applied')}>
