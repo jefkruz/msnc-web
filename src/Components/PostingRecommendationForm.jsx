@@ -1,4 +1,5 @@
 import { Link } from '@inertiajs/react';
+import SearchableSelect from './SearchableSelect';
 
 const inputClass = 'form-control';
 const labelClass = 'block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1';
@@ -37,20 +38,16 @@ export default function PostingRecommendationForm({ data, setData, errors = {}, 
             <Section title="Applicant" icon="person">
                 <div className="md:col-span-2">
                     <label className={labelClass}>Applicant *</label>
-                    <select
+                    <SearchableSelect
                         value={data.applicant_id}
-                        onChange={(e) => setData('applicant_id', e.target.value)}
-                        className={inputClass}
+                        onChange={(val) => setData('applicant_id', val)}
+                        options={applicants || []}
+                        placeholder="Select applicant"
                         required
-                    >
-                        <option value="">Select applicant</option>
-                        {(applicants || []).map((a) => (
-                            <option key={a.id} value={a.id}>
-                                {[a.title, a.first_name, a.last_name].filter(Boolean).join(' ')}
-                            </option>
-                        ))}
-                    </select>
-                    {errors.applicant_id && <p className="text-red-500 text-xs mt-1">{errors.applicant_id}</p>}
+                        getOptionValue={(a) => a.id}
+                        getOptionLabel={(a) => [a.title, a.first_name, a.last_name].filter(Boolean).join(' ') || String(a.id)}
+                        error={errors.applicant_id}
+                    />
                 </div>
             </Section>
 

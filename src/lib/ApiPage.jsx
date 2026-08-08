@@ -28,17 +28,36 @@ export default function ApiPage({ endpoint, component: Component, staticProps = 
   staticPropsRef.current = staticProps;
 
   const paramKey = JSON.stringify(params);
-  const url = useMemo(() => {
+  const pathOnly = useMemo(() => {
     const parsed = paramKey ? JSON.parse(paramKey) : {};
-    const path = resolveEndpoint(endpoint, parsed);
-    return (path === '/' ? '' : path) + (location.search || '');
-  }, [endpoint, paramKey, location.search]);
+    return resolveEndpoint(endpoint, parsed);
+  }, [endpoint, paramKey]);
+  const url = (pathOnly === '/' ? '' : pathOnly) + (location.search || '');
 
   const cached = readGetCache(url);
   const [props, setProps] = useState(() => (cached ? { ...staticProps, ...cached } : null));
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(!cached);
   const fetchedFor = useRef(null);
+
+  let pageProps = props;
+  let pageError = error;
+  let pageLoading = loading;
+
+  // React Router reuses this component across routes. Drop the previous page's
+  // props immediately so e.g. dashboard `interviews: 7` cannot crash the list page.
+  const pageIdRef = useRef({ pathOnly, Component });
+  if (pageIdRef.current.pathOnly !== pathOnly || pageIdRef.current.Component !== Component) {
+    pageIdRef.current = { pathOnly, Component };
+    const hit = readGetCache(url);
+    pageProps = hit ? { ...staticProps, ...hit } : null;
+    pageError = null;
+    pageLoading = !hit;
+    setProps(pageProps);
+    setError(null);
+    setLoading(pageLoading);
+    fetchedFor.current = null;
+  }
 
   const load = useCallback(
     async (signal) => {
@@ -64,11 +83,16 @@ export default function ApiPage({ endpoint, component: Component, staticProps = 
         }
         const status = err.response?.status;
         const redirect = err.response?.data?.redirect;
+        const message = err.response?.data?.message || err.message;
         if (redirect && !samePath(redirect, location.pathname)) {
-          navigate(toSpaHref(redirect));
+          navigate(toSpaHref(redirect), { state: message ? { message } : undefined });
           return;
         }
-        setError({ status: status || 500, message: err.response?.data?.message || err.message });
+        if (status === 403 || status === 404 || status === 500) {
+          navigate(`/${status}`, { state: message ? { message } : undefined });
+          return;
+        }
+        setError({ status: status || 500, message });
       } finally {
         setLoading(false);
       }
@@ -86,7 +110,7 @@ export default function ApiPage({ endpoint, component: Component, staticProps = 
     window.__inertiaNavigate = (path) => navigate(path);
     window.__inertiaRefresh = () => {
       fetchedFor.current = null;
-      load();
+      return load();
     };
     return () => {
       delete window.__inertiaNavigate;
@@ -94,15 +118,15 @@ export default function ApiPage({ endpoint, component: Component, staticProps = 
     };
   }, [navigate, load]);
 
-  if (loading && !props) {
+  if (pageLoading && !pageProps) {
     return <PageLoader />;
   }
 
-  if (error && !props) {
+  if (pageError && !pageProps) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-3 p-6">
-        <h1 className="text-2xl font-bold">{error.status}</h1>
-        <p className="text-slate-500">{error.message || 'Something went wrong.'}</p>
+        <h1 className="text-2xl font-bold">{pageError.status}</h1>
+        <p className="text-slate-500">{pageError.message || 'Something went wrong.'}</p>
         <button
           type="button"
           className="px-4 py-2 rounded-lg bg-primary text-white text-sm"
@@ -118,8 +142,8 @@ export default function ApiPage({ endpoint, component: Component, staticProps = 
   }
 
   return (
-    <PageProvider value={props} refresh={() => { fetchedFor.current = null; return load(); }}>
-      <Component {...props} />
+    <PageProvider value={pageProps} refresh={() => { fetchedFor.current = null; return load(); }}>
+      <Component {...pageProps} />
     </PageProvider>
   );
 }

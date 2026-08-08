@@ -26,6 +26,7 @@ const routeToPath = {
     'admin.activity-log': '/administrator/activity-log',
     'applicants.index': '/administrator/applicants',
     'interviews.index': '/administrator/interviews',
+    'interviews.create': '/administrator/interviews/create',
     'administration': '/administrator/menu',
     stakeholders: '/administrator/stakeholders',
     'families.index': '/administrator/job-families',
@@ -36,6 +37,8 @@ const routeToPath = {
     'panelists.index': '/administrator/panelists',
     'directors.index': '/administrator/directors',
     'admins.index': '/administrator/admins',
+    'posting-recommendations.index': '/administrator/posting-recommendations',
+    'posting-recommendations.create': '/administrator/posting-recommendations/create',
 };
 
 function getHref(item) {

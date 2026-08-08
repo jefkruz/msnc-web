@@ -1,8 +1,10 @@
-import { useForm } from '@inertiajs/react';
-import { usePage, Link } from '@inertiajs/react';
+import { useState } from 'react';
+import { useForm, usePage, Link, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
+import ConfirmModal from '../../Components/ConfirmModal';
 import SearchableSelect from '../../Components/SearchableSelect';
 import SearchableMultiSelect from '../../Components/SearchableMultiSelect';
+import { useCan } from '../../lib/can';
 
 function applicantLabel(a) {
     if (!a) return '';
@@ -14,6 +16,8 @@ function applicantLabel(a) {
 
 export default function InterviewsEdit({ interview, applicants = [], panelists = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
+    const { can } = useCan();
+    const [confirmDelete, setConfirmDelete] = useState(false);
     const { data, setData, put, processing, errors } = useForm({
         applicant_id: String(interview?.applicant_id ?? ''),
         date: interview?.date ?? '',
@@ -68,11 +72,23 @@ export default function InterviewsEdit({ interview, applicants = [], panelists =
                             />
                         </div>
                     </div>
-                    <div className="flex gap-3">
-                        <Link href="/administrator/interviews" className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">Cancel</Link>
-                        <button type="submit" disabled={processing} className="px-6 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50">Update Interview</button>
+                    <div className="flex flex-wrap gap-3">
+                        <Link href="/administrator/interviews" className="btn btn-secondary">Cancel</Link>
+                        <button type="submit" disabled={processing} className="btn btn-primary">Update Interview</button>
+                        {can('interviews.delete') && interview?.id && (
+                            <button type="button" className="btn btn-danger ml-auto" onClick={() => setConfirmDelete(true)}>Delete</button>
+                        )}
                     </div>
                 </form>
+                <ConfirmModal
+                    show={confirmDelete}
+                    onClose={() => setConfirmDelete(false)}
+                    onConfirm={() => router.delete(`/administrator/interviews/delete/${interview.id}`)}
+                    title="Delete interview"
+                    message="Are you sure you want to delete this interview? This cannot be undone."
+                    confirmLabel="Delete"
+                    variant="danger"
+                />
             </div>
         </Layout>
     );

@@ -1,9 +1,14 @@
-import { useForm } from '@inertiajs/react';
-import { usePage, Link } from '@inertiajs/react';
+import { useState } from 'react';
+import { useForm, usePage, Link, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
+import ConfirmModal from '../../Components/ConfirmModal';
+import SearchableSelect from '../../Components/SearchableSelect';
+import { useCan } from '../../lib/can';
 
 export default function ApplicantsEdit({ applicant, families = [], departments = [], ranks = [], groups = [], nomenclature_ranks = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
+    const { can } = useCan();
+    const [confirmDelete, setConfirmDelete] = useState(false);
     const isAdmin = authRole === 'Administrator';
     const { data, setData, put, processing, errors } = useForm({
         title: applicant?.title ?? '',
@@ -48,39 +53,63 @@ export default function ApplicantsEdit({ applicant, families = [], departments =
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Department</label>
-                                <select value={data.department_id} onChange={(e) => setData('department_id', e.target.value)} className="form-control">
-                                    <option value="">Select</option>
-                                    {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
-                                </select>
+                                <SearchableSelect
+                                    value={data.department_id}
+                                    onChange={(val) => setData('department_id', val)}
+                                    options={departments}
+                                    placeholder="Select department"
+                                    error={errors.department_id}
+                                />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Job Family</label>
-                                <select value={data.nomenclature_category_id} onChange={(e) => { setData('nomenclature_category_id', e.target.value); setData('nomenclature_group_id', ''); setData('nomenclature_rank_id', ''); }} className="form-control">
-                                    <option value="">Select</option>
-                                    {families.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
-                                </select>
+                                <SearchableSelect
+                                    value={data.nomenclature_category_id}
+                                    onChange={(val) => {
+                                        setData('nomenclature_category_id', val);
+                                        setData('nomenclature_group_id', '');
+                                        setData('nomenclature_rank_id', '');
+                                    }}
+                                    options={families}
+                                    placeholder="Select family"
+                                    error={errors.nomenclature_category_id}
+                                />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Job Group</label>
-                                <select value={data.nomenclature_group_id} onChange={(e) => { setData('nomenclature_group_id', e.target.value); setData('nomenclature_rank_id', ''); }} className="form-control">
-                                    <option value="">Select</option>
-                                    {filteredGroups.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
-                                </select>
+                                <SearchableSelect
+                                    value={data.nomenclature_group_id}
+                                    onChange={(val) => {
+                                        setData('nomenclature_group_id', val);
+                                        setData('nomenclature_rank_id', '');
+                                    }}
+                                    options={filteredGroups}
+                                    placeholder="Select group"
+                                    disabled={!data.nomenclature_category_id}
+                                    error={errors.nomenclature_group_id}
+                                />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Job Rank</label>
-                                <select value={data.nomenclature_rank_id} onChange={(e) => setData('nomenclature_rank_id', e.target.value)} className="form-control">
-                                    <option value="">Select</option>
-                                    {filteredRanks.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
-                                </select>
+                                <SearchableSelect
+                                    value={data.nomenclature_rank_id}
+                                    onChange={(val) => setData('nomenclature_rank_id', val)}
+                                    options={filteredRanks}
+                                    placeholder="Select rank"
+                                    disabled={!data.nomenclature_group_id}
+                                    error={errors.nomenclature_rank_id}
+                                />
                             </div>
                             {isAdmin && ranks?.length > 0 && (
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Administrative rank</label>
-                                    <select value={data.rank_id} onChange={(e) => setData('rank_id', e.target.value)} className="form-control">
-                                        <option value="">Select</option>
-                                        {ranks.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
-                                    </select>
+                                    <SearchableSelect
+                                        value={data.rank_id}
+                                        onChange={(val) => setData('rank_id', val)}
+                                        options={ranks}
+                                        placeholder="Select administrative rank"
+                                        error={errors.rank_id}
+                                    />
                                 </div>
                             )}
                             <div>
@@ -89,11 +118,23 @@ export default function ApplicantsEdit({ applicant, families = [], departments =
                             </div>
                         </div>
                     </div>
-                    <div className="flex gap-3">
-                        <Link href={`/authorised/view/${applicant.id}`} className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">Cancel</Link>
-                        <button type="submit" disabled={processing} className="px-6 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50">Update Applicant</button>
+                    <div className="flex flex-wrap gap-3">
+                        <Link href={`/authorised/view/${applicant.id}`} className="btn btn-secondary">Cancel</Link>
+                        <button type="submit" disabled={processing} className="btn btn-primary">Update Applicant</button>
+                        {can('applicants.delete') && applicant?.id && (
+                            <button type="button" className="btn btn-danger ml-auto" onClick={() => setConfirmDelete(true)}>Delete</button>
+                        )}
                     </div>
                 </form>
+                <ConfirmModal
+                    show={confirmDelete}
+                    onClose={() => setConfirmDelete(false)}
+                    onConfirm={() => router.delete(`/administrator/applicants/delete/${applicant.id}`)}
+                    title="Delete applicant"
+                    message="Are you sure you want to delete this applicant? This cannot be undone."
+                    confirmLabel="Delete"
+                    variant="danger"
+                />
             </div>
         </Layout>
     );

@@ -2,8 +2,7 @@ import { useForm } from '@inertiajs/react';
 import { usePage, Link } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import SearchableSelect from '../../Components/SearchableSelect';
-
-const TITLE_OPTIONS = ['Brother', 'Sister', 'Deacon', 'Deaconess', 'Reverend', 'Pastor', 'Evangelist'];
+import { TITLE_OPTIONS } from '../../lib/selectOptions';
 
 const inputClass =
     'form-control';
@@ -36,16 +35,12 @@ export default function PersonnelInWaitingCreate({ departments = [] }) {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className={labelClass}>Title</label>
-                                <select
+                                <SearchableSelect
                                     value={data.title}
-                                    onChange={(e) => setData('title', e.target.value)}
-                                    className={inputClass}
-                                >
-                                    <option value="">Select</option>
-                                    {TITLE_OPTIONS.map((t) => (
-                                        <option key={t} value={t}>{t}</option>
-                                    ))}
-                                </select>
+                                    onChange={(val) => setData('title', val)}
+                                    options={TITLE_OPTIONS}
+                                    placeholder="Select title"
+                                />
                             </div>
                             <div>
                                 <label className={labelClass}>First name <span className="text-red-500">*</span></label>

@@ -4,7 +4,7 @@ import Layout from '../../Components/Layout';
 import Modal from '../../Components/Modal';
 import ConfirmModal from '../../Components/ConfirmModal';
 import EmptyState from '../../Components/EmptyState';
-import Alert from '../../Components/Alert';
+import SearchableSelect from '../../Components/SearchableSelect';
 
 const API_BASE = '/administrator/questions';
 
@@ -66,9 +66,6 @@ export default function QuestionsIndex({ questions = [], families = [], administ
 
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Interview Questions">
-            {usePage().props.flash?.message && (
-                <Alert type="success" message={usePage().props.flash.message} className="mb-6" />
-            )}
             <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
                 <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark flex items-center justify-between">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white">Interview Questions</h2>
@@ -126,38 +123,41 @@ export default function QuestionsIndex({ questions = [], families = [], administ
                 </div>
             </div>
 
-            <Modal show={showModal} onClose={() => setShowModal(false)} title="Create Questions" size="lg">
-                <form onSubmit={handleCreateSubmit} className="space-y-4">
+            <Modal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+                title="Create Questions"
+                size="lg"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Close</button>
+                        <button type="submit" form="questions-create" className="btn btn-primary" disabled={isSubmitting}>Create questions</button>
+                    </>
+                )}
+            >
+                <form id="questions-create" onSubmit={handleCreateSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Job family (Category) <span className="text-red-500">*</span></label>
-                            <select
+                            <SearchableSelect
                                 value={data.nomenclature_category_id}
-                                onChange={(e) => setData('nomenclature_category_id', e.target.value)}
-                                className="form-control"
+                                onChange={(val) => setData('nomenclature_category_id', val)}
+                                options={families}
+                                placeholder="Select category"
                                 required
-                            >
-                                <option value="">Select category</option>
-                                {families.map((f) => (
-                                    <option key={f.id} value={f.id}>{f.name}</option>
-                                ))}
-                            </select>
-                            {(errors.nomenclature_category_id || pageErrors.nomenclature_category_id) && <p className="text-red-500 text-xs mt-1">{errors.nomenclature_category_id || pageErrors.nomenclature_category_id}</p>}
+                                error={errors.nomenclature_category_id || pageErrors.nomenclature_category_id}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Administrative rank <span className="text-red-500">*</span></label>
-                            <select
+                            <SearchableSelect
                                 value={data.rank_id}
-                                onChange={(e) => setData('rank_id', e.target.value)}
-                                className="form-control"
+                                onChange={(val) => setData('rank_id', val)}
+                                options={administrativeRanks}
+                                placeholder="Select administrative rank"
                                 required
-                            >
-                                <option value="">Select administrative rank</option>
-                                {administrativeRanks.map((r) => (
-                                    <option key={r.id} value={r.id}>{r.name}</option>
-                                ))}
-                            </select>
-                            {(errors.rank_id || pageErrors.rank_id) && <p className="text-red-500 text-xs mt-1">{errors.rank_id || pageErrors.rank_id}</p>}
+                                error={errors.rank_id || pageErrors.rank_id}
+                            />
                         </div>
                     </div>
 
@@ -180,7 +180,7 @@ export default function QuestionsIndex({ questions = [], families = [], administ
                                         value={q.title ?? ''}
                                         onChange={(e) => setQuestionTitle(index, e.target.value)}
                                         placeholder={`Question ${index + 1}`}
-                                        className="flex-1 rounded-lg border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark px-4 py-2 text-slate-900 dark:text-white text-sm"
+                                        className="form-control flex-1"
                                         required
                                     />
                                     <button
@@ -198,22 +198,6 @@ export default function QuestionsIndex({ questions = [], families = [], administ
                         {(errors.questions || pageErrors.questions) && <p className="text-red-500 text-xs mt-1">{errors.questions || pageErrors.questions}</p>}
                     </div>
 
-                    <div className="flex justify-end gap-2 pt-4 border-t border-slate-200 dark:border-border-dark">
-                        <button
-                            type="button"
-                            onClick={() => setShowModal(false)}
-                            className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium"
-                        >
-                            Close
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 disabled:opacity-50"
-                        >
-                            Create questions
-                        </button>
-                    </div>
                 </form>
             </Modal>
 

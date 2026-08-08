@@ -1,18 +1,19 @@
-import { useForm } from '@inertiajs/react';
-import { usePage, Link } from '@inertiajs/react';
+import { useState } from 'react';
+import { useForm, usePage, Link, router } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
+import ConfirmModal from '../../../Components/ConfirmModal';
+import SearchableMultiSelect from '../../../Components/SearchableMultiSelect';
+import { useCan } from '../../../lib/can';
 
 export default function DirectorsEdit({ director, departments = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
+    const { can } = useCan();
+    const [confirmDelete, setConfirmDelete] = useState(false);
     const { data, setData, patch, processing, errors } = useForm({
         name: director?.name ?? '',
         username: director?.username ?? '',
         departments: director?.departments?.map((d) => d.id) ?? [],
     });
-
-    const toggleDept = (id) => {
-        setData('departments', data.departments.includes(id) ? data.departments.filter((d) => d !== id) : [...data.departments, id]);
-    };
 
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle={`Edit ${director?.name}`}>
@@ -31,21 +32,33 @@ export default function DirectorsEdit({ director, departments = [] }) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Departments</label>
-                            <div className="flex flex-wrap gap-2">
-                                {departments.map((d) => (
-                                    <label key={d.id} className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 dark:border-border-dark cursor-pointer hover:bg-slate-50 dark:hover:bg-white/5">
-                                        <input type="checkbox" checked={data.departments.includes(d.id)} onChange={() => toggleDept(d.id)} className="rounded text-primary" />
-                                        <span className="text-sm text-slate-700 dark:text-slate-300">{d.name}</span>
-                                    </label>
-                                ))}
-                            </div>
+                            <SearchableMultiSelect
+                                value={data.departments}
+                                onChange={(vals) => setData('departments', vals)}
+                                options={departments}
+                                placeholder="Select departments"
+                                required
+                                error={errors.departments}
+                            />
                         </div>
                     </div>
-                    <div className="flex gap-3">
-                        <Link href={`/administrator/directors/${director.id}`} className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">Cancel</Link>
-                        <button type="submit" disabled={processing} className="px-6 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50">Update Director</button>
+                    <div className="flex flex-wrap gap-3">
+                        <Link href={`/administrator/directors/${director.id}`} className="btn btn-secondary">Cancel</Link>
+                        <button type="submit" disabled={processing} className="btn btn-primary">Update Director</button>
+                        {can('directors.delete') && director?.id && (
+                            <button type="button" className="btn btn-danger ml-auto" onClick={() => setConfirmDelete(true)}>Delete</button>
+                        )}
                     </div>
                 </form>
+                <ConfirmModal
+                    show={confirmDelete}
+                    onClose={() => setConfirmDelete(false)}
+                    onConfirm={() => router.delete(`/administrator/directors/${director.id}`)}
+                    title="Delete Director"
+                    message={`Are you sure you want to delete ${director?.name}? This cannot be undone.`}
+                    confirmLabel="Delete"
+                    variant="danger"
+                />
             </div>
         </Layout>
     );

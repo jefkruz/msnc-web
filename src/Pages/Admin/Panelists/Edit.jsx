@@ -1,11 +1,16 @@
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { useState } from 'react';
+import { Link, useForm, usePage, router } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
+import ConfirmModal from '../../../Components/ConfirmModal';
 import SearchableSelect from '../../../Components/SearchableSelect';
+import { useCan } from '../../../lib/can';
 
 const inputClass = 'form-control';
 
 export default function PanelistsEdit({ panelist, departments = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
+    const { can } = useCan();
+    const [confirmDelete, setConfirmDelete] = useState(false);
     const { data, setData, put, processing, errors } = useForm({
         name: panelist?.name ?? '',
         username: panelist?.username ?? '',
@@ -66,23 +71,24 @@ export default function PanelistsEdit({ panelist, departments = [] }) {
                             />
                             {errors.department_id && <p className="text-red-500 text-xs mt-1">{errors.department_id}</p>}
                         </div>
-                        <div className="flex justify-end gap-2 pt-4">
-                            <Link
-                                href="/administrator/panelists"
-                                className="px-4 py-2.5 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium"
-                            >
-                                Cancel
-                            </Link>
-                            <button
-                                type="submit"
-                                disabled={processing}
-                                className="px-4 py-2.5 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 disabled:opacity-50"
-                            >
-                                Update Panelist
-                            </button>
+                        <div className="flex flex-wrap justify-end gap-2 pt-4">
+                            <Link href="/administrator/panelists" className="btn btn-secondary">Cancel</Link>
+                            <button type="submit" disabled={processing} className="btn btn-primary">Update Panelist</button>
+                            {can('panelists.delete') && panelist?.id && (
+                                <button type="button" className="btn btn-danger" onClick={() => setConfirmDelete(true)}>Delete</button>
+                            )}
                         </div>
                     </form>
                 </div>
+                <ConfirmModal
+                    show={confirmDelete}
+                    onClose={() => setConfirmDelete(false)}
+                    onConfirm={() => router.delete(`/administrator/panelists/${panelist.id}`)}
+                    title="Delete Panelist"
+                    message={`Are you sure you want to delete ${panelist?.name}? This cannot be undone.`}
+                    confirmLabel="Delete"
+                    variant="danger"
+                />
             </div>
         </Layout>
     );

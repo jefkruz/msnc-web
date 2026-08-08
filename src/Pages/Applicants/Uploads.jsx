@@ -1,6 +1,5 @@
 import { useForm, usePage, Link } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
-import Alert from '../../Components/Alert';
 
 const DOC_FIELDS = [
     { key: 'authorization_recruit_form', label: 'Authorization to Recruit Form' },
@@ -36,13 +35,6 @@ export default function ApplicantsUploads({ applicant }) {
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle={`Uploads - ${fullName}`}>
             <div className="max-w-5xl space-y-6">
-                {usePage().props.flash?.message && (
-                    <Alert type="success" message={usePage().props.flash.message} />
-                )}
-                {usePage().props.flash?.error && (
-                    <Alert type="error" message={usePage().props.flash.error} />
-                )}
-
                 <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
                     <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-white/5">
                         <h3 className="text-lg font-bold text-slate-900 dark:text-white">Upload Documents</h3>

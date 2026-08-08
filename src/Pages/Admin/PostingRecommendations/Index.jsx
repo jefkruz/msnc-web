@@ -1,22 +1,14 @@
 import { Link, usePage, router } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Layout from '../../../Components/Layout';
 import ConfirmModal from '../../../Components/ConfirmModal';
 import EmptyState from '../../../Components/EmptyState';
-import Alert from '../../../Components/Alert';
+import { useCan } from '../../../lib/can';
 
 export default function PostingRecommendationsIndex({ postingRecommendations = [] }) {
-    const { auth, authRole, menu, appName, flash } = usePage().props;
+    const { auth, authRole, menu, appName } = usePage().props;
+    const { can } = useCan();
     const [deleteId, setDeleteId] = useState(null);
-    const [showFlash, setShowFlash] = useState(false);
-
-    useEffect(() => {
-        if (flash?.message) {
-            setShowFlash(true);
-            const t = setTimeout(() => setShowFlash(false), 4000);
-            return () => clearTimeout(t);
-        }
-    }, [flash?.message]);
 
     const list = Array.isArray(postingRecommendations) ? postingRecommendations : [];
 
@@ -29,20 +21,6 @@ export default function PostingRecommendationsIndex({ postingRecommendations = [
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Posting Recommendations">
             <div className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <Link
-                        href="/administrator/menu"
-                        className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors w-fit"
-                    >
-                        <span className="material-symbols-outlined text-lg">arrow_back</span>
-                        Back to Administration
-                    </Link>
-                </div>
-
-                {showFlash && flash?.message && (
-                    <Alert type="success" message={flash.message} onDismiss={() => setShowFlash(false)} />
-                )}
-
                 <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
                     <div className="px-4 sm:px-6 py-4 border-b border-slate-200 dark:border-border-dark flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div>
@@ -96,14 +74,16 @@ export default function PostingRecommendationsIndex({ postingRecommendations = [
                                                 >
                                                     <span className="material-symbols-outlined">edit</span>
                                                 </Link>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setDeleteId(r.id)}
-                                                    className="p-2 rounded-lg hover:bg-red-500/10 text-red-500 inline-flex"
-                                                    title="Delete"
-                                                >
-                                                    <span className="material-symbols-outlined">delete</span>
-                                                </button>
+                                                {can('posting-recommendations.delete') && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setDeleteId(r.id)}
+                                                        className="p-2 rounded-lg hover:bg-red-500/10 text-red-500 inline-flex"
+                                                        title="Delete"
+                                                    >
+                                                        <span className="material-symbols-outlined">delete</span>
+                                                    </button>
+                                                )}
                                             </td>
                                         </tr>
                                     ))}

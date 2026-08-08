@@ -1,6 +1,9 @@
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { useState } from 'react';
+import { Link, useForm, usePage, router } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
+import ConfirmModal from '../../../Components/ConfirmModal';
 import PostingRecommendationForm from '../../../Components/PostingRecommendationForm';
+import { useCan } from '../../../lib/can';
 
 function dateInputValue(val) {
     if (!val) return '';
@@ -10,6 +13,8 @@ function dateInputValue(val) {
 
 export default function PostingRecommendationsEdit({ postingRecommendation, applicants = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
+    const { can } = useCan();
+    const [confirmDelete, setConfirmDelete] = useState(false);
     const r = postingRecommendation || {};
 
     const { data, setData, put, processing, errors } = useForm({
@@ -61,6 +66,9 @@ export default function PostingRecommendationsEdit({ postingRecommendation, appl
                         <span className="material-symbols-outlined text-lg">arrow_back</span>
                         Back to Posting Recommendations
                     </Link>
+                    {can('posting-recommendations.delete') && r.id && (
+                        <button type="button" className="btn btn-danger" onClick={() => setConfirmDelete(true)}>Delete</button>
+                    )}
                 </div>
 
                 <PostingRecommendationForm
@@ -71,6 +79,15 @@ export default function PostingRecommendationsEdit({ postingRecommendation, appl
                     onSubmit={submit}
                     processing={processing}
                     submitLabel="Update"
+                />
+                <ConfirmModal
+                    show={confirmDelete}
+                    onClose={() => setConfirmDelete(false)}
+                    onConfirm={() => router.delete(`/administrator/posting-recommendations/delete/${r.id}`)}
+                    title="Delete posting recommendation"
+                    message="Are you sure you want to delete this posting recommendation? This cannot be undone."
+                    confirmLabel="Delete"
+                    variant="danger"
                 />
             </div>
         </Layout>

@@ -1,14 +1,11 @@
 import { useForm } from '@inertiajs/react';
 import { usePage, Link } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
+import SearchableMultiSelect from '../../../Components/SearchableMultiSelect';
 
 export default function DirectorsCreate({ departments = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
     const { data, setData, post, processing, errors } = useForm({ name: '', username: '', departments: [] });
-
-    const toggleDept = (id) => {
-        setData('departments', data.departments.includes(id) ? data.departments.filter((d) => d !== id) : [...data.departments, id]);
-    };
 
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Create Director">
@@ -27,14 +24,14 @@ export default function DirectorsCreate({ departments = [] }) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Departments</label>
-                            <div className="flex flex-wrap gap-2">
-                                {departments.map((d) => (
-                                    <label key={d.id} className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 dark:border-border-dark cursor-pointer hover:bg-slate-50 dark:hover:bg-white/5">
-                                        <input type="checkbox" checked={data.departments.includes(d.id)} onChange={() => toggleDept(d.id)} className="rounded text-primary" />
-                                        <span className="text-sm text-slate-700 dark:text-slate-300">{d.name}</span>
-                                    </label>
-                                ))}
-                            </div>
+                            <SearchableMultiSelect
+                                value={data.departments}
+                                onChange={(vals) => setData('departments', vals)}
+                                options={departments}
+                                placeholder="Select departments"
+                                required
+                                error={errors.departments}
+                            />
                         </div>
                     </div>
                     <div className="flex gap-3">

@@ -4,7 +4,7 @@ import Layout from '../../../Components/Layout';
 import Modal from '../../../Components/Modal';
 import ConfirmModal from '../../../Components/ConfirmModal';
 import EmptyState from '../../../Components/EmptyState';
-import Alert from '../../../Components/Alert';
+import SearchableSelect from '../../../Components/SearchableSelect';
 import { useCan } from '../../../lib/can';
 
 export default function AdminsIndex({ admins = [], departments = [] }) {
@@ -31,12 +31,6 @@ export default function AdminsIndex({ admins = [], departments = [] }) {
 
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Administrators">
-            {usePage().props.flash?.message && (
-                <Alert type="success" message={usePage().props.flash.message} className="mb-6" />
-            )}
-            {usePage().props.flash?.error && (
-                <Alert type="error" message={usePage().props.flash.error} className="mb-6" />
-            )}
             <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
                 <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark flex items-center justify-between">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white">Administrators</h2>
@@ -128,10 +122,20 @@ export default function AdminsIndex({ admins = [], departments = [] }) {
                 </div>
             </div>
 
-            <Modal show={showModal} onClose={() => setShowModal(false)} title="Create Administrator" size="md">
-                <form onSubmit={handleSubmit} className="space-y-4">
+            <Modal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+                title="Create Administrator"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Close</button>
+                        <button type="submit" form="admin-create" className="btn btn-primary" disabled={processing}>Create Admin</button>
+                    </>
+                )}
+            >
+                <form id="admin-create" onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+                        <label className="block text-sm font-medium mb-1">Full Name</label>
                         <input
                             type="text"
                             value={data.name}
@@ -142,7 +146,7 @@ export default function AdminsIndex({ admins = [], departments = [] }) {
                         {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">KingsChat Username</label>
+                        <label className="block text-sm font-medium mb-1">KingsChat Username</label>
                         <input
                             type="text"
                             value={data.username}
@@ -153,33 +157,14 @@ export default function AdminsIndex({ admins = [], departments = [] }) {
                         {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username}</p>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Department</label>
-                        <select
+                        <label className="block text-sm font-medium mb-1">Department</label>
+                        <SearchableSelect
                             value={data.department_id}
-                            onChange={(e) => setData('department_id', e.target.value)}
-                            className="form-control"
-                        >
-                            <option value="">All Departments</option>
-                            {departments.map((d) => (
-                                <option key={d.id} value={d.id}>{d.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="flex justify-end gap-2 pt-4">
-                        <button
-                            type="button"
-                            onClick={() => setShowModal(false)}
-                            className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium"
-                        >
-                            Close
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={processing}
-                            className="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 disabled:opacity-50"
-                        >
-                            Create Admin
-                        </button>
+                            onChange={(val) => setData('department_id', val)}
+                            options={departments}
+                            placeholder="All Departments"
+                            error={errors.department_id}
+                        />
                     </div>
                 </form>
             </Modal>

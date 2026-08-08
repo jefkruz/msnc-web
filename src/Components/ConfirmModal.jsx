@@ -1,3 +1,6 @@
+import { useEffect, useRef } from 'react';
+import Modal from './Modal';
+
 export default function ConfirmModal({
     show,
     onClose,
@@ -8,39 +11,52 @@ export default function ConfirmModal({
     cancelLabel = 'Cancel',
     variant = 'danger',
 }) {
-    if (!show) return null;
-
+    const openedAt = useRef(0);
     const confirmClass = variant === 'danger' ? 'btn btn-danger' : 'btn btn-primary';
+    const icon = variant === 'danger' ? 'warning' : 'help';
+
+    useEffect(() => {
+        if (show) openedAt.current = Date.now();
+    }, [show]);
+
+    const closeFromBackdrop = () => {
+        if (Date.now() - openedAt.current < 300) return;
+        onClose?.();
+    };
 
     return (
-        <div className="portal-modal-backdrop" role="dialog" aria-modal="true">
-            <div className="portal-modal-backdrop__scrim" onClick={onClose} aria-hidden="true" />
-            <div className="portal-modal" onClick={(e) => e.stopPropagation()}>
-                <div className="portal-modal__header">
-                    <h3>{title}</h3>
-                    <button type="button" className="app-icon-btn" onClick={onClose} aria-label="Close">
-                        <span className="material-symbols-outlined">close</span>
-                    </button>
-                </div>
-                <div className="portal-modal__body">
-                    <p className="mb-0" style={{ color: 'var(--mca-on-surface-variant)' }}>{message}</p>
-                </div>
-                <div className="portal-modal__footer">
+        <Modal
+            show={show}
+            onClose={onClose}
+            onBackdropClick={closeFromBackdrop}
+            title={title}
+            size="sm"
+            footer={(
+                <>
                     <button type="button" className="btn btn-secondary" onClick={onClose}>
                         {cancelLabel}
                     </button>
                     <button
                         type="button"
                         className={confirmClass}
-                        onClick={() => {
-                            onConfirm();
-                            onClose();
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onConfirm?.();
+                            onClose?.();
                         }}
                     >
                         {confirmLabel}
                     </button>
-                </div>
+                </>
+            )}
+        >
+            <div className={`portal-confirm portal-confirm--${variant}`}>
+                <span className={`portal-confirm__icon portal-confirm__icon--${variant}`} aria-hidden="true">
+                    <span className="material-symbols-outlined">{icon}</span>
+                </span>
+                <p className="portal-confirm__message">{message}</p>
             </div>
-        </div>
+        </Modal>
     );
 }

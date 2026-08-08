@@ -2,8 +2,8 @@ import { Link, usePage, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import ConfirmModal from '../../Components/ConfirmModal';
 import EmptyState from '../../Components/EmptyState';
-import Alert from '../../Components/Alert';
-import { useState } from 'react';
+import SearchableSelect from '../../Components/SearchableSelect';
+import { useRef, useState } from 'react';
 import { useCan } from '../../lib/can';
 
 const STATUS_LABELS = {
@@ -24,31 +24,34 @@ export default function PersonnelInWaitingIndex({ personnel = [], departments = 
     const { auth, authRole, menu, appName } = usePage().props;
     const { can } = useCan();
     const [deleteId, setDeleteId] = useState(null);
+    const searchFormRef = useRef(null);
 
     const base = '/authorised/personnel-in-waiting';
 
-    const handleSearchSubmit = (e) => {
-        e.preventDefault();
-        const q = (e.currentTarget.search?.value ?? '').trim();
-        const status = e.currentTarget.status?.value ?? initialStatus;
+    const [statusFilter, setStatusFilter] = useState(initialStatus || '');
+
+    const applyFilters = (nextStatus, searchValue) => {
+        const q = (searchValue ?? '').trim();
         const params = {};
         if (q) params.search = q;
-        if (status) params.status = status;
+        if (nextStatus) params.status = nextStatus;
         router.get(base, params, { preserveState: false });
+    };
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        applyFilters(statusFilter, e.currentTarget.search?.value);
     };
 
     const exportHref = `/administrator/personnel-in-waiting/export?search=${encodeURIComponent(initialSearch || '')}&status=${encodeURIComponent(initialStatus || '')}`;
 
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Personnel in Waiting">
-            {usePage().props.flash?.message && (
-                <Alert type="success" message={usePage().props.flash.message} className="mb-6" />
-            )}
             <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
                 <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark flex items-center justify-between flex-wrap gap-2">
                     <div className="flex items-center gap-3 flex-wrap">
                         <h2 className="text-lg font-bold text-slate-900 dark:text-white">Personnel in Waiting</h2>
-                        <form onSubmit={handleSearchSubmit} className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                        <form ref={searchFormRef} onSubmit={handleSearchSubmit} className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
                             <div className="relative min-w-48 sm:min-w-64">
                                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-text-muted text-xl pointer-events-none">search</span>
                                 <input
@@ -59,26 +62,23 @@ export default function PersonnelInWaitingIndex({ personnel = [], departments = 
                                     className="w-full bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-lg pl-10 pr-4 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-text-muted"
                                 />
                             </div>
-                            <select
-                                name="status"
-                                defaultValue={initialStatus}
-                                onChange={(e) => {
-                                    const q = (e.currentTarget.form?.search?.value ?? '').trim();
-                                    const nextStatus = e.target.value;
-                                    const params = {};
-                                    if (q) params.search = q;
-                                    if (nextStatus) params.status = nextStatus;
-                                    router.get(base, params, { preserveState: false });
-                                }}
-                                className="w-full sm:w-auto min-w-[170px] bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white"
-                            >
-                                <option value="">All status</option>
-                                <option value="in_progress">In progress</option>
-                                <option value="due">Due</option>
-                                <option value="completed">Completed</option>
-                                <option value="rejected">Rejected</option>
-                                <option value="extended">Extended</option>
-                            </select>
+                            <div className="w-full sm:w-auto min-w-[170px]">
+                                <SearchableSelect
+                                    value={statusFilter}
+                                    onChange={(val) => {
+                                        setStatusFilter(val);
+                                        applyFilters(val, searchFormRef.current?.search?.value);
+                                    }}
+                                    options={[
+                                        { value: 'in_progress', label: 'In progress' },
+                                        { value: 'due', label: 'Due' },
+                                        { value: 'completed', label: 'Completed' },
+                                        { value: 'rejected', label: 'Rejected' },
+                                        { value: 'extended', label: 'Extended' },
+                                    ]}
+                                    placeholder="All status"
+                                />
+                            </div>
                         </form>
                     </div>
                     <div className="flex items-center gap-2">

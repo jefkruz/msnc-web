@@ -4,6 +4,7 @@ import Layout from '../../Components/Layout';
 import Modal from '../../Components/Modal';
 import ConfirmModal from '../../Components/ConfirmModal';
 import EmptyState from '../../Components/EmptyState';
+import SearchableSelect from '../../Components/SearchableSelect';
 
 const COMPANY_OPTIONS = [{ value: 'AMDL', label: 'AMDL' }, { value: 'MSNC', label: 'MSNC' }];
 
@@ -20,20 +21,23 @@ export default function DepartmentsIndex({ regionId, departments = [], regionNam
         return (d.name ?? '').toLowerCase().includes(q) || (d.company ?? '').toLowerCase().includes(q);
     });
     const { data, setData, post, processing, errors, reset, transform } = useForm({ name: '', company: 'AMDL' });
-    const { data: editData, setData: setEditData, put: putEdit, processing: editProcessing, errors: editErrors, reset: resetEdit } = useForm({ name: '', company: 'AMDL' });
+    const { data: editData, setData: setEditData, put: putEdit, processing: editProcessing, errors: editErrors, reset: resetEdit } = useForm({ name: '', company: 'AMDL', region_id: regionId });
 
     const handleSubmit = (e) => {
         e.preventDefault();
         transform((formData) => ({ ...formData, region_id: regionId }));
         post('/administrator/departments/store', {
             preserveScroll: true,
-            onSuccess: () => { setShowModal(false); reset({ name: '', company: 'AMDL' }); },
+            onSuccess: () => {
+                setShowModal(false);
+                reset({ name: '', company: 'AMDL' });
+            },
         });
     };
 
     const openEdit = (d) => {
         setEditDept(d);
-        setEditData({ name: d.name ?? '', company: d.company ?? 'AMDL' });
+        setEditData({ name: d.name ?? '', company: d.company ?? 'AMDL', region_id: regionId });
     };
 
     const handleEditSubmit = (e) => {
@@ -41,12 +45,16 @@ export default function DepartmentsIndex({ regionId, departments = [], regionNam
         if (!editDept?.id) return;
         putEdit(`/administrator/departments/update/${editDept.id}`, {
             preserveScroll: true,
-            onSuccess: () => { setEditDept(null); resetEdit({ name: '', company: 'AMDL' }); },
+            onSuccess: () => {
+                setEditDept(null);
+                resetEdit({ name: '', company: 'AMDL', region_id: regionId });
+            },
         });
     };
 
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle={regionName}>
+            <div className="space-y-4">
             <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
                 <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white">{regionName}</h2>
@@ -95,56 +103,92 @@ export default function DepartmentsIndex({ regionId, departments = [], regionNam
                     )}
                 </div>
             </div>
-            <Modal show={showModal} onClose={() => setShowModal(false)} title="Add Department">
-                <form onSubmit={handleSubmit} className="space-y-4">
+            <Modal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+                title="Add Department"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Close</button>
+                        <button type="submit" form="department-create" className="btn btn-primary" disabled={processing}>Add</button>
+                    </>
+                )}
+            >
+                <form id="department-create" onSubmit={handleSubmit} className="space-y-4">
                     {errors?.error && (
                         <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm">
                             {errors.error}
                         </div>
                     )}
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name</label>
+                        <label className="block text-sm font-medium mb-1">Name</label>
                         <input type="text" value={data.name} onChange={(e) => setData('name', e.target.value)} className="form-control" required />
                         {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Company</label>
-                        <select value={data.company} onChange={(e) => setData('company', e.target.value)} className="form-control" required>
-                            {COMPANY_OPTIONS.map((o) => (
-                                <option key={o.value} value={o.value}>{o.label}</option>
-                            ))}
-                        </select>
-                        {errors.company && <p className="text-red-500 text-xs mt-1">{errors.company}</p>}
-                    </div>
-                    <div className="flex justify-end gap-2 pt-4">
-                        <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">Close</button>
-                        <button type="submit" disabled={processing} className="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 disabled:opacity-50">Add</button>
+                        <label className="block text-sm font-medium mb-1">Company</label>
+                        <SearchableSelect
+                            value={data.company}
+                            onChange={(val) => setData('company', val)}
+                            options={COMPANY_OPTIONS}
+                            placeholder="Select company"
+                            required
+                            error={errors.company}
+                        />
                     </div>
                 </form>
             </Modal>
-            <Modal show={!!editDept} onClose={() => { setEditDept(null); resetEdit(); }} title="Edit Department">
-                <form onSubmit={handleEditSubmit} className="space-y-4">
+            <Modal
+                show={!!editDept}
+                onClose={() => { setEditDept(null); resetEdit(); }}
+                title="Edit Department"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => { setEditDept(null); resetEdit(); }}>Close</button>
+                        <button type="submit" form="department-edit" className="btn btn-primary" disabled={editProcessing}>Save</button>
+                    </>
+                )}
+            >
+                <form id="department-edit" onSubmit={handleEditSubmit} className="space-y-4">
+                    {editErrors?.error && (
+                        <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm">
+                            {editErrors.error}
+                        </div>
+                    )}
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name</label>
+                        <label className="block text-sm font-medium mb-1">Name</label>
                         <input type="text" value={editData.name} onChange={(e) => setEditData('name', e.target.value)} className="form-control" required />
                         {editErrors.name && <p className="text-red-500 text-xs mt-1">{editErrors.name}</p>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Company</label>
-                        <select value={editData.company} onChange={(e) => setEditData('company', e.target.value)} className="form-control" required>
-                            {COMPANY_OPTIONS.map((o) => (
-                                <option key={o.value} value={o.value}>{o.label}</option>
-                            ))}
-                        </select>
-                        {editErrors.company && <p className="text-red-500 text-xs mt-1">{editErrors.company}</p>}
-                    </div>
-                    <div className="flex justify-end gap-2 pt-4">
-                        <button type="button" onClick={() => { setEditDept(null); resetEdit(); }} className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">Close</button>
-                        <button type="submit" disabled={editProcessing} className="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 disabled:opacity-50">Save</button>
+                        <label className="block text-sm font-medium mb-1">Company</label>
+                        <SearchableSelect
+                            value={editData.company}
+                            onChange={(val) => setEditData('company', val)}
+                            options={COMPANY_OPTIONS}
+                            placeholder="Select company"
+                            required
+                            error={editErrors.company}
+                        />
                     </div>
                 </form>
             </Modal>
-            <ConfirmModal show={!!deleteId} onClose={() => setDeleteId(null)} onConfirm={() => { if (deleteId) { router.delete(`/administrator/departments/delete/${deleteId}`); setDeleteId(null); } }} title="Delete Department" message="Are you sure you want to delete this department?" confirmLabel="Delete" variant="danger" />
+            <ConfirmModal
+                show={!!deleteId}
+                onClose={() => setDeleteId(null)}
+                onConfirm={() => {
+                    if (!deleteId) return;
+                    router.delete(`/administrator/departments/delete/${deleteId}?region_id=${encodeURIComponent(regionId ?? '')}`, {
+                        preserveScroll: true,
+                    });
+                    setDeleteId(null);
+                }}
+                title="Delete Department"
+                message="Are you sure you want to delete this department?"
+                confirmLabel="Delete"
+                variant="danger"
+            />
+            </div>
         </Layout>
     );
 }

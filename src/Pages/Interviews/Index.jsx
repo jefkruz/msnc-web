@@ -17,6 +17,7 @@ export default function InterviewsIndex({ interviews = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
     const { can } = useCan();
     const [deleteId, setDeleteId] = useState(null);
+    const list = Array.isArray(interviews) ? interviews : [];
 
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Interviews">
@@ -38,7 +39,7 @@ export default function InterviewsIndex({ interviews = [] }) {
                     <div className="card-header">
                         <h3 className="card-title mb-0">All interviews</h3>
                     </div>
-                    {interviews.length === 0 ? (
+                    {list.length === 0 ? (
                         <EmptyState
                             icon="event_busy"
                             title="No interviews"
@@ -61,7 +62,7 @@ export default function InterviewsIndex({ interviews = [] }) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {interviews.map((inv, i) => (
+                                    {list.map((inv, i) => (
                                         <tr key={inv.id}>
                                             <td>{i + 1}</td>
                                             <td>
@@ -79,7 +80,9 @@ export default function InterviewsIndex({ interviews = [] }) {
                                             <td className="admin-table-actions">
                                                 <Link href={`/administrator/interviews/edit/${inv.id}`} className="btn btn-secondary btn-sm">Edit</Link>
                                                 <Link href={`/authorised/manage/${inv.id}`} className="btn btn-outline-primary btn-sm">Manage</Link>
-                                                <button type="button" onClick={() => setDeleteId(inv.id)} className="btn btn-outline-danger btn-sm">Delete</button>
+                                                {can('interviews.delete') && (
+                                                    <button type="button" onClick={() => setDeleteId(inv.id)} className="btn btn-outline-danger btn-sm">Delete</button>
+                                                )}
                                             </td>
                                         </tr>
                                     ))}

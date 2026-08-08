@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import ImpersonationBanner from './ImpersonationBanner';
+import { FlashAlerts } from '../lib/flash';
 
 export default function Layout({ auth, authRole, menu, appName, children, pageTitle }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -40,9 +41,13 @@ export default function Layout({ auth, authRole, menu, appName, children, pageTi
                 <ImpersonationBanner />
                 <Header
                     pageTitle={pageTitle}
+                    authRole={authRole}
                     onOpenSidebar={() => setSidebarOpen(true)}
                 />
-                <div className="app-content">{children}</div>
+                <div className="app-content">
+                    <FlashAlerts />
+                    {children}
+                </div>
                 <footer className="app-footer">
                     &copy; {new Date().getFullYear()} {appName || 'MSNC Recruitment'}
                 </footer>

@@ -2,6 +2,7 @@ import { useForm } from '@inertiajs/react';
 import { usePage, Link } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../../Components/Layout';
+import SearchableSelect from '../../Components/SearchableSelect';
 
 export default function PanelistInterviewManage({
     interview,
@@ -182,18 +183,18 @@ export default function PanelistInterviewManage({
                                                     onChange={(e) => setRecField(i, 'answer', e.target.value)}
                                                     className="form-control"
                                                 />
-                                                <select
+                                                <SearchableSelect
                                                     value={rec.score}
-                                                    onChange={(e) => setRecField(i, 'score', e.target.value)}
-                                                    className="rounded-lg border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark px-3 py-2 text-sm text-slate-900 dark:text-white"
-                                                >
-                                                    <option value="">Score (1–5)</option>
-                                                    <option value="1">1 - Poor</option>
-                                                    <option value="2">2 - Below Average</option>
-                                                    <option value="3">3 - Average</option>
-                                                    <option value="4">4 - Good</option>
-                                                    <option value="5">5 - Excellent</option>
-                                                </select>
+                                                    onChange={(val) => setRecField(i, 'score', val)}
+                                                    options={[
+                                                        { value: '1', label: '1 - Poor' },
+                                                        { value: '2', label: '2 - Below Average' },
+                                                        { value: '3', label: '3 - Average' },
+                                                        { value: '4', label: '4 - Good' },
+                                                        { value: '5', label: '5 - Excellent' },
+                                                    ]}
+                                                    placeholder="Score (1–5)"
+                                                />
                                             </div>
                                         </div>
                                     </div>
@@ -278,17 +279,17 @@ export default function PanelistInterviewManage({
                         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                             Final recommendation status
                         </label>
-                        <select
+                        <SearchableSelect
                             value={finalData.final_recommendation}
-                            onChange={(e) => setFinalData('final_recommendation', e.target.value)}
-                            className="form-control"
-                        >
-                            <option value="">Select...</option>
-                            <option value="strongly_recommended">Strongly recommended</option>
-                            <option value="recommended">Recommended</option>
-                            <option value="conditional">Conditional</option>
-                            <option value="not_recommended">Not recommended</option>
-                        </select>
+                            onChange={(val) => setFinalData('final_recommendation', val)}
+                            options={[
+                                { value: 'strongly_recommended', label: 'Strongly recommended' },
+                                { value: 'recommended', label: 'Recommended' },
+                                { value: 'conditional', label: 'Conditional' },
+                                { value: 'not_recommended', label: 'Not recommended' },
+                            ]}
+                            placeholder="Select..."
+                        />
                     </div>
                     <button
                         type="submit"

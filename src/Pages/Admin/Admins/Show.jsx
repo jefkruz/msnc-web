@@ -1,8 +1,13 @@
-import { Link, usePage } from '@inertiajs/react';
+import { useState } from 'react';
+import { Link, usePage, router } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
+import ConfirmModal from '../../../Components/ConfirmModal';
+import { useCan } from '../../../lib/can';
 
 export default function AdminsShow({ admin }) {
     const { auth, authRole, menu, appName } = usePage().props;
+    const { can } = useCan();
+    const [confirmDelete, setConfirmDelete] = useState(false);
     if (!admin) return null;
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle={admin.name}>
@@ -15,10 +20,22 @@ export default function AdminsShow({ admin }) {
                         <div><dt className="text-xs font-medium text-text-muted uppercase">Department</dt><dd className="text-slate-900 dark:text-white">{admin.department?.name ?? 'ALL'}</dd></div>
                     </dl>
                 </div>
-                <div className="flex gap-3">
-                    <Link href={`/administrator/admins/${admin.id}/edit`} className="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90">Edit</Link>
-                    <Link href="/administrator/admins" className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">Back to list</Link>
+                <div className="flex flex-wrap gap-3">
+                    <Link href={`/administrator/admins/${admin.id}/edit`} className="btn btn-primary">Edit</Link>
+                    <Link href="/administrator/admins" className="btn btn-secondary">Back to list</Link>
+                    {can('admins.delete') && (
+                        <button type="button" className="btn btn-danger ml-auto" onClick={() => setConfirmDelete(true)}>Delete</button>
+                    )}
                 </div>
+                <ConfirmModal
+                    show={confirmDelete}
+                    onClose={() => setConfirmDelete(false)}
+                    onConfirm={() => router.delete(`/administrator/admins/${admin.id}`)}
+                    title="Delete Administrator"
+                    message={`Are you sure you want to delete ${admin.name}? This cannot be undone.`}
+                    confirmLabel="Delete"
+                    variant="danger"
+                />
             </div>
         </Layout>
     );

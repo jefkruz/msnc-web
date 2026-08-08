@@ -11,6 +11,7 @@ function statusClass(s) {
 
 export default function SdmInterviews({ interviews = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
+    const list = Array.isArray(interviews) ? interviews : [];
 
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Interviews">
@@ -19,7 +20,7 @@ export default function SdmInterviews({ interviews = [] }) {
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white">Interviews</h2>
                 </div>
                 <div className="overflow-x-auto">
-                    {interviews.length === 0 ? (
+                    {list.length === 0 ? (
                         <div className="p-12 text-center text-slate-500 dark:text-text-muted">
                             No interviews in your department yet.
                         </div>
@@ -37,7 +38,7 @@ export default function SdmInterviews({ interviews = [] }) {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-200 dark:divide-border-dark">
-                                {interviews.map((inv, i) => (
+                                {list.map((inv, i) => (
                                     <tr key={inv.id} className="hover:bg-slate-50 dark:hover:bg-white/5">
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{i + 1}</td>
                                         <td className="px-6 py-4">

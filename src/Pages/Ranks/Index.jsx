@@ -1,28 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useForm, usePage, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import Modal from '../../Components/Modal';
 import ConfirmModal from '../../Components/ConfirmModal';
 import EmptyState from '../../Components/EmptyState';
-import Alert from '../../Components/Alert';
 
 const RANKS_BASE = '/administrator/ranks';
 
 export default function RanksIndex() {
-    const { auth, authRole, menu, appName, ranks = [], flash } = usePage().props;
+    const { auth, authRole, menu, appName, ranks = [] } = usePage().props;
     const ranksList = Array.isArray(ranks) ? ranks : [];
     const [showModal, setShowModal] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
-    const [showFlash, setShowFlash] = useState(false);
     const { data, setData, post, processing, errors, reset } = useForm({ name: '' });
-
-    useEffect(() => {
-        if (flash?.message) {
-            setShowFlash(true);
-            const t = setTimeout(() => setShowFlash(false), 4000);
-            return () => clearTimeout(t);
-        }
-    }, [flash?.message]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -44,7 +34,7 @@ export default function RanksIndex() {
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Ranks">
             <div className="space-y-6">
-                {/* Back + flash */}
+                {/* Back */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <Link
                         href="/administrator/menu"
@@ -54,10 +44,6 @@ export default function RanksIndex() {
                         Back to Administration
                     </Link>
                 </div>
-
-                {showFlash && flash?.message && (
-                    <Alert type="success" message={flash.message} onDismiss={() => setShowFlash(false)} />
-                )}
 
                 <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
                     <div className="px-4 sm:px-6 py-4 border-b border-slate-200 dark:border-border-dark flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -127,12 +113,20 @@ export default function RanksIndex() {
                 </div>
             </div>
 
-            <Modal show={showModal} onClose={() => setShowModal(false)} title="Create Rank">
-                <form onSubmit={handleSubmit} className="space-y-4">
+            <Modal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+                title="Create Rank"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                        <button type="submit" form="rank-create" className="btn btn-primary" disabled={processing}>Create Rank</button>
+                    </>
+                )}
+            >
+                <form id="rank-create" onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                            Name
-                        </label>
+                        <label className="block text-sm font-medium mb-1">Name</label>
                         <input
                             type="text"
                             value={data.name}
@@ -145,22 +139,6 @@ export default function RanksIndex() {
                         {errors.name && (
                             <p className="text-red-500 text-xs mt-1">{errors.name}</p>
                         )}
-                    </div>
-                    <div className="flex justify-end gap-2 pt-4">
-                        <button
-                            type="button"
-                            onClick={() => setShowModal(false)}
-                            className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium hover:bg-slate-50 dark:hover:bg-white/10 transition-colors"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={processing}
-                            className="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors"
-                        >
-                            Create Rank
-                        </button>
                     </div>
                 </form>
             </Modal>

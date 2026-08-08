@@ -1,11 +1,14 @@
-import { Link, usePage } from '@inertiajs/react';
+import { useState } from 'react';
+import { Link, usePage, router } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
+import ConfirmModal from '../../../Components/ConfirmModal';
 import LoginAsButton from '../../../Components/LoginAsButton';
 import { useCan } from '../../../lib/can';
 
 export default function SdmsShow({ sdm }) {
     const { auth, authRole, menu, appName } = usePage().props;
     const { can } = useCan();
+    const [confirmDelete, setConfirmDelete] = useState(false);
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle={sdm?.name ?? 'SDM'}>
             <div className="max-w-xl mx-auto space-y-6">
@@ -27,8 +30,20 @@ export default function SdmsShow({ sdm }) {
                             <span className="material-symbols-outlined text-lg">edit</span>
                             Edit SDM
                         </Link>
+                        {can('sdms.delete') && sdm?.id && (
+                            <button type="button" className="btn btn-danger" onClick={() => setConfirmDelete(true)}>Delete</button>
+                        )}
                     </div>
                 </div>
+                <ConfirmModal
+                    show={confirmDelete}
+                    onClose={() => setConfirmDelete(false)}
+                    onConfirm={() => router.delete(`/administrator/sdms/${sdm.id}`)}
+                    title="Delete SDM"
+                    message={`Are you sure you want to delete ${sdm?.name}? This cannot be undone.`}
+                    confirmLabel="Delete"
+                    variant="danger"
+                />
             </div>
         </Layout>
     );

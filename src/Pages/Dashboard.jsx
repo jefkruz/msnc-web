@@ -7,6 +7,8 @@ export default function Dashboard({
     interviews = 0,
     personnelInWaiting = 0,
     users = 0,
+    stakeholders = 0,
+    postingRecommendations = 0,
     greeting = 'Good morning',
     charts = null,
 }) {
@@ -20,7 +22,9 @@ export default function Dashboard({
         { label: 'Users', href: '/administrator/tbl-users', value: users, hint: 'Staff records', icon: 'badge' },
         { label: 'Personnel in waiting', href: '/authorised/personnel-in-waiting', value: personnelInWaiting, hint: 'Active waiting list', icon: 'hourglass_top' },
         { label: 'Interviews', href: '/administrator/interviews', value: interviews, hint: 'Scheduled & completed', icon: 'event_available' },
-        { label: 'Administration', href: '/administrator/menu', value: 7, hint: 'Setup & stakeholders', icon: 'admin_panel_settings' },
+        { label: 'Posting recommendations', href: '/administrator/posting-recommendations', value: postingRecommendations, hint: 'Placement recommendations', icon: 'recommend' },
+        { label: 'Administration', href: '/administrator/menu', value: 5, hint: 'Setup & catalogues', icon: 'admin_panel_settings' },
+        { label: 'Stakeholders', href: '/administrator/stakeholders', value: stakeholders, hint: 'SDMs, panelists, directors & admins', icon: 'groups' },
     ];
 
     return (
@@ -33,7 +37,7 @@ export default function Dashboard({
                     </p>
                 </div>
 
-                <div className="dash-kpi-grid dash-kpi-grid--5">
+                <div className="dash-kpi-grid dash-kpi-grid--3">
                     {kpis.map((kpi) => (
                         <Link key={kpi.label} href={kpi.href} className="dash-kpi">
                             <span className="dash-kpi__icon" aria-hidden="true">
@@ -106,7 +110,7 @@ export default function Dashboard({
                                 <span className="material-symbols-outlined">person_add</span>
                                 Add applicant
                             </Link>
-                            <Link href="/administrator/interviews" className="quick-action">
+                            <Link href="/administrator/interviews/create" className="quick-action">
                                 <span className="material-symbols-outlined">event_note</span>
                                 Schedule interview
                             </Link>

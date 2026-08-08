@@ -3,7 +3,6 @@ import Layout from '../../../Components/Layout';
 import Modal from '../../../Components/Modal';
 import ConfirmModal from '../../../Components/ConfirmModal';
 import EmptyState from '../../../Components/EmptyState';
-import Alert from '../../../Components/Alert';
 import SearchableSelect from '../../../Components/SearchableSelect';
 import { useState } from 'react';
 
@@ -31,9 +30,6 @@ export default function PanelistsIndex({ panelists = [], departments = [] }) {
 
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Panelists">
-            {usePage().props.flash?.message && (
-                <Alert type="success" message={usePage().props.flash.message} className="mb-6" />
-            )}
             <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
                 <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark flex items-center justify-between">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white">Panelists</h2>
@@ -79,10 +75,20 @@ export default function PanelistsIndex({ panelists = [], departments = [] }) {
                 </div>
             </div>
 
-            <Modal show={showModal} onClose={() => setShowModal(false)} title="Create Panelist" size="md">
-                <form onSubmit={handleCreateSubmit} className="space-y-4">
+            <Modal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+                title="Create Panelist"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Close</button>
+                        <button type="submit" form="panelist-create" className="btn btn-primary" disabled={processing}>Create Panelist</button>
+                    </>
+                )}
+            >
+                <form id="panelist-create" onSubmit={handleCreateSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+                        <label className="block text-sm font-medium mb-1">Full Name</label>
                         <input
                             type="text"
                             value={data.name}
@@ -93,7 +99,7 @@ export default function PanelistsIndex({ panelists = [], departments = [] }) {
                         {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Username</label>
+                        <label className="block text-sm font-medium mb-1">Username</label>
                         <input
                             type="text"
                             value={data.username}
@@ -104,7 +110,7 @@ export default function PanelistsIndex({ panelists = [], departments = [] }) {
                         {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username}</p>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Department</label>
+                        <label className="block text-sm font-medium mb-1">Department</label>
                         <SearchableSelect
                             value={data.department_id}
                             onChange={(v) => setData('department_id', v)}
@@ -115,23 +121,6 @@ export default function PanelistsIndex({ panelists = [], departments = [] }) {
                             getOptionLabel={(d) => d.name}
                             error={errors.department_id}
                         />
-                        {errors.department_id && <p className="text-red-500 text-xs mt-1">{errors.department_id}</p>}
-                    </div>
-                    <div className="flex justify-end gap-2 pt-4">
-                        <button
-                            type="button"
-                            onClick={() => setShowModal(false)}
-                            className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium"
-                        >
-                            Close
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={processing}
-                            className="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 disabled:opacity-50"
-                        >
-                            Create Panelist
-                        </button>
                     </div>
                 </form>
             </Modal>

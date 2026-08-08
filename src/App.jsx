@@ -72,12 +72,20 @@ import {
   PersonnelEdit,
 } from './pages.lazy';
 
+function StaticShell({ children }) {
+  return (
+    <PageProvider value={{ appName: import.meta.env.VITE_APP_NAME || 'MSNC Recruitment' }}>
+      {children}
+    </PageProvider>
+  );
+}
+
 function LoginRoute() {
   const { role } = useParams();
   return (
-    <PageProvider value={{ appName: import.meta.env.VITE_APP_NAME || 'MSNC Recruitment' }}>
+    <StaticShell>
       <Login role={role} />
-    </PageProvider>
+    </StaticShell>
   );
 }
 
@@ -97,7 +105,7 @@ export default function App() {
         element={<ApiPage endpoint="/opportunity-to-work-in-ministry/success" component={RegistrationSuccess} />}
       />
       <Route path="/login/:role" element={<LoginRoute />} />
-      <Route path="/auth/error" element={<AuthError />} />
+      <Route path="/auth/error" element={<StaticShell><AuthError /></StaticShell>} />
 
       {/* Applicant */}
       <Route path="/applicant" element={<ApiPage endpoint="/applicant" component={BiodataForm} />} />
@@ -174,9 +182,10 @@ export default function App() {
       <Route path="/panelist/recommendations" element={<ApiPage endpoint="/panelist/recommendations" component={PanelistRecommendationsIndex} />} />
       <Route path="/panelist/interview/:interviewId/manage" element={<ApiPage endpoint={(p) => `/panelist/interview/${p.interviewId}/manage`} component={PanelistInterviewManage} />} />
 
-      <Route path="/403" element={<Error403 />} />
-      <Route path="/500" element={<Error500 />} />
-      <Route path="*" element={<Error404 />} />
+      <Route path="/403" element={<StaticShell><Error403 /></StaticShell>} />
+      <Route path="/404" element={<StaticShell><Error404 /></StaticShell>} />
+      <Route path="/500" element={<StaticShell><Error500 /></StaticShell>} />
+      <Route path="*" element={<StaticShell><Error404 /></StaticShell>} />
     </Routes>
     </Suspense>
   );

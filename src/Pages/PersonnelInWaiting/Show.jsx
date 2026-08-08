@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { usePage, Link, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import Modal from '../../Components/Modal';
-import Alert from '../../Components/Alert';
+import ConfirmModal from '../../Components/ConfirmModal';
+import { useCan } from '../../lib/can';
 
 const STATUS_LABELS = {
     in_progress: 'In progress',
@@ -20,9 +21,11 @@ function formatDate(d) {
 
 export default function PersonnelInWaitingShow({ person, departments = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
+    const { can } = useCan();
     const [completeModal, setCompleteModal] = useState(false);
     const [extendModal, setExtendModal] = useState(false);
     const [rejectModal, setRejectModal] = useState(false);
+    const [confirmDelete, setConfirmDelete] = useState(false);
     const [completeRemarks, setCompleteRemarks] = useState('');
     const [extendEndDate, setExtendEndDate] = useState(() => {
         const d = person?.end_date;
@@ -64,21 +67,21 @@ export default function PersonnelInWaitingShow({ person, departments = [] }) {
 
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle={name || 'Personnel in Waiting'}>
-            {usePage().props.flash?.message && (
-                <Alert type="success" message={usePage().props.flash.message} className="mb-6" />
-            )}
             <div className="max-w-3xl space-y-6">
                 <div className="flex items-center justify-between">
                     <Link href={base} className="text-sm font-medium text-primary hover:underline flex items-center gap-1">
                         <span className="material-symbols-outlined text-lg">arrow_back</span> Back to list
                     </Link>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                         <Link
                             href={`${base}/${id}/edit`}
                             className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium text-sm"
                         >
                             <span className="material-symbols-outlined text-lg">edit</span> Edit
                         </Link>
+                        {can('personnel-in-waiting.delete') && id && (
+                            <button type="button" className="btn btn-danger" onClick={() => setConfirmDelete(true)}>Delete</button>
+                        )}
                         {canAct && (
                             <>
                                 <button
@@ -145,10 +148,20 @@ export default function PersonnelInWaitingShow({ person, departments = [] }) {
                 </div>
             </div>
 
-            <Modal show={completeModal} onClose={() => setCompleteModal(false)} title="Mark as completed">
-                <form onSubmit={handleComplete} className="space-y-4">
+            <Modal
+                show={completeModal}
+                onClose={() => setCompleteModal(false)}
+                title="Mark as completed"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setCompleteModal(false)}>Cancel</button>
+                        <button type="submit" form="piw-complete" className="btn btn-success">Confirm completed</button>
+                    </>
+                )}
+            >
+                <form id="piw-complete" onSubmit={handleComplete} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Remarks (optional)</label>
+                        <label className="block text-sm font-medium mb-1">Remarks (optional)</label>
                         <textarea
                             value={completeRemarks}
                             onChange={(e) => setCompleteRemarks(e.target.value)}
@@ -157,17 +170,23 @@ export default function PersonnelInWaitingShow({ person, departments = [] }) {
                             placeholder="Add any remarks..."
                         />
                     </div>
-                    <div className="flex justify-end gap-2">
-                        <button type="button" onClick={() => setCompleteModal(false)} className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">Cancel</button>
-                        <button type="submit" className="px-4 py-2 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700">Confirm completed</button>
-                    </div>
                 </form>
             </Modal>
 
-            <Modal show={extendModal} onClose={() => setExtendModal(false)} title="Extend end date">
-                <form onSubmit={handleExtend} className="space-y-4">
+            <Modal
+                show={extendModal}
+                onClose={() => setExtendModal(false)}
+                title="Extend end date"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setExtendModal(false)}>Cancel</button>
+                        <button type="submit" form="piw-extend" className="btn btn-primary">Extend</button>
+                    </>
+                )}
+            >
+                <form id="piw-extend" onSubmit={handleExtend} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">New end date <span className="text-red-500">*</span></label>
+                        <label className="block text-sm font-medium mb-1">New end date <span className="text-red-500">*</span></label>
                         <input
                             type="date"
                             value={extendEndDate}
@@ -177,17 +196,23 @@ export default function PersonnelInWaitingShow({ person, departments = [] }) {
                             required
                         />
                     </div>
-                    <div className="flex justify-end gap-2">
-                        <button type="button" onClick={() => setExtendModal(false)} className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">Cancel</button>
-                        <button type="submit" className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700">Extend</button>
-                    </div>
                 </form>
             </Modal>
 
-            <Modal show={rejectModal} onClose={() => setRejectModal(false)} title="Reject personnel">
-                <form onSubmit={handleReject} className="space-y-4">
+            <Modal
+                show={rejectModal}
+                onClose={() => setRejectModal(false)}
+                title="Reject personnel"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setRejectModal(false)}>Cancel</button>
+                        <button type="submit" form="piw-reject" className="btn btn-danger">Reject</button>
+                    </>
+                )}
+            >
+                <form id="piw-reject" onSubmit={handleReject} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Remarks (optional)</label>
+                        <label className="block text-sm font-medium mb-1">Remarks (optional)</label>
                         <textarea
                             value={rejectRemarks}
                             onChange={(e) => setRejectRemarks(e.target.value)}
@@ -196,12 +221,17 @@ export default function PersonnelInWaitingShow({ person, departments = [] }) {
                             placeholder="Reason or remarks..."
                         />
                     </div>
-                    <div className="flex justify-end gap-2">
-                        <button type="button" onClick={() => setRejectModal(false)} className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">Cancel</button>
-                        <button type="submit" className="px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700">Reject</button>
-                    </div>
                 </form>
             </Modal>
+            <ConfirmModal
+                show={confirmDelete}
+                onClose={() => setConfirmDelete(false)}
+                onConfirm={() => router.delete(`${base}/${id}`)}
+                title="Remove personnel"
+                message="Are you sure you want to remove this person from the list? This cannot be undone."
+                confirmLabel="Remove"
+                variant="danger"
+            />
         </Layout>
     );
 }

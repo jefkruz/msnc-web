@@ -2,11 +2,10 @@ import { Link, useForm, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
 import Layout from '../../../Components/Layout';
 import PostingRecommendationForm from '../../../Components/PostingRecommendationForm';
-
-const inputClass = 'form-control';
+import SearchableSelect from '../../../Components/SearchableSelect';
 
 export default function PostingRecommendationsCreate({ applicants = [], interviews = [] }) {
-    const { auth, authRole, menu, appName, flash } = usePage().props;
+    const { auth, authRole, menu, appName } = usePage().props;
     const [selectedInterviewId, setSelectedInterviewId] = useState('');
     const [generating, setGenerating] = useState(false);
 
@@ -88,18 +87,14 @@ export default function PostingRecommendationsCreate({ applicants = [], intervie
                     <div className="p-6 flex flex-wrap items-end gap-4">
                         <div className="flex-1 min-w-[200px]">
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Select interview</label>
-                            <select
+                            <SearchableSelect
                                 value={selectedInterviewId}
-                                onChange={(e) => setSelectedInterviewId(e.target.value)}
-                                className={inputClass}
-                            >
-                                <option value="">— Select an interview —</option>
-                                {interviewList.map((i) => (
-                                    <option key={i?.id ?? i} value={i?.id ?? ''}>
-                                        {i?.applicant_name ?? '—'} – {i?.date ?? ''} ({i?.department_name ?? '—'})
-                                    </option>
-                                ))}
-                            </select>
+                                onChange={(val) => setSelectedInterviewId(val)}
+                                options={interviewList}
+                                placeholder="Select an interview"
+                                getOptionValue={(i) => i?.id ?? ''}
+                                getOptionLabel={(i) => `${i?.applicant_name ?? '—'} – ${i?.date ?? ''} (${i?.department_name ?? '—'})`}
+                            />
                         </div>
                         <button
                             type="button"
@@ -113,11 +108,6 @@ export default function PostingRecommendationsCreate({ applicants = [], intervie
                     </div>
                 </div>
 
-                {flash?.error && (
-                    <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm">
-                        {flash.error}
-                    </div>
-                )}
                 <div className="text-slate-500 dark:text-text-muted text-sm border-t border-slate-200 dark:border-border-dark pt-4">
                     Or create manually below by selecting an applicant and filling the sections.
                 </div>

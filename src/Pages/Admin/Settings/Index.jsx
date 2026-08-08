@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { useForm, usePage } from '@inertiajs/react';
+import { Link, useForm, usePage } from '@inertiajs/react';
 import Layout from '../../../Components/Layout';
 import Alert from '../../../Components/Alert';
+import { useCan } from '../../../lib/can';
 
 const labelClass = 'block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1';
 const inputClass =
@@ -32,7 +33,8 @@ function Field({ label, className = '', children }) {
 }
 
 export default function SettingsIndex({ branding = {}, home = {}, kc = {}, settingsReady = true }) {
-    const { auth, authRole, menu, appName, flash } = usePage().props;
+    const { auth, authRole, menu, appName } = usePage().props;
+    const { can } = useCan();
     const [tab, setTab] = useState(() => {
         if (typeof window === 'undefined') return 'site';
         return new URLSearchParams(window.location.search).get('tab') === 'kc' ? 'kc' : 'site';
@@ -122,9 +124,24 @@ export default function SettingsIndex({ branding = {}, home = {}, kc = {}, setti
                 <div>
                     <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Settings</h2>
                     <p className="text-sm text-slate-500 dark:text-text-muted mt-1">
-                        Manage site branding, public content, and KingsChat applicant notifications.
+                        Manage site branding, KingsChat notifications, and access roles.
                     </p>
                 </div>
+
+                {can('roles.view') && (
+                    <div className="dash-kpi-grid dash-kpi-grid--3">
+                        <Link href="/administrator/roles" className="dash-kpi">
+                            <span className="dash-kpi__icon" aria-hidden="true">
+                                <span className="material-symbols-outlined">admin_panel_settings</span>
+                            </span>
+                            <div className="dash-kpi__content">
+                                <p className="dash-kpi__label">Roles &amp; permissions</p>
+                                <p className="dash-kpi__value">—</p>
+                                <p className="dash-kpi__hint">Create roles and assign permissions</p>
+                            </div>
+                        </Link>
+                    </div>
+                )}
 
                 <div className="flex flex-wrap gap-2 border-b border-slate-200 dark:border-border-dark pb-px">
                     <button
@@ -151,7 +168,6 @@ export default function SettingsIndex({ branding = {}, home = {}, kc = {}, setti
                     </button>
                 </div>
 
-                {flash?.message && <Alert type="success" message={flash.message} />}
                 {!settingsReady && (
                     <Alert
                         type="error"

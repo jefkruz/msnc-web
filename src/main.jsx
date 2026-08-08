@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import { FlashProvider } from './lib/flash';
 import './css/portal-theme.css';
 import './css/portal-app.css';
 import './css/portal-alerts.css';
@@ -14,7 +15,9 @@ import './css/app.css';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <FlashProvider>
+        <App />
+      </FlashProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

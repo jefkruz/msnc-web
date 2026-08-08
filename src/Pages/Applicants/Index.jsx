@@ -2,7 +2,7 @@ import { Link, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
 import Layout from '../../Components/Layout';
 import ConfirmModal from '../../Components/ConfirmModal';
-import Alert from '../../Components/Alert';
+import SearchableSelect from '../../Components/SearchableSelect';
 import { useCan } from '../../lib/can';
 
 const MONTH_NAMES = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -25,9 +25,14 @@ function formatInterviewSummary(interviews) {
 }
 
 export default function Index({ applicants = [], departments = [], search: initialSearch = '', filterMonth = null, filterYear = null, monthsWithApplicants = [] }) {
-    const { auth, authRole, menu, appName, flash } = usePage().props;
+    const { auth, authRole, menu, appName } = usePage().props;
     const { can } = useCan();
     const [deleteId, setDeleteId] = useState(null);
+    const [departmentId, setDepartmentId] = useState('');
+
+    const visibleApplicants = departmentId
+        ? applicants.filter((a) => String(a.department_id ?? a.department?.id) === String(departmentId))
+        : applicants;
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
@@ -40,13 +45,12 @@ export default function Index({ applicants = [], departments = [], search: initi
         router.get('/administrator/applicants', params, { preserveState: false });
     };
 
-    const handleMonthChange = (e) => {
-        const v = e.target.value;
+    const handleMonthChange = (v) => {
         if (!v) {
             router.get('/administrator/applicants', { search: initialSearch || undefined }, { preserveState: false });
             return;
         }
-        const [y, m] = v.split('-').map(Number);
+        const [y, m] = String(v).split('-').map(Number);
         const params = { month: m, year: y };
         if (initialSearch) params.search = initialSearch;
         router.get('/administrator/applicants', params, { preserveState: false });
@@ -80,8 +84,6 @@ export default function Index({ applicants = [], departments = [], search: initi
                     </div>
                 </div>
 
-                {flash?.message && <Alert type="success" message={flash.message} />}
-
                 <div className="card">
                     <div className="card-header">
                         <h3 className="card-title mb-0">All applicants</h3>
@@ -96,25 +98,27 @@ export default function Index({ applicants = [], departments = [], search: initi
                                 className="form-control"
                                 style={{ maxWidth: 280 }}
                             />
-                            <select
-                                value={filterMonth && filterYear ? `${filterYear}-${filterMonth}` : ''}
-                                onChange={handleMonthChange}
-                                className="form-control"
-                                style={{ maxWidth: 200 }}
-                            >
-                                <option value="">All months</option>
-                                {monthsWithApplicants.map(({ year, month }) => (
-                                    <option key={`${year}-${month}`} value={`${year}-${month}`}>
-                                        {MONTH_NAMES[month]} {year}
-                                    </option>
-                                ))}
-                            </select>
-                            <select className="form-control" style={{ maxWidth: 200 }}>
-                                <option>All departments</option>
-                                {departments.map((d) => (
-                                    <option key={d.id} value={d.id}>{d.name}</option>
-                                ))}
-                            </select>
+                            <div style={{ maxWidth: 200, minWidth: 160 }}>
+                                <SearchableSelect
+                                    value={filterMonth && filterYear ? `${filterYear}-${filterMonth}` : ''}
+                                    onChange={handleMonthChange}
+                                    options={monthsWithApplicants.map(({ year, month }) => ({
+                                        value: `${year}-${month}`,
+                                        label: `${MONTH_NAMES[month]} ${year}`,
+                                    }))}
+                                    placeholder="All months"
+                                />
+                            </div>
+                            <div style={{ maxWidth: 200, minWidth: 160 }}>
+                                <SearchableSelect
+                                    value={departmentId}
+                                    onChange={setDepartmentId}
+                                    options={departments}
+                                    placeholder="All departments"
+                                    getOptionValue={(d) => d.id}
+                                    getOptionLabel={(d) => d.name}
+                                />
+                            </div>
                             <button type="submit" className="btn btn-outline-primary btn-sm">Search</button>
                         </form>
                     </div>
@@ -132,14 +136,14 @@ export default function Index({ applicants = [], departments = [], search: initi
                                 </tr>
                             </thead>
                             <tbody>
-                                {applicants.length === 0 ? (
+                                {visibleApplicants.length === 0 ? (
                                     <tr>
                                         <td colSpan={7} className="text-center">
-                                            {initialSearch ? 'No applicants match your search.' : (filterMonth && filterYear) ? `No applicants in ${MONTH_NAMES[filterMonth]} ${filterYear}.` : 'No applicants yet.'}
+                                            {initialSearch ? 'No applicants match your search.' : (filterMonth && filterYear) ? `No applicants in ${MONTH_NAMES[filterMonth]} ${filterYear}.` : departmentId ? 'No applicants in this department.' : 'No applicants yet.'}
                                         </td>
                                     </tr>
                                 ) : (
-                                    applicants.map((applicant, i) => (
+                                    visibleApplicants.map((applicant, i) => (
                                         <tr key={applicant.id}>
                                             <td className="js-row-sn">{i + 1}</td>
                                             <td>
@@ -169,9 +173,9 @@ export default function Index({ applicants = [], departments = [], search: initi
                             </tbody>
                         </table>
                     </div>
-                    {applicants.length > 0 && (
+                    {visibleApplicants.length > 0 && (
                         <div className="card-footer">
-                            Showing 1-{applicants.length} of {applicants.length} applicants
+                            Showing 1-{visibleApplicants.length} of {visibleApplicants.length} applicants
                         </div>
                     )}
                 </div>

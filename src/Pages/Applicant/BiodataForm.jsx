@@ -1,5 +1,6 @@
 import { useForm, usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
+import SearchableSelect from '../../Components/SearchableSelect';
 
 const inputClass =
     'form-control';
@@ -38,7 +39,7 @@ function formatBirthday(day, month) {
 }
 
 export default function BiodataForm({ biodata = null, applicant = null }) {
-    const { auth, authRole, menu = [], appName, flash } = usePage().props;
+    const { auth, authRole, menu = [], appName } = usePage().props;
 
     const workHistory = Array.isArray(biodata?.work_history) && biodata.work_history.length > 0
         ? biodata.work_history
@@ -90,14 +91,9 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Biodata">
             <div className="max-w-4xl mx-auto pb-12">
-                {flash?.message && (
-                    <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-sm">
-                        {flash.message}
-                    </div>
-                )}
-                {(flash?.error || errors.form) && (
+                {errors.form && (
                     <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm" role="alert">
-                        {flash?.error || errors.form}
+                        {errors.form}
                     </div>
                 )}
                 {Object.keys(errors).filter((key) => key !== 'form' && key !== 'cv').length > 0 && (
@@ -149,21 +145,29 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
                             </div>
                             <div>
                                 <label className={labelClass}>Marital status</label>
-                                <select value={data.marital_status} onChange={(e) => setData('marital_status', e.target.value)} className={inputClass}>
-                                    <option value="">Select</option>
-                                    <option value="Single">Single</option>
-                                    <option value="Married">Married</option>
-                                    <option value="Divorced">Divorced</option>
-                                    <option value="Widowed">Widowed</option>
-                                </select>
+                                <SearchableSelect
+                                    value={data.marital_status}
+                                    onChange={(val) => setData('marital_status', val)}
+                                    options={[
+                                        { value: 'Single', label: 'Single' },
+                                        { value: 'Married', label: 'Married' },
+                                        { value: 'Divorced', label: 'Divorced' },
+                                        { value: 'Widowed', label: 'Widowed' },
+                                    ]}
+                                    placeholder="Select"
+                                />
                             </div>
                             <div>
                                 <label className={labelClass}>Gender</label>
-                                <select value={data.gender} onChange={(e) => setData('gender', e.target.value)} className={inputClass}>
-                                    <option value="">Select</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
+                                <SearchableSelect
+                                    value={data.gender}
+                                    onChange={(val) => setData('gender', val)}
+                                    options={[
+                                        { value: 'Male', label: 'Male' },
+                                        { value: 'Female', label: 'Female' },
+                                    ]}
+                                    placeholder="Select"
+                                />
                             </div>
                             <div>
                                 <label className={labelClass}>Date of birth</label>
@@ -185,11 +189,15 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
                         <div className="p-6 space-y-4">
                             <div>
                                 <label className={labelClass}>Are you a Christian?</label>
-                                <select value={data.is_christian === null ? '' : (data.is_christian ? '1' : '0')} onChange={(e) => setData('is_christian', e.target.value === '' ? null : e.target.value === '1')} className={inputClass}>
-                                    <option value="">Select</option>
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                </select>
+                                <SearchableSelect
+                                    value={data.is_christian === null ? '' : (data.is_christian ? '1' : '0')}
+                                    onChange={(val) => setData('is_christian', val === '' ? null : val === '1')}
+                                    options={[
+                                        { value: '1', label: 'Yes' },
+                                        { value: '0', label: 'No' },
+                                    ]}
+                                    placeholder="Select"
+                                />
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>

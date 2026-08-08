@@ -39,6 +39,10 @@
   color: #fff !important;
 }
 
+.btn-primary:hover {
+  filter: brightness(1.12);
+}
+
 .btn-success {
   background: #1f7a4d;
   border-color: #1f7a4d;
@@ -57,6 +61,11 @@
   color: #fff !important;
 }
 
+.btn-danger:hover,
+.btn-success:hover {
+  filter: brightness(1.08);
+}
+
 .btn-warning {
   background: #d97706;
   border-color: #d97706;
@@ -68,6 +77,11 @@
   background: var(--mca-panel);
   border-color: var(--mca-outline-variant);
   color: var(--mca-on-surface) !important;
+}
+
+.btn-secondary:hover,
+.btn-outline-secondary:hover {
+  background: var(--mca-soft-bg);
 }
 
 .btn-outline-primary {
@@ -314,6 +328,22 @@ label,
   white-space: nowrap;
 }
 
+.dash-kpi-grid--3 {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+  .dash-kpi-grid--3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .dash-kpi-grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 .dash-kpi-grid--5 {
   grid-template-columns: 1fr;
 }
@@ -345,7 +375,7 @@ label,
 .portal-modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 1080;
+  z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -355,7 +385,8 @@ label,
 .portal-modal-backdrop__scrim {
   position: absolute;
   inset: 0;
-  background: rgba(6, 12, 28, 0.55);
+  background: rgba(6, 12, 28, 0.58);
+  backdrop-filter: blur(4px);
 }
 
 .portal-modal {
@@ -369,10 +400,12 @@ label,
   flex-direction: column;
   background: var(--mca-panel);
   border: 1px solid var(--mca-outline-variant);
-  border-radius: 0.75rem;
+  border-radius: 0.85rem;
   color: var(--mca-on-surface);
+  box-shadow: 0 24px 64px rgba(6, 12, 28, 0.28);
 }
 
+.portal-modal--sm { max-width: 26rem; }
 .portal-modal--lg { max-width: 42rem; }
 .portal-modal--xl { max-width: 56rem; }
 
@@ -383,7 +416,8 @@ label,
   justify-content: space-between;
   gap: 0.75rem;
   padding: 1rem 1.25rem;
-  border-color: var(--mca-outline-variant);
+  flex-shrink: 0;
+  background: var(--mca-panel);
 }
 
 .portal-modal__header {
@@ -394,6 +428,8 @@ label,
   margin: 0;
   font-family: var(--font-headline);
   font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--mca-on-surface);
 }
 
 .portal-modal__body {
@@ -401,9 +437,70 @@ label,
   overflow-y: auto;
 }
 
+.portal-modal__body .form-control {
+  background: var(--mca-surface);
+  color: var(--mca-on-surface);
+  border: 1px solid var(--mca-outline-variant);
+  border-radius: 0.65rem;
+}
+
+.portal-modal__body label {
+  color: var(--mca-on-surface);
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
 .portal-modal__footer {
   border-top: 1px solid var(--mca-outline-variant);
   justify-content: flex-end;
+  background: var(--mca-soft-bg);
+}
+
+.portal-confirm {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.portal-confirm__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.portal-confirm__icon .material-symbols-outlined {
+  font-size: 1.45rem;
+}
+
+.portal-confirm__icon--danger {
+  background: color-mix(in srgb, #ba1a1a 14%, transparent);
+  color: #ba1a1a;
+}
+
+.portal-confirm__icon--primary {
+  background: color-mix(in srgb, #136dec 16%, transparent);
+  color: #136dec;
+}
+
+.portal-confirm__message {
+  margin: 0;
+  padding-top: 0.3rem;
+  color: var(--mca-on-surface-variant);
+  font-size: 0.925rem;
+  line-height: 1.55;
+}
+
+html.dark .portal-modal {
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+}
+
+html.dark .portal-confirm__icon--danger {
+  background: rgba(186, 26, 26, 0.22);
+  color: #ff8a80;
 }
 
 .portal-empty {

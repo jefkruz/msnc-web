@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm, usePage, Link } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import Modal from '../../Components/Modal';
-import Alert from '../../Components/Alert';
+import SearchableSelect from '../../Components/SearchableSelect';
 
 const POSTING_DECLINED_ACCEPTED_NAME = 'Posting declined or Posting accepted';
 
@@ -26,16 +26,8 @@ function dateInputValue(val) {
 }
 
 export default function ApplicantsProgress({ applicant, progressSteps = [] }) {
-    const { auth, authRole, menu, appName, flash } = usePage().props;
+    const { auth, authRole, menu, appName } = usePage().props;
     const [editStage, setEditStage] = useState(null);
-    const [showFlash, setShowFlash] = useState(false);
-    useEffect(() => {
-        if (flash?.message) {
-            setShowFlash(true);
-            const t = setTimeout(() => setShowFlash(false), 4000);
-            return () => clearTimeout(t);
-        }
-    }, [flash?.message]);
 
     const fullName = applicant ? [applicant.first_name, applicant.last_name].filter(Boolean).join(' ') : 'Applicant';
     const applicantProgressMap = (applicant?.progresses || []).reduce((acc, p) => {
@@ -81,9 +73,6 @@ export default function ApplicantsProgress({ applicant, progressSteps = [] }) {
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle={`Progress - ${fullName}`}>
             <div className="space-y-6">
-                {showFlash && flash?.message && (
-                    <Alert type="success" message={flash.message} onDismiss={() => setShowFlash(false)} />
-                )}
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <h2 className="text-xl font-bold text-slate-900 dark:text-white">Manage Applicant Status</h2>
                     <Link
@@ -248,38 +237,45 @@ export default function ApplicantsProgress({ applicant, progressSteps = [] }) {
                 show={!!editStage}
                 onClose={closeEdit}
                 title="Update Progress"
-                size="md"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={closeEdit}>Cancel</button>
+                        <button type="submit" form="progress-update" className="btn btn-primary" disabled={processing}>Save Changes</button>
+                    </>
+                )}
             >
                 {editStage && (
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form id="progress-update" onSubmit={handleSubmit} className="space-y-4">
                         <input type="hidden" name="progress_id" value={data.progress_id} />
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Stage</label>
+                            <label className="block text-sm font-medium mb-1">Stage</label>
                             <input
                                 type="text"
                                 value={editStage.name}
                                 disabled
-                                className="w-full rounded-lg border border-slate-200 dark:border-border-dark bg-slate-100 dark:bg-white/10 px-4 py-2.5 text-slate-700 dark:text-slate-300 cursor-not-allowed"
+                                className="form-control"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
-                            <select
+                            <label className="block text-sm font-medium mb-1">Status</label>
+                            <SearchableSelect
                                 value={data.status}
-                                onChange={(e) => setData('status', e.target.value)}
-                                className="form-control"
-                            >
-                                <option value="pending">Pending</option>
-                                <option value="in_progress">In Progress</option>
-                                <option value="completed">Completed</option>
-                            </select>
-                            {errors.status && <p className="text-red-500 text-xs mt-1">{errors.status}</p>}
+                                onChange={(val) => setData('status', val)}
+                                options={[
+                                    { value: 'pending', label: 'Pending' },
+                                    { value: 'in_progress', label: 'In Progress' },
+                                    { value: 'completed', label: 'Completed' },
+                                ]}
+                                placeholder="Select status"
+                                required
+                                error={errors.status}
+                            />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Started At</label>
+                            <label className="block text-sm font-medium mb-1">Started At</label>
                             <input
                                 type="date"
                                 value={data.started_at}
@@ -289,7 +285,7 @@ export default function ApplicantsProgress({ applicant, progressSteps = [] }) {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Completed At</label>
+                            <label className="block text-sm font-medium mb-1">Completed At</label>
                             <input
                                 type="date"
                                 value={data.completed_at}
@@ -300,37 +296,19 @@ export default function ApplicantsProgress({ applicant, progressSteps = [] }) {
 
                         {editStage.name === POSTING_DECLINED_ACCEPTED_NAME && (
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Posting outcome</label>
-                                <select
+                                <label className="block text-sm font-medium mb-1">Posting outcome</label>
+                                <SearchableSelect
                                     value={data.outcome}
-                                    onChange={(e) => setData('outcome', e.target.value)}
-                                    className="form-control"
-                                >
-                                    <option value="">— Select —</option>
-                                    <option value="accepted">Accepted</option>
-                                    <option value="declined">Declined</option>
-                                </select>
-                                {errors.outcome && <p className="text-red-500 text-xs mt-1">{errors.outcome}</p>}
+                                    onChange={(val) => setData('outcome', val)}
+                                    options={[
+                                        { value: 'accepted', label: 'Accepted' },
+                                        { value: 'declined', label: 'Declined' },
+                                    ]}
+                                    placeholder="Select outcome"
+                                    error={errors.outcome}
+                                />
                             </div>
                         )}
-
-                        <div className="flex justify-end gap-3 pt-4">
-                            <button
-                                type="button"
-                                onClick={closeEdit}
-                                className="px-4 py-2.5 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium hover:bg-slate-50 dark:hover:bg-white/10 transition-colors"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                disabled={processing}
-                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700 disabled:opacity-50 transition-colors"
-                            >
-                                <span className="material-symbols-outlined text-lg">check_circle</span>
-                                Save Changes
-                            </button>
-                        </div>
                     </form>
                 )}
             </Modal>

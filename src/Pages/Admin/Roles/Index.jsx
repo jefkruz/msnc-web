@@ -17,7 +17,6 @@ export default function RolesIndex() {
         roles = [],
         permissions = [],
         permissionGroups = [],
-        flash,
         errors: pageErrors = {},
     } = usePage().props;
     const { can } = useCan();
@@ -29,17 +28,8 @@ export default function RolesIndex() {
     const [showPermissionModal, setShowPermissionModal] = useState(false);
     const [deleteRoleId, setDeleteRoleId] = useState(null);
     const [deletePermissionId, setDeletePermissionId] = useState(null);
-    const [showFlash, setShowFlash] = useState(false);
 
     const selected = rolesList.find((r) => r.id === selectedId) || rolesList[0] || null;
-
-    useEffect(() => {
-        if (flash?.message) {
-            setShowFlash(true);
-            const t = setTimeout(() => setShowFlash(false), 4000);
-            return () => clearTimeout(t);
-        }
-    }, [flash?.message]);
 
     useEffect(() => {
         if (selected) {
@@ -110,11 +100,11 @@ export default function RolesIndex() {
             <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <Link
-                        href="/administrator/menu"
+                        href="/administrator/settings"
                         className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white w-fit"
                     >
                         <span className="material-symbols-outlined text-lg">arrow_back</span>
-                        Back to Administration
+                        Back to Settings
                     </Link>
                     <div className="flex flex-wrap gap-2">
                         {can('permissions.create') && (
@@ -132,7 +122,6 @@ export default function RolesIndex() {
                     </div>
                 </div>
 
-                {showFlash && flash?.message && <Alert type="success" message={flash.message} onDismiss={() => setShowFlash(false)} />}
                 {(pageErrors.role || pageErrors.permission || pageErrors.name) && (
                     <Alert
                         type="error"
@@ -279,8 +268,18 @@ export default function RolesIndex() {
                 </div>
             </div>
 
-            <Modal show={showRoleModal} onClose={() => setShowRoleModal(false)} title="Create role">
-                <form onSubmit={createRole} className="space-y-4">
+            <Modal
+                show={showRoleModal}
+                onClose={() => setShowRoleModal(false)}
+                title="Create role"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setShowRoleModal(false)}>Cancel</button>
+                        <button type="submit" form="role-create" className="btn btn-primary" disabled={roleForm.processing}>Create role</button>
+                    </>
+                )}
+            >
+                <form id="role-create" onSubmit={createRole} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium mb-1">Role name</label>
                         <input
@@ -292,15 +291,21 @@ export default function RolesIndex() {
                         />
                         {roleForm.errors.name && <p className="text-red-500 text-xs mt-1">{roleForm.errors.name}</p>}
                     </div>
-                    <div className="flex justify-end gap-2">
-                        <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShowRoleModal(false)}>Cancel</button>
-                        <button type="submit" className="btn btn-primary btn-sm" disabled={roleForm.processing}>Create role</button>
-                    </div>
                 </form>
             </Modal>
 
-            <Modal show={showPermissionModal} onClose={() => setShowPermissionModal(false)} title="Create permission">
-                <form onSubmit={createPermission} className="space-y-4">
+            <Modal
+                show={showPermissionModal}
+                onClose={() => setShowPermissionModal(false)}
+                title="Create permission"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setShowPermissionModal(false)}>Cancel</button>
+                        <button type="submit" form="permission-create" className="btn btn-primary" disabled={permissionForm.processing}>Create permission</button>
+                    </>
+                )}
+            >
+                <form id="permission-create" onSubmit={createPermission} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium mb-1">Permission name</label>
                         <input
@@ -312,10 +317,6 @@ export default function RolesIndex() {
                         />
                         <p className="text-xs text-text-muted mt-1">Use dotted names: resource.action</p>
                         {permissionForm.errors.name && <p className="text-red-500 text-xs mt-1">{permissionForm.errors.name}</p>}
-                    </div>
-                    <div className="flex justify-end gap-2">
-                        <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShowPermissionModal(false)}>Cancel</button>
-                        <button type="submit" className="btn btn-primary btn-sm" disabled={permissionForm.processing}>Create permission</button>
                     </div>
                 </form>
             </Modal>

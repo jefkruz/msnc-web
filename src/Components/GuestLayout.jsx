@@ -35,7 +35,7 @@ export default function GuestLayout({ title, children, appName = 'Recruitment Po
                     </Link>
                 </div>
                 <div className="guest-card__body">
-                    <h2>{title}</h2>
+                    {title ? <h2>{title}</h2> : null}
                     {children}
                 </div>
             </div>

@@ -1,6 +1,7 @@
 import { useForm } from '@inertiajs/react';
 import { usePage, Link } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
+import SearchableSelect from '../../Components/SearchableSelect';
 
 export default function QuestionsCreate({ families = [], groups = [], ranks = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -23,24 +24,33 @@ export default function QuestionsCreate({ families = [], groups = [], ranks = []
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Category (Job Family)</label>
-                            <select value={data.nomenclature_category_id} onChange={(e) => setData('nomenclature_category_id', e.target.value)} className="form-control">
-                                <option value="">Select</option>
-                                {families.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.nomenclature_category_id}
+                                onChange={(val) => setData('nomenclature_category_id', val)}
+                                options={families}
+                                placeholder="Select category"
+                                error={errors.nomenclature_category_id}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Group</label>
-                            <select value={data.nomenclature_group_id} onChange={(e) => setData('nomenclature_group_id', e.target.value)} className="form-control">
-                                <option value="">Select</option>
-                                {groups.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.nomenclature_group_id}
+                                onChange={(val) => setData('nomenclature_group_id', val)}
+                                options={groups}
+                                placeholder="Select group"
+                                error={errors.nomenclature_group_id}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Rank</label>
-                            <select value={data.nomenclature_rank_id} onChange={(e) => setData('nomenclature_rank_id', e.target.value)} className="form-control">
-                                <option value="">Select</option>
-                                {ranks.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
-                            </select>
+                            <SearchableSelect
+                                value={data.nomenclature_rank_id}
+                                onChange={(val) => setData('nomenclature_rank_id', val)}
+                                options={ranks}
+                                placeholder="Select rank"
+                                error={errors.nomenclature_rank_id}
+                            />
                         </div>
                     </div>
                     <div className="flex gap-3">

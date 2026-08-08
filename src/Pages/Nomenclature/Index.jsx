@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, usePage, useForm, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import Modal from '../../Components/Modal';
 import ConfirmModal from '../../Components/ConfirmModal';
 import EmptyState from '../../Components/EmptyState';
-import Alert from '../../Components/Alert';
+import SearchableSelect from '../../Components/SearchableSelect';
 
 const BASE = '/administrator/job-families';
 
 export default function NomenclatureIndex() {
-    const { auth, authRole, menu, appName, stats = {}, categories, flash } = usePage().props;
+    const { auth, authRole, menu, appName, stats = {}, categories } = usePage().props;
     const safeStats = {
         total_categories: stats?.total_categories ?? 0,
         total_groups: stats?.total_groups ?? 0,
@@ -35,15 +35,6 @@ export default function NomenclatureIndex() {
     // Delete confirm: { type: 'category'|'group'|'rank', id, name? }
     const [deleteTarget, setDeleteTarget] = useState(null);
 
-    // Flash message
-    const [showFlash, setShowFlash] = useState(false);
-    useEffect(() => {
-        if (flash?.message) {
-            setShowFlash(true);
-            const t = setTimeout(() => setShowFlash(false), 4000);
-            return () => clearTimeout(t);
-        }
-    }, [flash?.message]);
 
     const statCards = [
         { label: 'Categories', value: safeStats.total_categories, icon: 'folder', color: 'bg-primary' },
@@ -142,10 +133,6 @@ export default function NomenclatureIndex() {
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Job Families & Nomenclature">
             <div className="space-y-8">
-                {showFlash && flash?.message && (
-                    <Alert type="success" message={flash.message} onDismiss={() => setShowFlash(false)} />
-                )}
-
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {statCards.map((s) => (
                         <div
@@ -417,10 +404,20 @@ export default function NomenclatureIndex() {
             </div>
 
             {/* Create Category Modal */}
-            <Modal show={showCreateCategory} onClose={() => setShowCreateCategory(false)} title="Create Category">
-                <form onSubmit={handleCreateCategory} className="space-y-4">
+            <Modal
+                show={showCreateCategory}
+                onClose={() => setShowCreateCategory(false)}
+                title="Create Category"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setShowCreateCategory(false)}>Cancel</button>
+                        <button type="submit" form="nomen-create-category" className="btn btn-primary" disabled={createCategoryForm.processing}>Create Category</button>
+                    </>
+                )}
+            >
+                <form id="nomen-create-category" onSubmit={handleCreateCategory} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name</label>
+                        <label className="block text-sm font-medium mb-1">Name</label>
                         <input
                             type="text"
                             value={createCategoryForm.data.name}
@@ -433,39 +430,35 @@ export default function NomenclatureIndex() {
                             <p className="text-red-500 text-xs mt-1">{createCategoryForm.errors.name}</p>
                         )}
                     </div>
-                    <div className="flex justify-end gap-2 pt-4">
-                        <button type="button" onClick={() => setShowCreateCategory(false)} className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">
-                            Cancel
-                        </button>
-                        <button type="submit" disabled={createCategoryForm.processing} className="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 disabled:opacity-50">
-                            Create Category
-                        </button>
-                    </div>
                 </form>
             </Modal>
 
             {/* Create Group Modal */}
-            <Modal show={showCreateGroup} onClose={() => setShowCreateGroup(false)} title="Create Group">
-                <form onSubmit={handleCreateGroup} className="space-y-4">
+            <Modal
+                show={showCreateGroup}
+                onClose={() => setShowCreateGroup(false)}
+                title="Create Group"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setShowCreateGroup(false)}>Cancel</button>
+                        <button type="submit" form="nomen-create-group" className="btn btn-primary" disabled={createGroupForm.processing}>Create Group</button>
+                    </>
+                )}
+            >
+                <form id="nomen-create-group" onSubmit={handleCreateGroup} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
-                        <select
+                        <label className="block text-sm font-medium mb-1">Category</label>
+                        <SearchableSelect
                             value={createGroupForm.data.nomenclature_category_id}
-                            onChange={(e) => createGroupForm.setData('nomenclature_category_id', e.target.value)}
-                            className="form-control"
+                            onChange={(val) => createGroupForm.setData('nomenclature_category_id', val)}
+                            options={categoriesList}
+                            placeholder="Select category"
                             required
-                        >
-                            <option value="">Select category</option>
-                            {categoriesList.map((c) => (
-                                <option key={c.id} value={c.id}>{c.name}</option>
-                            ))}
-                        </select>
-                        {createGroupForm.errors.nomenclature_category_id && (
-                            <p className="text-red-500 text-xs mt-1">{createGroupForm.errors.nomenclature_category_id}</p>
-                        )}
+                            error={createGroupForm.errors.nomenclature_category_id}
+                        />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Group name</label>
+                        <label className="block text-sm font-medium mb-1">Group name</label>
                         <input
                             type="text"
                             value={createGroupForm.data.name}
@@ -478,39 +471,37 @@ export default function NomenclatureIndex() {
                             <p className="text-red-500 text-xs mt-1">{createGroupForm.errors.name}</p>
                         )}
                     </div>
-                    <div className="flex justify-end gap-2 pt-4">
-                        <button type="button" onClick={() => setShowCreateGroup(false)} className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">
-                            Cancel
-                        </button>
-                        <button type="submit" disabled={createGroupForm.processing} className="px-4 py-2 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700 disabled:opacity-50">
-                            Create Group
-                        </button>
-                    </div>
                 </form>
             </Modal>
 
             {/* Create Rank Modal */}
-            <Modal show={showCreateRank} onClose={() => setShowCreateRank(false)} title="Create Rank">
-                <form onSubmit={handleCreateRank} className="space-y-4">
+            <Modal
+                show={showCreateRank}
+                onClose={() => setShowCreateRank(false)}
+                title="Create Rank"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setShowCreateRank(false)}>Cancel</button>
+                        <button type="submit" form="nomen-create-rank" className="btn btn-primary" disabled={createRankForm.processing}>Create Rank</button>
+                    </>
+                )}
+            >
+                <form id="nomen-create-rank" onSubmit={handleCreateRank} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Group</label>
-                        <select
+                        <label className="block text-sm font-medium mb-1">Group</label>
+                        <SearchableSelect
                             value={createRankForm.data.nomenclature_group_id}
-                            onChange={(e) => createRankForm.setData('nomenclature_group_id', e.target.value)}
-                            className="form-control"
+                            onChange={(val) => createRankForm.setData('nomenclature_group_id', val)}
+                            options={allGroups}
+                            placeholder="Select group"
                             required
-                        >
-                            <option value="">Select group</option>
-                            {allGroups.map((g) => (
-                                <option key={g.id} value={g.id}>{g.categoryName} → {g.name}</option>
-                            ))}
-                        </select>
-                        {createRankForm.errors.nomenclature_group_id && (
-                            <p className="text-red-500 text-xs mt-1">{createRankForm.errors.nomenclature_group_id}</p>
-                        )}
+                            getOptionValue={(g) => g.id}
+                            getOptionLabel={(g) => `${g.categoryName} → ${g.name}`}
+                            error={createRankForm.errors.nomenclature_group_id}
+                        />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Rank name</label>
+                        <label className="block text-sm font-medium mb-1">Rank name</label>
                         <input
                             type="text"
                             value={createRankForm.data.name}
@@ -523,23 +514,25 @@ export default function NomenclatureIndex() {
                             <p className="text-red-500 text-xs mt-1">{createRankForm.errors.name}</p>
                         )}
                     </div>
-                    <div className="flex justify-end gap-2 pt-4">
-                        <button type="button" onClick={() => setShowCreateRank(false)} className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">
-                            Cancel
-                        </button>
-                        <button type="submit" disabled={createRankForm.processing} className="px-4 py-2 rounded-lg bg-amber-600 text-white font-medium hover:bg-amber-700 disabled:opacity-50">
-                            Create Rank
-                        </button>
-                    </div>
                 </form>
             </Modal>
 
             {/* Edit Category Modal */}
-            <Modal show={!!editCategory} onClose={() => setEditCategory(null)} title="Edit Category">
+            <Modal
+                show={!!editCategory}
+                onClose={() => setEditCategory(null)}
+                title="Edit Category"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setEditCategory(null)}>Cancel</button>
+                        <button type="submit" form="nomen-edit-category" className="btn btn-primary">Save changes</button>
+                    </>
+                )}
+            >
                 {editCategory && (
-                    <form onSubmit={handleUpdateCategory} className="space-y-4">
+                    <form id="nomen-edit-category" onSubmit={handleUpdateCategory} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name</label>
+                            <label className="block text-sm font-medium mb-1">Name</label>
                             <input
                                 type="text"
                                 value={editCategory.name}
@@ -548,37 +541,36 @@ export default function NomenclatureIndex() {
                                 required
                             />
                         </div>
-                        <div className="flex justify-end gap-2 pt-4">
-                            <button type="button" onClick={() => setEditCategory(null)} className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">
-                                Cancel
-                            </button>
-                            <button type="submit" className="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90">
-                                Save changes
-                            </button>
-                        </div>
                     </form>
                 )}
             </Modal>
 
             {/* Edit Group Modal */}
-            <Modal show={!!editGroup} onClose={() => setEditGroup(null)} title="Edit Group">
+            <Modal
+                show={!!editGroup}
+                onClose={() => setEditGroup(null)}
+                title="Edit Group"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setEditGroup(null)}>Cancel</button>
+                        <button type="submit" form="nomen-edit-group" className="btn btn-primary">Save changes</button>
+                    </>
+                )}
+            >
                 {editGroup && (
-                    <form onSubmit={handleUpdateGroup} className="space-y-4">
+                    <form id="nomen-edit-group" onSubmit={handleUpdateGroup} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
-                            <select
+                            <label className="block text-sm font-medium mb-1">Category</label>
+                            <SearchableSelect
                                 value={editGroup.nomenclature_category_id}
-                                onChange={(e) => setEditGroup((p) => ({ ...p, nomenclature_category_id: e.target.value }))}
-                                className="form-control"
+                                onChange={(val) => setEditGroup((p) => ({ ...p, nomenclature_category_id: val }))}
+                                options={categoriesList}
+                                placeholder="Select category"
                                 required
-                            >
-                                {categoriesList.map((c) => (
-                                    <option key={c.id} value={c.id}>{c.name}</option>
-                                ))}
-                            </select>
+                            />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Group name</label>
+                            <label className="block text-sm font-medium mb-1">Group name</label>
                             <input
                                 type="text"
                                 value={editGroup.name}
@@ -587,37 +579,38 @@ export default function NomenclatureIndex() {
                                 required
                             />
                         </div>
-                        <div className="flex justify-end gap-2 pt-4">
-                            <button type="button" onClick={() => setEditGroup(null)} className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">
-                                Cancel
-                            </button>
-                            <button type="submit" className="px-4 py-2 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700">
-                                Save changes
-                            </button>
-                        </div>
                     </form>
                 )}
             </Modal>
 
             {/* Edit Rank Modal */}
-            <Modal show={!!editRank} onClose={() => setEditRank(null)} title="Edit Rank">
+            <Modal
+                show={!!editRank}
+                onClose={() => setEditRank(null)}
+                title="Edit Rank"
+                footer={(
+                    <>
+                        <button type="button" className="btn btn-secondary" onClick={() => setEditRank(null)}>Cancel</button>
+                        <button type="submit" form="nomen-edit-rank" className="btn btn-primary">Save changes</button>
+                    </>
+                )}
+            >
                 {editRank && (
-                    <form onSubmit={handleUpdateRank} className="space-y-4">
+                    <form id="nomen-edit-rank" onSubmit={handleUpdateRank} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Group</label>
-                            <select
+                            <label className="block text-sm font-medium mb-1">Group</label>
+                            <SearchableSelect
                                 value={editRank.nomenclature_group_id}
-                                onChange={(e) => setEditRank((p) => ({ ...p, nomenclature_group_id: e.target.value }))}
-                                className="form-control"
+                                onChange={(val) => setEditRank((p) => ({ ...p, nomenclature_group_id: val }))}
+                                options={allGroups}
+                                placeholder="Select group"
                                 required
-                            >
-                                {allGroups.map((g) => (
-                                    <option key={g.id} value={g.id}>{g.categoryName} → {g.name}</option>
-                                ))}
-                            </select>
+                                getOptionValue={(g) => g.id}
+                                getOptionLabel={(g) => `${g.categoryName} → ${g.name}`}
+                            />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Rank name</label>
+                            <label className="block text-sm font-medium mb-1">Rank name</label>
                             <input
                                 type="text"
                                 value={editRank.name}
@@ -625,14 +618,6 @@ export default function NomenclatureIndex() {
                                 className="form-control"
                                 required
                             />
-                        </div>
-                        <div className="flex justify-end gap-2 pt-4">
-                            <button type="button" onClick={() => setEditRank(null)} className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">
-                                Cancel
-                            </button>
-                            <button type="submit" className="px-4 py-2 rounded-lg bg-amber-600 text-white font-medium hover:bg-amber-700">
-                                Save changes
-                            </button>
                         </div>
                     </form>
                 )}

@@ -63,12 +63,24 @@ export const Link = forwardRef(function Link(
   );
 });
 
+function currentSpaPath() {
+  if (typeof window === 'undefined') return '/';
+  return `${window.location.pathname}${window.location.search}`;
+}
+
+function sameSpaPath(a, b) {
+  const norm = (p) => String(toSpaHref(p) || '').split('#')[0].replace(/\/+$/, '') || '/';
+  return norm(a) === norm(b);
+}
+
 function handleRedirect(data, navigate) {
-  if (data?.redirect) {
-    navigate(toSpaHref(data.redirect));
-    return true;
+  if (!data?.redirect) return false;
+  const next = toSpaHref(data.redirect);
+  if (sameSpaPath(next, currentSpaPath())) {
+    return false;
   }
-  return false;
+  navigate(next);
+  return true;
 }
 
 async function visit(url, options = {}) {
@@ -115,15 +127,27 @@ async function visit(url, options = {}) {
       response = await api.request({ url: path, method: m, data });
     }
 
-    if (_navigate && handleRedirect(response.data, _navigate)) {
-      onSuccess?.(response.data);
-      return response.data;
+    const payload = response.data;
+    if (m !== 'get' && typeof window !== 'undefined') {
+      const flashMessage = payload?.flash?.message ?? payload?.message ?? null;
+      const flashError = payload?.flash?.error ?? payload?.error ?? null;
+      if (flashMessage || flashError) {
+        window.__inertiaApplyFlash?.({ message: flashMessage, error: flashError });
+      }
+    }
+    const leftPage = _navigate && handleRedirect(payload, _navigate);
+    if (!leftPage && m !== 'get' && typeof window !== 'undefined') {
+      await window.__inertiaRefresh?.();
     }
 
-    onSuccess?.(response.data);
-    return response.data;
+    onSuccess?.(payload);
+    return payload;
   } catch (error) {
-    const errors = error.response?.data?.errors || {};
+    const body = error.response?.data || {};
+    const errors = body.errors || {};
+    if (body.error && typeof window !== 'undefined') {
+      window.__inertiaApplyFlash?.({ error: body.error });
+    }
     onError?.(errors);
     throw error;
   } finally {
@@ -184,7 +208,7 @@ export const router = {
 
 export function useForm(initial = {}) {
   const navigate = useNavigate();
-  const { refresh } = usePage();
+  const { refresh, setProps } = usePage();
   const initialData = typeof initial === 'function' ? initial() : initial;
   const [data, setDataState] = useState({ ...initialData });
   const [errors, setErrors] = useState({});
@@ -229,8 +253,17 @@ export function useForm(initial = {}) {
         onSuccess: (resp) => {
           setRecentlySuccessful(true);
           setTimeout(() => setRecentlySuccessful(false), 2000);
-          if (!resp?.redirect) {
-            refresh?.();
+          const flashMessage = resp?.flash?.message ?? resp?.message;
+          const flashError = resp?.flash?.error ?? resp?.error;
+          if ((flashMessage || flashError) && typeof setProps === 'function') {
+            setProps((prev) => ({
+              ...(prev || {}),
+              flash: {
+                ...((prev && prev.flash) || {}),
+                message: flashMessage || prev?.flash?.message,
+                error: flashError || prev?.flash?.error,
+              },
+            }));
           }
           onSuccess?.(resp);
         },

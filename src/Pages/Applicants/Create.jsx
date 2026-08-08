@@ -3,6 +3,7 @@ import { useForm, usePage, router } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import SearchableSelect from '../../Components/SearchableSelect';
+import { TITLE_OPTIONS } from '../../lib/selectOptions';
 
 const inputClass =
     'form-control';
@@ -79,22 +80,14 @@ export default function Create({ families = [], departments = [], groups = [], n
                         <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className={labelClass}>Title <span className="text-red-500">*</span></label>
-                                <select
+                                <SearchableSelect
                                     value={data.title}
-                                    onChange={(e) => setData('title', e.target.value)}
-                                    className={inputClass}
+                                    onChange={(val) => setData('title', val)}
+                                    options={TITLE_OPTIONS}
+                                    placeholder="Select title"
                                     required
-                                >
-                                    <option value="">Select</option>
-                                    <option value="Brother">Brother</option>
-                                    <option value="Sister">Sister</option>
-                                    <option value="Deacon">Deacon</option>
-                                    <option value="Deaconess">Deaconess</option>
-                                    <option value="Reverend">Reverend</option>
-                                    <option value="Pastor">Pastor</option>
-                                    <option value="Evangelist">Evangelist</option>
-                                </select>
-                                {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
+                                    error={errors.title}
+                                />
                             </div>
                             <div>
                                 <label className={labelClass}>First name <span className="text-red-500">*</span></label>

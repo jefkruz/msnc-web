@@ -1,5 +1,6 @@
 import { router, usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
+import SearchableSelect from '../../Components/SearchableSelect';
 import { useEffect, useMemo, useState } from 'react';
 
 const MONTHS = [
@@ -67,27 +68,27 @@ export default function AnalyticsIndex({
                     <div className="flex flex-wrap items-end gap-3">
                         <div>
                             <label className="block text-xs text-slate-500 dark:text-text-muted mb-1">Year</label>
-                            <select
-                                value={selectedYear}
-                                onChange={(e) => setSelectedYear(Number(e.target.value))}
-                                className="rounded-lg border border-slate-300 dark:border-border-dark bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-3 py-2 text-sm min-w-[120px]"
-                            >
-                                {years.map((y) => (
-                                    <option key={y} value={y}>{y}</option>
-                                ))}
-                            </select>
+                            <div className="min-w-[120px]">
+                                <SearchableSelect
+                                    value={selectedYear}
+                                    onChange={(val) => setSelectedYear(Number(val))}
+                                    options={years.map((y) => ({ value: y, label: String(y) }))}
+                                    placeholder="Year"
+                                    required
+                                />
+                            </div>
                         </div>
                         <div>
                             <label className="block text-xs text-slate-500 dark:text-text-muted mb-1">Month</label>
-                            <select
-                                value={selectedMonth}
-                                onChange={(e) => setSelectedMonth(e.target.value === '' ? '' : Number(e.target.value))}
-                                className="rounded-lg border border-slate-300 dark:border-border-dark bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-3 py-2 text-sm min-w-[140px]"
-                            >
-                                {MONTHS.map((m) => (
-                                    <option key={m.value === '' ? 'all' : m.value} value={m.value}>{m.label}</option>
-                                ))}
-                            </select>
+                            <div className="min-w-[140px]">
+                                <SearchableSelect
+                                    value={selectedMonth}
+                                    onChange={(val) => setSelectedMonth(val === '' ? '' : Number(val))}
+                                    options={MONTHS}
+                                    placeholder="Full year"
+                                    required
+                                />
+                            </div>
                         </div>
                         <button
                             type="button"

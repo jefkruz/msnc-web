@@ -1,7 +1,9 @@
-import { Link, usePage, useForm } from '@inertiajs/react';
+import { useState } from 'react';
+import { Link, usePage, useForm, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
-import Alert from '../../Components/Alert';
+import ConfirmModal from '../../Components/ConfirmModal';
 import { storageUrl } from '../../lib/api';
+import { useCan } from '../../lib/can';
 
 const DOCUMENT_LABELS = {
     authorization_recruit_form: 'Authorization Recruit Form',
@@ -28,7 +30,9 @@ function statusBadge(status) {
 }
 
 export default function ApplicantsView({ applicant }) {
-    const { auth, authRole, menu, appName, flash } = usePage().props;
+    const { auth, authRole, menu, appName } = usePage().props;
+    const { can } = useCan();
+    const [confirmDelete, setConfirmDelete] = useState(false);
     const idCardForm = useForm({ passport: null, signature: null });
     if (!applicant) return null;
 
@@ -53,17 +57,20 @@ export default function ApplicantsView({ applicant }) {
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle={fullName || 'Applicant'}>
             <div className="space-y-6">
-                {flash?.message && <Alert type="success" message={flash.message} />}
-                {flash?.error && <Alert type="error" message={flash.error} />}
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <h2 className="text-xl font-bold text-slate-900 dark:text-white">Applicant Information</h2>
-                    <Link
-                        href="/administrator/applicants"
-                        className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-                    >
-                        <span className="material-symbols-outlined text-lg">arrow_back</span>
-                        Back to list
-                    </Link>
+                    <div className="flex flex-wrap items-center gap-3">
+                        {can('applicants.delete') && (
+                            <button type="button" className="btn btn-danger" onClick={() => setConfirmDelete(true)}>Delete</button>
+                        )}
+                        <Link
+                            href="/administrator/applicants"
+                            className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                        >
+                            <span className="material-symbols-outlined text-lg">arrow_back</span>
+                            Back to list
+                        </Link>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -320,6 +327,15 @@ export default function ApplicantsView({ applicant }) {
                     </div>
                 )}
             </div>
+            <ConfirmModal
+                show={confirmDelete}
+                onClose={() => setConfirmDelete(false)}
+                onConfirm={() => router.delete(`/administrator/applicants/delete/${applicant.id}`)}
+                title="Delete applicant"
+                message={`Are you sure you want to delete ${fullName}? This cannot be undone.`}
+                confirmLabel="Delete"
+                variant="danger"
+            />
         </Layout>
     );
 }

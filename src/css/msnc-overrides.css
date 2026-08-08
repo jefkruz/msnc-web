@@ -76,7 +76,9 @@ html.dark .guest-shell {
   background: #0b1220;
 }
 
-.guest-shell--signin {
+/* Chevron mesh + corner glow — sign-in and authenticated dashboard pages */
+.guest-shell--signin,
+.app-body {
   background-color: #eef3fb;
   background-image:
     radial-gradient(ellipse 90% 70% at 8% -10%, rgba(19, 109, 236, 0.22), transparent 58%),
@@ -98,7 +100,8 @@ html.dark .guest-shell {
   background-attachment: fixed;
 }
 
-html.dark .guest-shell--signin {
+html.dark .guest-shell--signin,
+html.dark .app-body {
   background-color: #080e1c;
   background-image:
     radial-gradient(ellipse 90% 70% at 8% -10%, rgba(19, 109, 236, 0.32), transparent 58%),
@@ -124,6 +127,72 @@ html.dark .guest-shell--signin {
   top: 1rem;
   right: 1rem;
   z-index: 2;
+}
+
+.error-screen {
+  text-align: center;
+}
+
+.error-screen__mark {
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto 0.75rem;
+  border-radius: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(19, 109, 236, 0.12);
+  color: #136dec;
+}
+
+.error-screen__mark--403,
+.error-screen__mark--auth {
+  background: rgba(180, 35, 24, 0.12);
+  color: #b42318;
+}
+
+.error-screen__mark--500 {
+  background: rgba(180, 120, 8, 0.14);
+  color: #b47808;
+}
+
+.error-screen__mark .material-symbols-outlined {
+  font-size: 1.75rem;
+}
+
+.error-screen__code {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-headline);
+  font-size: 2.75rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--mca-on-surface);
+}
+
+.error-screen__copy {
+  margin: 0 0 1.25rem;
+  color: var(--mca-on-surface-variant);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.error-screen__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: center;
+}
+
+html.dark .error-screen__mark--403,
+html.dark .error-screen__mark--auth {
+  background: rgba(248, 113, 113, 0.16);
+  color: #fca5a5;
+}
+
+html.dark .error-screen__mark--500 {
+  background: rgba(251, 191, 36, 0.14);
+  color: #fbbf24;
 }
 
 .guest-card {
