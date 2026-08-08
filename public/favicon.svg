@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#6366f1"/>
+  <!-- Rocket body -->
+  <rect x="14" y="9" width="4" height="14" rx="1" fill="#fff"/>
+  <!-- Nose cone -->
+  <path fill="#fff" d="M14 9l2-3 2 3H14z"/>
+  <!-- Left fin -->
+  <path fill="#fff" d="M12 21l2 5v-5h-2z"/>
+  <!-- Right fin -->
+  <path fill="#fff" d="M20 21l-2 5v-5h2z"/>
+  <!-- Window -->
+  <circle cx="16" cy="14" r="1.5" fill="#6366f1"/>
+</svg>

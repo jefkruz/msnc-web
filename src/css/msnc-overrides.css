@@ -1,0 +1,135 @@
+/* MSNC brand: keep e-registry layout tokens, swap gold → MSNC blue */
+
+:root {
+  --mca-gold: #136dec;
+  --mca-gold-soft: #93c5fd;
+  --mca-secondary: #1d4ed8;
+  --mca-cyan: #38bdf8;
+  --mca-soft-bg: #eef4fb;
+  --mca-background: #f5f8fc;
+  --mca-surface-low: #e8f0fb;
+}
+
+html.dark {
+  --mca-gold: #60a5fa;
+  --mca-gold-soft: #3b82f6;
+  --mca-secondary: #93c5fd;
+  --mca-cyan: #38bdf8;
+}
+
+/* Gold buttons become MSNC blue with white label */
+.btn-mca-gold {
+  background: var(--mca-gold);
+  color: #fff !important;
+}
+
+.btn-mca-gold:hover {
+  background: #0f5fd0;
+  color: #fff !important;
+}
+
+.btn-mca-blue {
+  background: var(--mca-gold);
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.btn-mca-blue:hover {
+  background: #0f5fd0;
+  color: #fff !important;
+}
+
+.btn-mca-blue-outline {
+  background: var(--mca-panel);
+  color: var(--mca-gold) !important;
+  border: 1px solid var(--mca-gold);
+}
+
+.btn-mca-blue-outline:hover {
+  background: color-mix(in srgb, var(--mca-gold) 10%, transparent);
+  color: var(--mca-gold) !important;
+}
+
+.public-nav__links a.active {
+  color: var(--mca-gold);
+  border-bottom-color: var(--mca-gold);
+}
+
+.app-nav-link .material-symbols-outlined,
+.app-nav-group__btn .material-symbols-outlined {
+  font-size: 1.15rem;
+  width: 1.15rem;
+  text-align: center;
+  line-height: 1;
+}
+
+.guest-card {
+  max-width: 440px;
+  margin: 3rem auto;
+  background: var(--mca-panel);
+  border: 1px solid var(--mca-outline-variant);
+  border-radius: 1rem;
+  box-shadow: var(--mca-shadow);
+  overflow: hidden;
+}
+
+.guest-card__head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.15rem 1.35rem;
+  border-bottom: 1px solid var(--mca-outline-variant);
+}
+
+.guest-card__mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 0.75rem;
+  background: var(--mca-gold);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guest-card__head h1 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.guest-card__body {
+  padding: 1.5rem 1.35rem 1.75rem;
+}
+
+.guest-card__body h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.35rem;
+}
+
+.guest-card__body > p {
+  margin: 0 0 1.25rem;
+  color: var(--mca-on-surface-variant);
+  font-size: 0.92rem;
+}
+
+.public-footer__about,
+.public-footer__meta {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.public-footer a[href^="tel"],
+.public-footer a[href^="mailto"] {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+html.dark .hero__caption h1,
+html.dark .hero__tagline {
+  color: var(--mca-on-surface);
+}
+
+html.dark .hero__lead {
+  color: var(--mca-on-surface-variant);
+}

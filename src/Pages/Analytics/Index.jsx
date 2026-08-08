@@ -1,0 +1,155 @@
+import { router, usePage } from '@inertiajs/react';
+import Layout from '../../Components/Layout';
+import { useEffect, useMemo, useState } from 'react';
+
+const MONTHS = [
+    { value: '', label: 'Full year' },
+    { value: 1, label: 'January' },
+    { value: 2, label: 'February' },
+    { value: 3, label: 'March' },
+    { value: 4, label: 'April' },
+    { value: 5, label: 'May' },
+    { value: 6, label: 'June' },
+    { value: 7, label: 'July' },
+    { value: 8, label: 'August' },
+    { value: 9, label: 'September' },
+    { value: 10, label: 'October' },
+    { value: 11, label: 'November' },
+    { value: 12, label: 'December' },
+];
+
+export default function AnalyticsIndex({
+    role,
+    departmentName,
+    analyticsUrl,
+    year,
+    month,
+    periodLabel,
+    totalApplicants,
+    totalPersonnel,
+    totalInterviewed,
+    monthsWithData = [],
+}) {
+    const { auth, authRole, menu, appName } = usePage().props;
+    const [selectedYear, setSelectedYear] = useState(year);
+    const [selectedMonth, setSelectedMonth] = useState(month ?? '');
+
+    useEffect(() => {
+        setSelectedYear(year);
+        setSelectedMonth(month ?? '');
+    }, [year, month]);
+
+    const years = useMemo(() => {
+        const current = new Date().getFullYear();
+        const list = [];
+        for (let y = current; y >= current - 5; y--) list.push(y);
+        return list;
+    }, []);
+
+    const applyFilters = () => {
+        const params = { year: selectedYear };
+        if (selectedMonth !== '') params.month = selectedMonth;
+        router.get(analyticsUrl, params, { preserveState: true });
+    };
+
+    const scopeLabel = role === 'sdm' && departmentName ? `Department: ${departmentName}` : 'All departments';
+
+    return (
+        <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Analytics">
+            <div className="space-y-6">
+                <div className="flex flex-wrap items-center gap-4">
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">Analytics</h2>
+                    <span className="text-sm text-slate-500 dark:text-text-muted">{scopeLabel}</span>
+                </div>
+
+                <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-4 shadow-sm">
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Filter by period</p>
+                    <div className="flex flex-wrap items-end gap-3">
+                        <div>
+                            <label className="block text-xs text-slate-500 dark:text-text-muted mb-1">Year</label>
+                            <select
+                                value={selectedYear}
+                                onChange={(e) => setSelectedYear(Number(e.target.value))}
+                                className="rounded-lg border border-slate-300 dark:border-border-dark bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-3 py-2 text-sm min-w-[120px]"
+                            >
+                                {years.map((y) => (
+                                    <option key={y} value={y}>{y}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-xs text-slate-500 dark:text-text-muted mb-1">Month</label>
+                            <select
+                                value={selectedMonth}
+                                onChange={(e) => setSelectedMonth(e.target.value === '' ? '' : Number(e.target.value))}
+                                className="rounded-lg border border-slate-300 dark:border-border-dark bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-3 py-2 text-sm min-w-[140px]"
+                            >
+                                {MONTHS.map((m) => (
+                                    <option key={m.value === '' ? 'all' : m.value} value={m.value}>{m.label}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={applyFilters}
+                            className="px-4 py-2 bg-primary text-white rounded-lg font-medium text-sm hover:bg-primary/90"
+                        >
+                            Apply
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">{periodLabel}</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-5 shadow-sm">
+                            <p className="text-xs font-semibold text-slate-500 dark:text-text-muted uppercase tracking-wider">Applicants</p>
+                            <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{totalApplicants}</p>
+                            <p className="text-xs text-slate-500 dark:text-text-muted mt-1">Registered in this period</p>
+                        </div>
+                        <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-5 shadow-sm">
+                            <p className="text-xs font-semibold text-slate-500 dark:text-text-muted uppercase tracking-wider">Personnel in waiting</p>
+                            <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{totalPersonnel}</p>
+                            <p className="text-xs text-slate-500 dark:text-text-muted mt-1">Added in this period</p>
+                        </div>
+                        <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-5 shadow-sm">
+                            <p className="text-xs font-semibold text-slate-500 dark:text-text-muted uppercase tracking-wider">Interviewed</p>
+                            <p className="text-2xl font-bold text-slate-900 dark:text-white mt-1">{totalInterviewed}</p>
+                            <p className="text-xs text-slate-500 dark:text-text-muted mt-1">In this period</p>
+                        </div>
+                    </div>
+                </div>
+
+                {monthsWithData.length > 0 && (
+                    <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
+                        <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark">
+                            <h3 className="text-base font-bold text-slate-900 dark:text-white">Summary by month ({year})</h3>
+                        </div>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="text-text-muted text-xs font-bold uppercase tracking-wider border-b border-border-dark bg-slate-50 dark:bg-white/5">
+                                        <th className="px-6 py-3">Month</th>
+                                        <th className="px-6 py-3">Applicants</th>
+                                        <th className="px-6 py-3">Personnel in waiting</th>
+                                        <th className="px-6 py-3">Interviewed</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-200 dark:divide-border-dark">
+                                    {monthsWithData.map((row) => (
+                                        <tr key={row.month} className="hover:bg-slate-50 dark:hover:bg-white/5">
+                                            <td className="px-6 py-3 text-slate-900 dark:text-white font-medium">{row.label}</td>
+                                            <td className="px-6 py-3 text-slate-700 dark:text-slate-300">{row.applicants}</td>
+                                            <td className="px-6 py-3 text-slate-700 dark:text-slate-300">{row.personnel}</td>
+                                            <td className="px-6 py-3 text-slate-700 dark:text-slate-300">{row.interviews}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </Layout>
+    );
+}
