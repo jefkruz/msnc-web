@@ -468,6 +468,12 @@
   overflow-x: hidden;
 }
 
+@media (max-width: 575.98px) {
+  .app-content {
+    padding: 0.85rem 0.75rem 1.25rem;
+  }
+}
+
 .app-content .container-fluid {
   max-width: 100%;
   min-width: 0;

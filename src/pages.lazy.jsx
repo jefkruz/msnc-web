@@ -5,6 +5,7 @@ export const ActivityLog = lazy(() => import('./Pages/ActivityLog'));
 export const Administration = lazy(() => import('./Pages/Admin/Administration'));
 export const Stakeholders = lazy(() => import('./Pages/Admin/Stakeholders'));
 export const SettingsIndex = lazy(() => import('./Pages/Admin/Settings/Index'));
+export const SettingsWebsite = lazy(() => import('./Pages/Admin/Settings/Website'));
 export const RolesIndex = lazy(() => import('./Pages/Admin/Roles/Index'));
 export const AdminsIndex = lazy(() => import('./Pages/Admin/Admins/Index'));
 export const AdminsShow = lazy(() => import('./Pages/Admin/Admins/Show'));

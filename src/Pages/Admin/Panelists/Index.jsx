@@ -6,10 +6,13 @@ import EmptyState from '../../../Components/EmptyState';
 import SearchableSelect from '../../../Components/SearchableSelect';
 import TitleCaseInput from '../../../Components/TitleCaseInput';
 import ActionButton, { ActionGroup } from '../../../Components/ActionButton';
+import SearchExportBar from '../../../Components/SearchExportBar';
 import { useState } from 'react';
+import { useCan } from '../../../lib/can';
 
-export default function PanelistsIndex({ panelists = [], departments = [] }) {
+export default function PanelistsIndex({ panelists = [], departments = [], search = '' }) {
     const { auth, authRole, menu, appName } = usePage().props;
+    const { can } = useCan();
     const [showModal, setShowModal] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -33,19 +36,31 @@ export default function PanelistsIndex({ panelists = [], departments = [] }) {
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Panelists">
             <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
-                <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark flex items-center justify-between">
+                <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white">Panelists</h2>
-                    <button
-                        type="button"
-                        onClick={() => setShowModal(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-medium text-sm hover:bg-primary/90"
+                    <SearchExportBar
+                        search={search}
+                        indexPath="/administrator/panelists"
+                        exportPath="/administrator/panelists/export"
+                        exportFilename="panelists.csv"
+                        canExport={can('panelists.export')}
                     >
-                        <span className="material-symbols-outlined text-lg">add</span> Create Panelist
-                    </button>
+                        <button
+                            type="button"
+                            onClick={() => setShowModal(true)}
+                            className="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-medium text-sm hover:bg-primary/90 flex-shrink-0"
+                        >
+                            <span className="material-symbols-outlined text-lg">add</span> Create Panelist
+                        </button>
+                    </SearchExportBar>
                 </div>
                 <div className="overflow-x-auto">
                     {panelists.length === 0 ? (
-                        <EmptyState icon="group" title="No panelists" description="Create your first panelist." actionLabel="Create Panelist" onAction={() => setShowModal(true)} className="m-8" />
+                        search ? (
+                            <div className="p-8 text-center text-slate-500 dark:text-text-muted text-sm">No panelists match your search.</div>
+                        ) : (
+                            <EmptyState icon="group" title="No panelists" description="Create your first panelist." actionLabel="Create Panelist" onAction={() => setShowModal(true)} className="m-8" />
+                        )
                     ) : (
                         <table className="w-full text-left border-collapse">
                             <thead>

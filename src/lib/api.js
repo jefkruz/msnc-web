@@ -7,7 +7,7 @@ const getCache = new Map();
 const PUBLIC_CACHE_MS = 90_000;
 const AUTH_CACHE_MS = 25_000;
 const PUBLIC_PATH = /\/(welcome|about|statement-of-faith|opportunity-to-work-in-ministry)(\/success)?(\?|$)/;
-const SKIP_CACHE = /\/(logout|login|sanctum)(\/|\?|$)/;
+const SKIP_CACHE = /\/(logout|login|sanctum|export)(\/|\?|$)/;
 
 function cacheTtl(url) {
   return PUBLIC_PATH.test(String(url)) ? PUBLIC_CACHE_MS : AUTH_CACHE_MS;
@@ -179,6 +179,34 @@ export function storageUrl(path) {
       ? path
       : `/storage/${path}`;
   return API_URL ? `${API_URL}${relative}` : relative;
+}
+
+/** Cookie-aware CSV/file download (SPA + API split). */
+export async function downloadApiFile(path, fallbackName = 'export.csv', params = {}) {
+  const response = await api.get(path, { params, responseType: 'blob' });
+  const type = String(response.headers['content-type'] || '');
+  if (type.includes('application/json')) {
+    const text = await response.data.text();
+    let message = 'Download failed';
+    try {
+      message = JSON.parse(text).message || message;
+    } catch {
+      // keep fallback
+    }
+    throw new Error(message);
+  }
+  const disp = response.headers['content-disposition'] || '';
+  const match = disp.match(/filename\*?=(?:UTF-8''|"?)([^";]+)/i);
+  const name = match ? decodeURIComponent(match[1].replace(/["']/g, '').trim()) : fallbackName;
+  const blob = response.data instanceof Blob ? response.data : new Blob([response.data]);
+  const href = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = href;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(href);
 }
 
 export default api;

@@ -21,6 +21,7 @@ import {
   Administration,
   Stakeholders,
   SettingsIndex,
+  SettingsWebsite,
   RolesIndex,
   AdminsIndex,
   AdminsShow,
@@ -117,6 +118,7 @@ export default function App() {
       <Route path="/administrator/menu" element={<ApiPage endpoint="/administrator/menu" component={Administration} />} />
       <Route path="/administrator/stakeholders" element={<ApiPage endpoint="/administrator/stakeholders" component={Stakeholders} />} />
       <Route path="/administrator/settings" element={<ApiPage endpoint="/administrator/settings" component={SettingsIndex} />} />
+      <Route path="/administrator/settings/website" element={<ApiPage endpoint="/administrator/settings/website" component={SettingsWebsite} />} />
       <Route path="/administrator/roles" element={<ApiPage endpoint="/administrator/roles" component={RolesIndex} />} />
 
       <Route path="/administrator/admins" element={<ApiPage endpoint="/administrator/admins" component={AdminsIndex} />} />
@@ -160,6 +162,7 @@ export default function App() {
       <Route path="/administrator/tbl-users/:id" element={<ApiPage endpoint={(p) => `/administrator/tbl-users/${p.id}`} component={TblUsersShow} />} />
 
       {/* Shared authorised */}
+      <Route path="/authorised/create" element={<ApiPage endpoint="/authorised/create" component={ApplicantsCreate} />} />
       <Route path="/authorised/view/:id" element={<ApiPage endpoint={(p) => `/authorised/view/${p.id}`} component={ApplicantsView} />} />
       <Route path="/authorised/upload/:id/docs" element={<ApiPage endpoint={(p) => `/authorised/upload/${p.id}/docs`} component={ApplicantsUploads} />} />
       <Route path="/authorised/manage/:id" element={<ApiPage endpoint={(p) => `/authorised/manage/${p.id}`} component={InterviewsManage} />} />
@@ -170,9 +173,8 @@ export default function App() {
 
       {/* SDM */}
       <Route path="/sdm" element={<ApiPage endpoint="/sdm" component={SdmDashboard} />} />
-      <Route path="/sdm/activity-log" element={<ApiPage endpoint="/sdm/activity-log" component={ActivityLog} />} />
-      <Route path="/sdm/analytics" element={<ApiPage endpoint="/sdm/analytics" component={AnalyticsIndex} />} />
       <Route path="/sdm/applicants" element={<ApiPage endpoint="/sdm/applicants" component={SdmApplicants} />} />
+      <Route path="/sdm/applicants/create" element={<ApiPage endpoint="/sdm/applicants/create" component={ApplicantsCreate} />} />
       <Route path="/sdm/interviews" element={<ApiPage endpoint="/sdm/interviews" component={SdmInterviews} />} />
 
       {/* Director / Panelist */}

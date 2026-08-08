@@ -6,8 +6,9 @@ import { useState } from 'react';
 import { useCan } from '../../../lib/can';
 import LoginAsButton from '../../../Components/LoginAsButton';
 import ActionButton, { ActionGroup } from '../../../Components/ActionButton';
+import SearchExportBar from '../../../Components/SearchExportBar';
 
-export default function DirectorsIndex({ directors = [] }) {
+export default function DirectorsIndex({ directors = [], search = '' }) {
     const { auth, authRole, menu, appName } = usePage().props;
     const { can } = useCan();
     const [deleteId, setDeleteId] = useState(null);
@@ -15,21 +16,33 @@ export default function DirectorsIndex({ directors = [] }) {
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Directors">
             <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
-                <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark flex items-center justify-between">
+                <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white">Directors</h2>
-                    {can('directors.create') && (
-                    <Link
-                        href="/administrator/directors/create"
-                        className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-medium text-sm hover:bg-primary/90"
+                    <SearchExportBar
+                        search={search}
+                        indexPath="/administrator/directors"
+                        exportPath="/administrator/directors/export"
+                        exportFilename="directors.csv"
+                        canExport={can('directors.export')}
                     >
-                        <span className="material-symbols-outlined text-lg">add</span>
-                        Create Director
-                    </Link>
-                    )}
+                        {can('directors.create') && (
+                            <Link
+                                href="/administrator/directors/create"
+                                className="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-medium text-sm hover:bg-primary/90 flex-shrink-0"
+                            >
+                                <span className="material-symbols-outlined text-lg">add</span>
+                                Create Director
+                            </Link>
+                        )}
+                    </SearchExportBar>
                 </div>
                 <div className="overflow-x-auto">
                     {directors.length === 0 ? (
-                        <EmptyState icon="group" title="No directors" description="Create your first director." actionLabel="Create Director" onAction={() => window.location.href = '/administrator/directors/create'} className="m-8" />
+                        search ? (
+                            <div className="p-8 text-center text-slate-500 dark:text-text-muted text-sm">No directors match your search.</div>
+                        ) : (
+                            <EmptyState icon="group" title="No directors" description="Create your first director." actionLabel="Create Director" onAction={() => router.visit('/administrator/directors/create')} className="m-8" />
+                        )
                     ) : (
                         <table className="w-full text-left border-collapse">
                             <thead>

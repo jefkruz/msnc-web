@@ -28,6 +28,7 @@ const iconMap = {
     'solar:star-outline': 'star',
     'fa fa-user-lock': 'admin_panel_settings',
     'fa fa-cog': 'settings',
+    'fa fa-globe': 'language',
 };
 
 function getMaterialIcon(icon) {
@@ -55,14 +56,14 @@ const routeToPath = {
     'admin.analytics': '/administrator/analytics',
     'tbl-users.index': '/administrator/tbl-users',
     'settings.edit': '/administrator/settings',
+    'settings.website': '/administrator/settings/website',
     'settings.kc': '/administrator/settings?tab=kc',
     'posting-recommendations.index': '/administrator/posting-recommendations',
     'posting-recommendations.create': '/administrator/posting-recommendations/create',
     sdmHome: '/sdm',
-    'sdm.activity-log': '/sdm/activity-log',
     'sdm.applicants': '/sdm/applicants',
+    'sdm.applicants.create': '/sdm/applicants/create',
     'sdm.interviews': '/sdm/interviews',
-    'sdm.analytics': '/sdm/analytics',
     adminpanelistuser: '/panelist',
     'panelist.interviews.index': '/panelist/interviews',
     'panelist.recommendations.index': '/panelist/recommendations',

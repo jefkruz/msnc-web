@@ -70,7 +70,7 @@ export default function SdmDashboard({
                     </div>
                     <div className="dash-panel__body" style={{ padding: '1rem 1.25rem 1.25rem' }}>
                         <div className="quick-actions">
-                            <Link href="/authorised/create" className="quick-action">
+                            <Link href="/sdm/applicants/create" className="quick-action">
                                 <span className="material-symbols-outlined">person_add</span>
                                 Add applicant
                             </Link>

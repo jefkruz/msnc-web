@@ -33,9 +33,7 @@ export default function ActivityLog({
 }) {
     const { auth, authRole, menu, appName } = usePage().props;
     const list = Array.isArray(items) ? items : [];
-    const basePath = typeof window !== 'undefined' && window.location.pathname.startsWith('/sdm/')
-        ? '/sdm/activity-log'
-        : '/administrator/activity-log';
+    const basePath = '/administrator/activity-log';
 
     const visit = (overrides = {}) => {
         const params = {

@@ -21,9 +21,7 @@ const MONTHS = [
 ];
 
 export default function AnalyticsIndex({
-    role,
-    departmentName,
-    analyticsUrl,
+    analyticsUrl = '/administrator/analytics',
     year,
     month,
     periodLabel,
@@ -51,10 +49,10 @@ export default function AnalyticsIndex({
     const applyFilters = () => {
         const params = { year: selectedYear };
         if (selectedMonth !== '') params.month = selectedMonth;
-        router.get(analyticsUrl, params, { preserveState: true });
+        router.get(analyticsUrl || '/administrator/analytics', params, { preserveState: true });
     };
 
-    const scopeLabel = role === 'sdm' && departmentName ? `Department: ${departmentName}` : 'All departments';
+    const scopeLabel = 'All departments';
 
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Analytics">
