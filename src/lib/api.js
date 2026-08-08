@@ -2,6 +2,29 @@ import axios from 'axios';
 
 const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 
+const getCache = new Map();
+const PUBLIC_CACHE_MS = 90_000;
+const PUBLIC_PATH = /\/(welcome|about|statement-of-faith|opportunity-to-work-in-ministry)(\/success)?(\?|$)/;
+
+export function readGetCache(url) {
+  const hit = getCache.get(url);
+  if (!hit) return null;
+  if (Date.now() - hit.at > PUBLIC_CACHE_MS) {
+    getCache.delete(url);
+    return null;
+  }
+  return hit.data;
+}
+
+export function writeGetCache(url, data) {
+  if (!PUBLIC_PATH.test(String(url))) return;
+  getCache.set(url, { data, at: Date.now() });
+}
+
+export function clearGetCache() {
+  getCache.clear();
+}
+
 export const api = axios.create({
   baseURL: API_URL ? `${API_URL}/api` : '/api',
   withCredentials: true,
@@ -10,6 +33,18 @@ export const api = axios.create({
     'X-Requested-With': 'XMLHttpRequest',
   },
 });
+
+const inflightGets = new Map();
+const originalGet = api.get.bind(api);
+api.get = function get(url, config) {
+  const key = `${url}?${JSON.stringify(config?.params || {})}`;
+  if (inflightGets.has(key)) {
+    return inflightGets.get(key);
+  }
+  const req = originalGet(url, config).finally(() => inflightGets.delete(key));
+  inflightGets.set(key, req);
+  return req;
+};
 
 // Never hit `/api/` — nginx 301s it and strips CORS headers.
 if (api.defaults.baseURL) {
@@ -51,8 +86,8 @@ api.interceptors.response.use(
   (error) => {
     const status = error.response?.status;
     const redirect = error.response?.data?.redirect;
-    if (status === 401 && redirect && typeof window !== 'undefined') {
-      window.location.href = redirect;
+    if (status === 401) {
+      clearGetCache();
     }
     return Promise.reject(error);
   }

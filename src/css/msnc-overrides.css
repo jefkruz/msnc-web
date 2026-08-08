@@ -133,3 +133,50 @@ html.dark .hero__tagline {
 html.dark .hero__lead {
   color: var(--mca-on-surface-variant);
 }
+
+.page-loader {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--mca-background, #f5f8fc);
+}
+
+html.dark .page-loader {
+  background: #0b1220;
+}
+
+.page-loader__mark {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-loader__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(19, 109, 236, 0.18);
+  border-top-color: #136dec;
+  animation: page-loader-spin 0.75s linear infinite;
+}
+
+html.dark .page-loader__ring {
+  border-color: rgba(96, 165, 250, 0.2);
+  border-top-color: #60a5fa;
+}
+
+.page-loader__logo {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+@keyframes page-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

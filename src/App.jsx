@@ -1,6 +1,8 @@
-import { Route, Routes, Navigate, useParams } from 'react-router-dom';
+import { Suspense } from 'react';
+import { Route, Routes, useParams } from 'react-router-dom';
 import ApiPage from './lib/ApiPage';
 import { PageProvider } from './lib/inertia';
+import PageLoader from './Components/PageLoader';
 
 import Welcome from './Pages/Welcome';
 import About from './Pages/Public/About';
@@ -13,65 +15,61 @@ import Error403 from './Pages/Errors/403';
 import Error404 from './Pages/Errors/404';
 import Error500 from './Pages/Errors/500';
 
-import Dashboard from './Pages/Dashboard';
-import Administration from './Pages/Admin/Administration';
-import Stakeholders from './Pages/Admin/Stakeholders';
-import SettingsIndex from './Pages/Admin/Settings/Index';
-import RolesIndex from './Pages/Admin/Roles/Index';
-import AdminsIndex from './Pages/Admin/Admins/Index';
-import AdminsShow from './Pages/Admin/Admins/Show';
-import AdminsEdit from './Pages/Admin/Admins/Edit';
-import DirectorsIndex from './Pages/Admin/Directors/Index';
-import DirectorsCreate from './Pages/Admin/Directors/Create';
-import DirectorsShow from './Pages/Admin/Directors/Show';
-import DirectorsEdit from './Pages/Admin/Directors/Edit';
-import SdmsIndex from './Pages/Admin/Sdms/Index';
-import SdmsShow from './Pages/Admin/Sdms/Show';
-import SdmsEdit from './Pages/Admin/Sdms/Edit';
-import PanelistsIndex from './Pages/Admin/Panelists/Index';
-import PanelistsShow from './Pages/Admin/Panelists/Show';
-import PanelistsEdit from './Pages/Admin/Panelists/Edit';
-import PostingRecommendationsIndex from './Pages/Admin/PostingRecommendations/Index';
-import PostingRecommendationsCreate from './Pages/Admin/PostingRecommendations/Create';
-import PostingRecommendationsEdit from './Pages/Admin/PostingRecommendations/Edit';
-
-import ApplicantsIndex from './Pages/Applicants/Index';
-import ApplicantsCreate from './Pages/Applicants/Create';
-import ApplicantsEdit from './Pages/Applicants/Edit';
-import ApplicantsView from './Pages/Applicants/View';
-import ApplicantsUploads from './Pages/Applicants/Uploads';
-import ApplicantsProgress from './Pages/Applicants/Progress';
-import BiodataForm from './Pages/Applicant/BiodataForm';
-
-import InterviewsIndex from './Pages/Interviews/Index';
-import InterviewsCreate from './Pages/Interviews/Create';
-import InterviewsEdit from './Pages/Interviews/Edit';
-import InterviewsManage from './Pages/Interviews/Manage';
-
-import NomenclatureIndex from './Pages/Nomenclature/Index';
-import DepartmentsIndex from './Pages/Departments/Index';
-import RanksIndex from './Pages/Ranks/Index';
-import QuestionsIndex from './Pages/Questions/Index';
-import QuestionsCreate from './Pages/Questions/Create';
-import AnalyticsIndex from './Pages/Analytics/Index';
-import TblUsersIndex from './Pages/TblUsers/Index';
-import TblUsersYear from './Pages/TblUsers/Year';
-import TblUsersShow from './Pages/TblUsers/Show';
-
-import SdmDashboard from './Pages/Sdm/Dashboard';
-import SdmApplicants from './Pages/Sdm/Applicants';
-import SdmInterviews from './Pages/Sdm/Interviews';
-
-import DirectorDashboard from './Pages/Director/Dashboard';
-import PanelistDashboard from './Pages/Panelist/Dashboard';
-import PanelistInterviewsIndex from './Pages/Panelist/InterviewsIndex';
-import PanelistRecommendationsIndex from './Pages/Panelist/RecommendationsIndex';
-import PanelistInterviewManage from './Pages/Panelist/InterviewManage';
-
-import PersonnelIndex from './Pages/PersonnelInWaiting/Index';
-import PersonnelCreate from './Pages/PersonnelInWaiting/Create';
-import PersonnelShow from './Pages/PersonnelInWaiting/Show';
-import PersonnelEdit from './Pages/PersonnelInWaiting/Edit';
+import {
+  Dashboard,
+  Administration,
+  Stakeholders,
+  SettingsIndex,
+  RolesIndex,
+  AdminsIndex,
+  AdminsShow,
+  AdminsEdit,
+  DirectorsIndex,
+  DirectorsCreate,
+  DirectorsShow,
+  DirectorsEdit,
+  SdmsIndex,
+  SdmsShow,
+  SdmsEdit,
+  PanelistsIndex,
+  PanelistsShow,
+  PanelistsEdit,
+  PostingRecommendationsIndex,
+  PostingRecommendationsCreate,
+  PostingRecommendationsEdit,
+  ApplicantsIndex,
+  ApplicantsCreate,
+  ApplicantsEdit,
+  ApplicantsView,
+  ApplicantsUploads,
+  ApplicantsProgress,
+  BiodataForm,
+  InterviewsIndex,
+  InterviewsCreate,
+  InterviewsEdit,
+  InterviewsManage,
+  NomenclatureIndex,
+  DepartmentsIndex,
+  RanksIndex,
+  QuestionsIndex,
+  QuestionsCreate,
+  AnalyticsIndex,
+  TblUsersIndex,
+  TblUsersYear,
+  TblUsersShow,
+  SdmDashboard,
+  SdmApplicants,
+  SdmInterviews,
+  DirectorDashboard,
+  PanelistDashboard,
+  PanelistInterviewsIndex,
+  PanelistRecommendationsIndex,
+  PanelistInterviewManage,
+  PersonnelIndex,
+  PersonnelCreate,
+  PersonnelShow,
+  PersonnelEdit,
+} from './pages.lazy';
 
 function LoginRoute() {
   const { role } = useParams();
@@ -84,6 +82,7 @@ function LoginRoute() {
 
 export default function App() {
   return (
+    <Suspense fallback={<PageLoader />}>
     <Routes>
       <Route path="/" element={<ApiPage endpoint="/welcome" component={Welcome} />} />
       <Route path="/about" element={<ApiPage endpoint="/about" component={About} />} />
@@ -176,5 +175,6 @@ export default function App() {
       <Route path="/500" element={<Error500 />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
+    </Suspense>
   );
 }

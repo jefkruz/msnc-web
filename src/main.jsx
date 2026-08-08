@@ -10,9 +10,6 @@ import './css/msnc-overrides.css';
 import './css/portal-compat.css';
 import './css/msnc-pages.css';
 import './css/app.css';
-import { ensureCsrf } from './lib/api';
-
-ensureCsrf().catch(() => {});
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

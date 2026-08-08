@@ -55,7 +55,7 @@ export default function Welcome({ branding = {}, home = {} }) {
                         </div>
                     </div>
                     <div className="hero__visual">
-                        <img src={heroImage} alt="" decoding="async" />
+                        <img src={heroImage} alt="" decoding="async" fetchPriority="high" width="720" height="480" />
                     </div>
                 </div>
             </section>

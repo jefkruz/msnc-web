@@ -7,6 +7,15 @@ export default defineConfig({
   build: {
     emptyOutDir: true,
     assetsDir: 'assets',
+    cssCodeSplit: true,
+    modulePreload: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom', 'axios'],
+        },
+      },
+    },
   },
   resolve: {
     alias: {
