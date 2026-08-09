@@ -1,8 +1,9 @@
 import { useForm } from '@inertiajs/react';
 import SettingsShell from './SettingsShell';
-import { Field, FileField, Section, inputClass, textareaClass } from './fields';
+import { Field, FileField, HeaderPreview, Section, inputClass, textareaClass } from './fields';
 
 const JUMP = [
+    { id: 'header', label: 'Site header' },
     { id: 'hero', label: 'Hero' },
     { id: 'trust', label: 'Trust strip' },
     { id: 'applicants-path', label: 'Applicants card' },
@@ -14,6 +15,8 @@ const JUMP = [
 
 export default function SettingsWebsite({ branding = {}, home = {}, settingsReady = true }) {
     const { data, setData, post, processing, errors } = useForm({
+        site_name: branding.site_name ?? '',
+        site_tagline: branding.site_tagline ?? '',
         hero_image: null,
         hero_title: home.hero_title ?? '',
         hero_lead: home.hero_lead ?? '',
@@ -71,6 +74,17 @@ export default function SettingsWebsite({ branding = {}, home = {}, settingsRead
                 }}
                 className="space-y-4"
             >
+                <Section id="header" title="Site header" icon="badge" hint="Name and tagline beside the favicon on every public page.">
+                    <HeaderPreview name={data.site_name} tagline={data.site_tagline} faviconUrl={branding.favicon_url} />
+                    <Field label="Site name" className="settings-field--full" hint="Example: MSNC Portal">
+                        <input type="text" value={data.site_name} onChange={(e) => setData('site_name', e.target.value)} className={inputClass} />
+                        {errors.site_name && <p className="text-red-500 text-xs mt-1">{errors.site_name}</p>}
+                    </Field>
+                    <Field label="Tagline" className="settings-field--full" hint="Example: Recruitment & hiring portal">
+                        <input type="text" value={data.site_tagline} onChange={(e) => setData('site_tagline', e.target.value)} className={inputClass} />
+                    </Field>
+                </Section>
+
                 <Section id="hero" title="Hero section" icon="web" hint="Top of the public homepage: headline, lead text, and Applicant Login button.">
                     <FileField
                         label="Hero image (right side)"

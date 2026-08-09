@@ -222,6 +222,15 @@ html.dark .error-screen__mark--500 {
   object-fit: contain;
 }
 
+.guest-shell--signin .guest-card__head {
+  padding: 1.75rem 1.5rem 1.25rem;
+}
+
+.guest-shell--signin .guest-card__brand img {
+  height: 96px;
+  max-width: 280px;
+}
+
 .guest-card__mark {
   width: 42px;
   height: 42px;

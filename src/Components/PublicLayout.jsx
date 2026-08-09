@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import { storageUrl } from '../lib/api';
 import { brandLogoUrl } from '../lib/siteFavicon';
 import { getTheme, toggleTheme } from '../theme';
 
@@ -17,9 +18,10 @@ export default function PublicLayout({ children, active = 'home', branding: bran
     const [isDark, setIsDark] = useState(() => getTheme() === 'dark');
 
     const siteName = branding.site_name || appName;
-    const tagline = branding.site_tagline || 'Recruitment & hiring portal';
+    const tagline = branding.site_tagline || '';
     const footerCredit = branding.footer_credit || siteName;
     const logoUrl = brandLogoUrl(branding.logo_url);
+    const faviconUrl = storageUrl(branding.favicon_url) || '/favicon.svg';
 
     useEffect(() => {
         document.body.className = 'public-body';
@@ -32,10 +34,10 @@ export default function PublicLayout({ children, active = 'home', branding: bran
 
     const Brand = () => (
         <Link href="/" className="public-brand" onClick={closeMobile}>
-            <img src={logoUrl} alt={siteName} />
+            <img src={faviconUrl} alt={siteName} />
             <span className="public-brand__text">
                 <span className="public-brand__name">{siteName}</span>
-                <span className="public-brand__tag">{tagline}</span>
+                {tagline ? <span className="public-brand__tag">{tagline}</span> : null}
             </span>
         </Link>
     );

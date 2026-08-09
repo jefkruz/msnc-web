@@ -26,6 +26,9 @@ export function applySiteBranding(branding = {}) {
   if (branding?.logo_url) {
     brandLogoUrl(branding.logo_url);
   }
+  if (typeof document !== 'undefined' && branding?.site_name) {
+    document.title = branding.site_name;
+  }
 }
 
 export function applySiteFavicon(url) {

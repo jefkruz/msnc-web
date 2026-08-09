@@ -871,6 +871,13 @@ html.dark .portal-confirm__icon--danger {
   padding: 1.15rem;
 }
 
+.settings-brand-preview {
+  padding: 0.85rem 1rem;
+  border: 1px dashed var(--mca-outline-variant);
+  border-radius: 0.75rem;
+  background: var(--mca-soft-bg, #f5f8fc);
+}
+
 @media (min-width: 768px) {
   .settings-section__body {
     grid-template-columns: 1fr 1fr;

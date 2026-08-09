@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm } from '@inertiajs/react';
 import SearchableSelect from '../../../Components/SearchableSelect';
 import SettingsShell from './SettingsShell';
-import { Field, FileField, Section, ToggleField, inputClass } from './fields';
+import { Field, FileField, HeaderPreview, Section, ToggleField, inputClass } from './fields';
 
 export default function SettingsIndex({ branding = {}, kc = {}, settingsReady = true }) {
     const [tab, setTab] = useState(() => {
@@ -125,15 +125,16 @@ export default function SettingsIndex({ branding = {}, kc = {}, settingsReady = 
                     }}
                     className="space-y-4"
                 >
-                    <Section title="Identity" icon="badge" hint="Name and footer shown on the public site and in the portal.">
-                        <Field label="Site name" className="settings-field--full">
+                    <Section title="Identity" icon="badge" hint="This is the public header next to the favicon: name on the first line, tagline underneath.">
+                        <HeaderPreview name={data.site_name} tagline={data.site_tagline} faviconUrl={branding.favicon_url} />
+                        <Field label="Site name" className="settings-field--full" hint="Example: MSNC Portal">
                             <input type="text" value={data.site_name} onChange={(e) => setData('site_name', e.target.value)} className={inputClass} />
                             {errors.site_name && <p className="text-red-500 text-xs mt-1">{errors.site_name}</p>}
                         </Field>
-                        <Field label="Tagline">
+                        <Field label="Tagline" className="settings-field--full" hint="Example: Recruitment & hiring portal">
                             <input type="text" value={data.site_tagline} onChange={(e) => setData('site_tagline', e.target.value)} className={inputClass} />
                         </Field>
-                        <Field label="Footer credit">
+                        <Field label="Footer credit" className="settings-field--full">
                             <input type="text" value={data.footer_credit} onChange={(e) => setData('footer_credit', e.target.value)} className={inputClass} />
                         </Field>
                     </Section>

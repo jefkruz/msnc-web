@@ -32,6 +32,23 @@ export function Section({ id, title, icon, hint, children }) {
     );
 }
 
+export function HeaderPreview({ name, tagline, faviconUrl }) {
+    return (
+        <div className="settings-field settings-field--full">
+            <p className="settings-field__label">Public header preview</p>
+            <div className="settings-brand-preview">
+                <div className="public-brand">
+                    <img src={faviconUrl || '/favicon.svg'} alt="" />
+                    <span className="public-brand__text">
+                        <span className="public-brand__name">{name || 'Site name'}</span>
+                        {tagline ? <span className="public-brand__tag">{tagline}</span> : null}
+                    </span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export function Field({ label, hint, className = '', children }) {
     return (
         <div className={`settings-field ${className}`.trim()}>
