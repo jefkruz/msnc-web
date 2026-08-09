@@ -89,6 +89,10 @@ api.interceptors.request.use((config) => {
     const trimmed = pathname.replace(/\/+$/, '');
     config.url = (trimmed || '') + (query ? `?${query}` : '');
   }
+  if (typeof window !== 'undefined') {
+    config.headers = config.headers || {};
+    config.headers['X-SPA-Path'] = `${window.location.pathname}${window.location.search}`;
+  }
   return config;
 });
 

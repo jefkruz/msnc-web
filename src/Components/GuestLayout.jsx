@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
+import { brandLogoUrl } from '../lib/siteFavicon';
 import { getTheme, toggleTheme } from '../theme';
 
 export default function GuestLayout({ title, children, appName = 'Recruitment Portal', variant = 'default' }) {
     const { branding = {} } = usePage().props || {};
-    const logoUrl = branding.logo_url || '/logo.png';
+    const logoUrl = brandLogoUrl(branding.logo_url);
     const siteName = branding.site_name || appName;
     const [isDark, setIsDark] = useState(() => getTheme() === 'dark');
 

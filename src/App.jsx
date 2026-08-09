@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { Route, Routes, useParams } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import ApiPage from './lib/ApiPage';
 import { PageProvider } from './lib/inertia';
 import PageLoader from './Components/PageLoader';
@@ -81,15 +81,6 @@ function StaticShell({ children }) {
   );
 }
 
-function LoginRoute() {
-  const { role } = useParams();
-  return (
-    <StaticShell>
-      <Login role={role} />
-    </StaticShell>
-  );
-}
-
 export default function App() {
   return (
     <Suspense fallback={<PageLoader />}>
@@ -105,7 +96,7 @@ export default function App() {
         path="/opportunity-to-work-in-ministry/success"
         element={<ApiPage endpoint="/opportunity-to-work-in-ministry/success" component={RegistrationSuccess} />}
       />
-      <Route path="/login/:role" element={<LoginRoute />} />
+      <Route path="/login/:role" element={<ApiPage endpoint={(p) => `/login/${p.role}`} component={Login} />} />
       <Route path="/auth/error" element={<StaticShell><AuthError /></StaticShell>} />
 
       {/* Applicant */}

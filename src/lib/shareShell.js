@@ -1,4 +1,4 @@
-const SHARE_KEYS = ['auth', 'authRole', 'roles', 'permissions', 'menu', 'impersonation', 'appName'];
+const SHARE_KEYS = ['auth', 'authRole', 'roles', 'permissions', 'menu', 'impersonation', 'appName', 'branding'];
 
 let lastShare = null;
 

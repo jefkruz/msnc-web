@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Link, router } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { prefetchGet, toSpaHref } from '../lib/api';
+import { brandLogoUrl } from '../lib/siteFavicon';
 import { toggleTheme, getTheme } from '../theme';
 
 const iconMap = {
@@ -86,6 +87,9 @@ function initials(name = '') {
 }
 
 export default function Sidebar({ menu = [], appName, auth, authRole, onClose }) {
+    const { branding = {} } = usePage().props || {};
+    const logoUrl = brandLogoUrl(branding.logo_url);
+    const siteName = branding.site_name || appName || 'MSNC Recruitment';
     const [isDark, setIsDark] = useState(() => getTheme() === 'dark');
     const hasActiveChild = (item) => item.submenu?.some((s) => s.active === 'active');
     const [openSubmenus, setOpenSubmenus] = useState(() => {
@@ -110,9 +114,9 @@ export default function Sidebar({ menu = [], appName, auth, authRole, onClose })
     return (
         <aside className="app-sidebar" id="app-sidebar">
             <div className="app-sidebar__brand">
-                <img src="/logo.png" alt="" />
+                <img src={logoUrl} alt={siteName} />
                 <div className="app-sidebar__brand-text">
-                    <strong>{appName || 'MSNC Recruitment'}</strong>
+                    <strong>{siteName}</strong>
                     <span>Admin Console</span>
                 </div>
                 <button

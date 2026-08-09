@@ -10,6 +10,7 @@ import {
 } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import api, { apiPath, ensureCsrf, toSpaHref } from './api';
+import { applySiteBranding } from './siteFavicon';
 
 const PageContext = createContext({
   props: {},
@@ -23,6 +24,10 @@ export function PageProvider({ value, refresh, children }) {
   useEffect(() => {
     setProps(value || {});
   }, [value]);
+
+  useEffect(() => {
+    applySiteBranding(props?.branding);
+  }, [props?.branding?.favicon_url, props?.branding?.logo_url]);
 
   const ctx = useMemo(
     () => ({

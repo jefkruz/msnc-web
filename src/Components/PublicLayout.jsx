@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import { brandLogoUrl } from '../lib/siteFavicon';
 import { getTheme, toggleTheme } from '../theme';
 
 const navLinks = [
@@ -18,7 +19,7 @@ export default function PublicLayout({ children, active = 'home', branding: bran
     const siteName = branding.site_name || appName;
     const tagline = branding.site_tagline || 'Recruitment & hiring portal';
     const footerCredit = branding.footer_credit || siteName;
-    const logoUrl = branding.logo_url || '/logo.png';
+    const logoUrl = brandLogoUrl(branding.logo_url);
 
     useEffect(() => {
         document.body.className = 'public-body';
