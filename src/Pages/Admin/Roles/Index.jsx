@@ -1,19 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useForm, usePage, router } from '@inertiajs/react';
-import Layout from '../../../Components/Layout';
+import { useForm, usePage, router } from '@inertiajs/react';
 import Modal from '../../../Components/Modal';
 import ConfirmModal from '../../../Components/ConfirmModal';
 import Alert from '../../../Components/Alert';
+import ActionButton from '../../../Components/ActionButton';
 import { useCan } from '../../../lib/can';
+import SettingsShell from '../Settings/SettingsShell';
 
 const BASE = '/administrator/roles';
 
 export default function RolesIndex() {
     const {
-        auth,
-        authRole,
-        menu,
-        appName,
         roles = [],
         permissions = [],
         permissionGroups = [],
@@ -96,16 +93,14 @@ export default function RolesIndex() {
     };
 
     return (
-        <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Roles & Permissions">
-            <div className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <Link
-                        href="/administrator/settings"
-                        className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white w-fit"
-                    >
-                        <span className="material-symbols-outlined text-lg">arrow_back</span>
-                        Back to Settings
-                    </Link>
+        <SettingsShell
+            title="Roles & permissions"
+            description="Choose a role, then grant or revoke access. System roles cannot be deleted."
+            settingsReady
+            activeHref="/administrator/roles"
+        >
+            <div className="roles-page">
+                <div className="roles-toolbar">
                     <div className="flex flex-wrap gap-2">
                         {can('permissions.create') && (
                             <button type="button" onClick={() => setShowPermissionModal(true)} className="btn btn-secondary btn-sm">
@@ -125,68 +120,61 @@ export default function RolesIndex() {
                 {(pageErrors.role || pageErrors.permission || pageErrors.name) && (
                     <Alert
                         type="error"
-                        message={
-                            [].concat(pageErrors.role || pageErrors.permission || pageErrors.name)[0]
-                        }
+                        message={[].concat(pageErrors.role || pageErrors.permission || pageErrors.name)[0]}
                     />
                 )}
 
-                <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-                    <div className="xl:col-span-4 bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
-                        <div className="px-5 py-4 border-b border-slate-200 dark:border-border-dark">
-                            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Roles</h2>
-                            <p className="text-sm text-text-muted mt-0.5">Select a role to manage its permissions.</p>
+                <div className="roles-layout">
+                    <section className="roles-panel">
+                        <div className="roles-panel__head">
+                            <h3>Roles</h3>
+                            <p>Select a role to manage its permissions.</p>
                         </div>
-                        <div className="divide-y divide-slate-200 dark:divide-border-dark">
+                        <div className="roles-list">
                             {rolesList.map((role) => (
                                 <button
                                     key={role.id}
                                     type="button"
                                     onClick={() => setSelectedId(role.id)}
-                                    className={`w-full text-left px-5 py-4 hover:bg-slate-50 dark:hover:bg-white/5 ${
-                                        selected?.id === role.id ? 'bg-primary/5' : ''
-                                    }`}
+                                    className={`roles-list__item${selected?.id === role.id ? ' is-active' : ''}`}
                                 >
-                                    <div className="flex items-center justify-between gap-2">
-                                        <strong className="text-slate-900 dark:text-white capitalize">{role.name}</strong>
-                                        {role.is_protected && (
-                                            <span className="badge badge-info text-xs">System</span>
-                                        )}
-                                    </div>
-                                    <p className="text-xs text-text-muted mt-1">
+                                    <span className="roles-list__row">
+                                        <strong>{role.name}</strong>
+                                        {role.is_protected ? <span className="badge badge-info">System</span> : null}
+                                    </span>
+                                    <span className="roles-list__meta">
                                         {role.permissions?.length || 0} permissions · {role.users_count || 0} users
-                                    </p>
+                                    </span>
                                 </button>
                             ))}
                         </div>
-                    </div>
+                    </section>
 
-                    <div className="xl:col-span-8 bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
+                    <section className="roles-panel">
                         {selected ? (
                             <form onSubmit={saveRole}>
-                                <div className="px-5 py-4 border-b border-slate-200 dark:border-border-dark flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                <div className="roles-panel__head roles-panel__head--split">
                                     <div>
-                                        <h2 className="text-lg font-bold text-slate-900 dark:text-white capitalize">{selected.name}</h2>
-                                        <p className="text-sm text-text-muted mt-0.5">
+                                        <h3>{selected.name}</h3>
+                                        <p>
                                             {selected.is_protected
                                                 ? 'System role — name is locked, permissions can still be changed.'
-                                                : 'Custom role — rename, update permissions, or delete.'}
+                                                : 'Custom role — update permissions or delete.'}
                                         </p>
                                     </div>
-                                    <div className="flex gap-2">
+                                    <div className="roles-panel__actions">
                                         {can('roles.delete') && !selected.is_protected && (
-                                            <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => setDeleteRoleId(selected.id)}>
-                                                Delete
-                                            </button>
+                                            <ActionButton action="delete" onClick={() => setDeleteRoleId(selected.id)} />
                                         )}
                                         {can('roles.update') && (
                                             <button type="submit" className="btn btn-primary btn-sm">
+                                                <span className="material-symbols-outlined text-lg">save</span>
                                                 Save permissions
                                             </button>
                                         )}
                                     </div>
                                 </div>
-                                <div className="p-5 space-y-4">
+                                <div className="roles-panel__body">
                                     <input
                                         type="search"
                                         value={query}
@@ -194,33 +182,36 @@ export default function RolesIndex() {
                                         placeholder="Filter permissions…"
                                         className="form-control"
                                     />
-                                    <div className="space-y-5 max-h-[70vh] overflow-y-auto pr-1">
+                                    <div className="roles-groups">
                                         {filteredGroups.map((group) => (
-                                            <div key={group.name}>
-                                                <div className="flex items-center justify-between mb-2">
-                                                    <h3 className="text-sm font-bold uppercase tracking-wide text-slate-500">{group.name}</h3>
+                                            <div key={group.name} className="roles-group">
+                                                <div className="roles-group__head">
+                                                    <h4>{group.name}</h4>
                                                     {can('roles.update') && (
                                                         <button
                                                             type="button"
-                                                            className="text-xs font-medium text-primary"
+                                                            className="roles-group__toggle"
                                                             onClick={() => toggleGroup(group.permissions)}
                                                         >
                                                             Toggle group
                                                         </button>
                                                     )}
                                                 </div>
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                                    {group.permissions.map((name) => (
-                                                        <label key={name} className="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-border-dark px-3 py-2 text-sm">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={checked.includes(name)}
-                                                                disabled={!can('roles.update')}
-                                                                onChange={() => togglePermission(name)}
-                                                            />
-                                                            <span className="text-slate-800 dark:text-slate-200">{name}</span>
-                                                        </label>
-                                                    ))}
+                                                <div className="roles-perm-grid">
+                                                    {group.permissions.map((name) => {
+                                                        const on = checked.includes(name);
+                                                        return (
+                                                            <label key={name} className={`roles-perm${on ? ' is-checked' : ''}`}>
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={on}
+                                                                    disabled={!can('roles.update')}
+                                                                    onChange={() => togglePermission(name)}
+                                                                />
+                                                                <span>{name}</span>
+                                                            </label>
+                                                        );
+                                                    })}
                                                 </div>
                                             </div>
                                         ))}
@@ -228,44 +219,27 @@ export default function RolesIndex() {
                                 </div>
                             </form>
                         ) : (
-                            <div className="p-8 text-text-muted">No roles found.</div>
+                            <div className="roles-panel__empty">No roles found.</div>
                         )}
-                    </div>
+                    </section>
                 </div>
 
-                <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm">
-                    <div className="px-5 py-4 border-b border-slate-200 dark:border-border-dark">
-                        <h2 className="text-lg font-bold text-slate-900 dark:text-white">All permissions</h2>
+                <section className="roles-panel">
+                    <div className="roles-panel__head">
+                        <h3>All permissions</h3>
+                        <p>{permissions.length} named abilities available to assign.</p>
                     </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead>
-                                <tr className="text-xs uppercase tracking-wider text-text-muted border-b border-slate-200 dark:border-border-dark">
-                                    <th className="px-5 py-3">Name</th>
-                                    <th className="px-5 py-3 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-200 dark:divide-border-dark">
-                                {permissions.map((permission) => (
-                                    <tr key={permission.id}>
-                                        <td className="px-5 py-3 text-slate-800 dark:text-slate-200">{permission.name}</td>
-                                        <td className="px-5 py-3 text-right">
-                                            {can('permissions.delete') && (
-                                                <button
-                                                    type="button"
-                                                    className="text-red-500 text-sm font-medium"
-                                                    onClick={() => setDeletePermissionId(permission.id)}
-                                                >
-                                                    Delete
-                                                </button>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    <div className="roles-all-grid">
+                        {permissions.map((permission) => (
+                            <div key={permission.id} className="roles-all-card">
+                                <span className="roles-all-card__name">{permission.name}</span>
+                                {can('permissions.delete') && (
+                                    <ActionButton action="delete" onClick={() => setDeletePermissionId(permission.id)} />
+                                )}
+                            </div>
+                        ))}
                     </div>
-                </div>
+                </section>
             </div>
 
             <Modal
@@ -345,6 +319,6 @@ export default function RolesIndex() {
                 confirmLabel="Delete"
                 variant="danger"
             />
-        </Layout>
+        </SettingsShell>
     );
 }
