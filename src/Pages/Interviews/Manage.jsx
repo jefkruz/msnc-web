@@ -25,7 +25,7 @@ export default function InterviewsManage({ interview, applicant, panelistNames =
     const { auth, authRole, menu, appName } = usePage().props;
     const doc = applicant?.document || {};
     const fullName = applicant ? [applicant.first_name, applicant.last_name].filter(Boolean).join(' ') : '—';
-    const imageUrl = applicant?.image || '/images/default.png';
+    const imageUrl = storageUrl(applicant?.image) || '/images/default.png';
     const interviewDate = formatDisplayDate(interview?.date);
 
     const hasDocuments = Object.keys(DOCUMENT_LABELS).some((field) => doc[field]);

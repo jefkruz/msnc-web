@@ -172,13 +172,20 @@ export function toSpaHref(href = '') {
 
 export function storageUrl(path) {
   if (!path) return null;
-  if (path.startsWith('http://') || path.startsWith('https://')) return path;
-  const relative = path.startsWith('/storage/')
-    ? path
-    : path.startsWith('/')
-      ? path
-      : `/storage/${path}`;
-  return API_URL ? `${API_URL}${relative}` : relative;
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    try {
+      const u = new URL(path);
+      const apiHost = API_URL ? new URL(API_URL, window.location.origin).host : '';
+      if (apiHost && u.host === apiHost) {
+        return `${window.location.origin}${u.pathname}${u.search}${u.hash}`;
+      }
+    } catch {
+      return path;
+    }
+    return path;
+  }
+  if (path.startsWith('/')) return path;
+  return `/storage/${path}`;
 }
 
 /** Cookie-aware CSV/file download (SPA + API split). */
