@@ -1,0 +1,46 @@
+import { useForm } from '@inertiajs/react';
+import { usePage, Link } from '@inertiajs/react';
+import Layout from '../../../Components/Layout';
+import SearchableMultiSelect from '../../../Components/SearchableMultiSelect';
+import TitleCaseInput from '../../../Components/TitleCaseInput';
+
+export default function DirectorsCreate({ departments = [] }) {
+    const { auth, authRole, menu, appName } = usePage().props;
+    const { data, setData, post, processing, errors } = useForm({ name: '', username: '', departments: [] });
+
+    return (
+        <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Create Director">
+            <div className="max-w-2xl">
+                <form onSubmit={(e) => { e.preventDefault(); post('/administrator/directors'); }} className="space-y-6">
+                    <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-6 space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+                            <TitleCaseInput value={data.name} onChange={(val) => setData('name', val)} className="form-control" required />
+                            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Username</label>
+                            <input type="text" value={data.username} onChange={(e) => setData('username', e.target.value)} className="form-control" required />
+                            {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Departments</label>
+                            <SearchableMultiSelect
+                                value={data.departments}
+                                onChange={(vals) => setData('departments', vals)}
+                                options={departments}
+                                placeholder="Select departments"
+                                required
+                                error={errors.departments}
+                            />
+                        </div>
+                    </div>
+                    <div className="flex gap-3">
+                        <Link href="/administrator/directors" className="px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white font-medium">Cancel</Link>
+                        <button type="submit" disabled={processing} className="px-6 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50">Create Director</button>
+                    </div>
+                </form>
+            </div>
+        </Layout>
+    );
+}

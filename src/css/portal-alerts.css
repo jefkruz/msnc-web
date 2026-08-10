@@ -1,0 +1,162 @@
+/* Portal-wide flash / validation alerts */
+
+.portal-global-alerts {
+  position: relative;
+  z-index: 1035;
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+}
+
+.app-body .portal-global-alerts,
+.public-body .portal-global-alerts {
+  margin-left: 0 !important;
+}
+
+.portal-alerts {
+  width: 100%;
+}
+
+.portal-alert {
+  border: 1px solid var(--mca-outline-variant, #c6c6ce);
+  border-left: 4px solid transparent;
+  border-radius: 0.75rem;
+  box-shadow: var(--mca-shadow, 0 10px 30px -5px rgba(11, 21, 51, 0.08));
+  padding: 0.95rem 2.5rem 0.95rem 1rem;
+  margin-bottom: 0.75rem;
+  background: var(--mca-panel, #fff);
+  color: var(--mca-on-surface, #0e1b35);
+}
+
+.portal-alert__body {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.portal-alert__icon {
+  font-size: 1.2rem;
+  line-height: 1.2;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.portal-alert__title {
+  display: block;
+  font-family: var(--font-headline, Sora, sans-serif);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.15rem;
+}
+
+.portal-alert__message,
+.portal-alert__list {
+  font-size: 0.9rem;
+  margin: 0;
+  color: var(--mca-on-surface-variant, #45464e);
+}
+
+.portal-alert__list {
+  margin-top: 0.25rem;
+}
+
+.portal-alert.alert-success {
+  background: color-mix(in srgb, #1f7a4d 10%, var(--mca-panel, #fff));
+  border-left-color: #1f7a4d;
+  border-color: color-mix(in srgb, #1f7a4d 25%, var(--mca-outline-variant, #c6c6ce));
+}
+
+.portal-alert.alert-success .portal-alert__icon,
+.portal-alert.alert-success .portal-alert__title {
+  color: #1f7a4d;
+}
+
+.portal-alert.alert-info {
+  background: color-mix(in srgb, #2748c7 10%, var(--mca-panel, #fff));
+  border-left-color: #2748c7;
+  border-color: color-mix(in srgb, #2748c7 25%, var(--mca-outline-variant, #c6c6ce));
+}
+
+.portal-alert.alert-info .portal-alert__icon,
+.portal-alert.alert-info .portal-alert__title {
+  color: #2748c7;
+}
+
+.portal-alert.alert-warning {
+  background: color-mix(in srgb, var(--mca-gold, #d4af37) 14%, var(--mca-panel, #fff));
+  border-left-color: var(--mca-gold, #d4af37);
+  border-color: color-mix(in srgb, var(--mca-gold, #d4af37) 35%, var(--mca-outline-variant, #c6c6ce));
+}
+
+.portal-alert.alert-warning .portal-alert__icon,
+.portal-alert.alert-warning .portal-alert__title {
+  color: #7a5900;
+}
+
+html.dark .portal-alert.alert-warning .portal-alert__icon,
+html.dark .portal-alert.alert-warning .portal-alert__title {
+  color: var(--mca-gold, #e0b65a);
+}
+
+.portal-alert.alert-danger {
+  background: color-mix(in srgb, #ba1a1a 10%, var(--mca-panel, #fff));
+  border-left-color: #ba1a1a;
+  border-color: color-mix(in srgb, #ba1a1a 25%, var(--mca-outline-variant, #c6c6ce));
+}
+
+.portal-alert.alert-danger .portal-alert__icon,
+.portal-alert.alert-danger .portal-alert__title {
+  color: #ba1a1a;
+}
+
+html.dark .portal-alert.alert-danger .portal-alert__icon,
+html.dark .portal-alert.alert-danger .portal-alert__title {
+  color: #ffb4ab;
+}
+
+/* Contextual / static alerts used across the app */
+.app-content .alert:not(.portal-alert),
+.content .alert:not(.portal-alert),
+.content-wrapper .alert:not(.portal-alert) {
+  border: 1px solid var(--mca-outline-variant, #c6c6ce);
+  border-left: 4px solid transparent;
+  border-radius: 0.75rem;
+  box-shadow: none;
+  background: var(--mca-panel, #fff);
+  color: var(--mca-on-surface, #0e1b35);
+}
+
+.app-content .alert-success:not(.portal-alert),
+.content .alert-success:not(.portal-alert),
+.content-wrapper .alert-success:not(.portal-alert) {
+  background: color-mix(in srgb, #1f7a4d 10%, var(--mca-panel, #fff));
+  border-left-color: #1f7a4d;
+}
+
+.app-content .alert-info:not(.portal-alert),
+.content .alert-info:not(.portal-alert),
+.content-wrapper .alert-info:not(.portal-alert) {
+  background: color-mix(in srgb, #2748c7 10%, var(--mca-panel, #fff));
+  border-left-color: #2748c7;
+}
+
+.app-content .alert-warning:not(.portal-alert),
+.content .alert-warning:not(.portal-alert),
+.content-wrapper .alert-warning:not(.portal-alert) {
+  background: color-mix(in srgb, var(--mca-gold, #d4af37) 14%, var(--mca-panel, #fff));
+  border-left-color: var(--mca-gold, #d4af37);
+}
+
+.app-content .alert-danger:not(.portal-alert),
+.content .alert-danger:not(.portal-alert),
+.content-wrapper .alert-danger:not(.portal-alert) {
+  background: color-mix(in srgb, #ba1a1a 10%, var(--mca-panel, #fff));
+  border-left-color: #ba1a1a;
+}
+
+.app-content .alert-light:not(.portal-alert),
+.content .alert-light:not(.portal-alert),
+.content-wrapper .alert-light:not(.portal-alert) {
+  background: var(--mca-surface-low, #f1f3ff);
+  border-left-color: var(--mca-outline-variant, #c6c6ce);
+}

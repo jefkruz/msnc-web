@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>MSNC — Mission Support Network Center</title>
+    <meta name="description" content="Mission Support Network Center — recruitment, training, posting and management of missionaries for Christian work." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://api.missionsupportnetworkcenter.org" crossorigin />
+    <link rel="dns-prefetch" href="https://api.missionsupportnetworkcenter.org" />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+      />
+    </noscript>
+    <style>
+      .page-loader{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f7f9fc}
+      html.dark .page-loader{background:#0a0f18}
+      .page-loader__mark{position:relative;width:96px;height:96px;display:flex;align-items:center;justify-content:center}
+      .page-loader__ring{position:absolute;inset:0;border-radius:50%;border:3px solid rgba(19,109,236,.16);border-top-color:#136dec;animation:page-loader-spin .8s linear infinite}
+      .page-loader__dot{position:absolute;top:-3px;left:calc(50% - 3px);width:6px;height:6px;border-radius:50%;background:#136dec}
+      .page-loader__logo{width:46px;height:46px;object-fit:contain;animation:page-loader-pulse 1.4s ease-in-out infinite}
+      @keyframes page-loader-spin{to{transform:rotate(360deg)}}
+      @keyframes page-loader-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(.92)}}
+    </style>
+    <script>
+      (function () {
+        try {
+          var fav = localStorage.getItem('msnc_favicon');
+          if (fav) {
+            var icon = document.querySelector('link[rel="icon"]');
+            if (icon) icon.setAttribute('href', fav);
+          }
+        } catch (e) {}
+        try {
+          var tp = new URLSearchParams(window.location.search).get('theme');
+          var t = tp === 'dark' || tp === 'light' ? tp : localStorage.getItem('mca_theme') || localStorage.getItem('theme');
+          var dark = t === 'dark' || (t !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.style.colorScheme = 'light';
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root">
+      <div class="page-loader" role="status" aria-live="polite">
+        <div class="page-loader__mark">
+          <span class="page-loader__ring" aria-hidden="true"></span>
+          <img src="/logo.png" alt="" class="page-loader__logo" width="44" height="44" />
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
