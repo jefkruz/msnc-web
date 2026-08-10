@@ -267,12 +267,12 @@ html.dark .error-screen__mark--500 {
   margin: 0 0 0.75rem;
   font-size: 0.9rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--p-footer-muted);
 }
 
 .public-footer a[href^="tel"],
 .public-footer a[href^="mailto"] {
-  color: rgba(255, 255, 255, 0.82);
+  color: var(--p-footer-muted);
 }
 
 html.dark .hero__caption h1,

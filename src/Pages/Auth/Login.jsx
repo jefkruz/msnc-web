@@ -1,5 +1,13 @@
 import GuestLayout from '../../Components/GuestLayout';
-import { usePage } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
+
+const roleLinks = [
+    { role: 'applicant', label: 'Applicant' },
+    { role: 'admin', label: 'Administrator' },
+    { role: 'sdm', label: 'SDM' },
+    { role: 'panelist', label: 'Panelist' },
+    { role: 'director', label: 'Director' },
+];
 
 export default function Login({ role = 'admin', authLoginUrl = '#' }) {
     const { flash, appName = 'Recruitment Portal' } = usePage().props;
@@ -17,8 +25,10 @@ export default function Login({ role = 'admin', authLoginUrl = '#' }) {
             ? 'Sign in with KingsChat to update your profile, upload documents, and track your application.'
             : 'Welcome back. Use KingsChat to sign in and access your dashboard.';
 
+    const isApplicant = role === 'applicant';
+
     return (
-        <GuestLayout title={title} appName={appName} variant="signin">
+        <GuestLayout title={title} eyebrow="Secure sign-in" appName={appName} variant="signin">
             {flash?.error && (
                 <div className="portal-alert alert-danger" style={{ marginBottom: '1rem' }}>
                     <div className="portal-alert__body">
@@ -26,15 +36,50 @@ export default function Login({ role = 'admin', authLoginUrl = '#' }) {
                     </div>
                 </div>
             )}
-            <p>{helperText}</p>
-            <a href={kcLoginUrl} className="btn-mca btn-mca-outline btn-mca-block btn-mca-kc">
-                <img
-                    src="https://kingsch.at/h/css/images/favicon.ico"
-                    alt=""
-                    className="btn-mca__icon-img"
-                />
-                Login with KingsChat
-            </a>
+            <div className="guest-card__login">
+                <p className="guest-card__helper">{helperText}</p>
+                <a href={kcLoginUrl} className="btn-mca btn-mca-kc btn-mca-block btn-mca-lg lift">
+                    <img
+                        src="https://kingsch.at/h/css/images/favicon.ico"
+                        alt=""
+                        className="btn-mca__icon-img"
+                    />
+                    Login with KingsChat
+                    <span className="material-symbols-outlined" aria-hidden="true">
+                        arrow_forward
+                    </span>
+                </a>
+                <p className="register-signin">
+                    {isApplicant ? (
+                        <>
+                            New to the portal?{' '}
+                            <Link href="/opportunity-to-work-in-ministry#register">
+                                Register to apply
+                            </Link>
+                        </>
+                    ) : (
+                        <>
+                            Looking for the applicant portal?{' '}
+                            <Link href="/login/applicant">Applicant Login</Link>
+                        </>
+                    )}
+                </p>
+            </div>
+            {roleLinks.length > 1 && (
+                <div className="role-switch">
+                    {roleLinks.map(({ role: r, label }) =>
+                        r === role ? null : (
+                            <Link key={r} href={`/login/${r}`}>
+                                {label}
+                            </Link>
+                        )
+                    )}
+                </div>
+            )}
+            <div className="guest-card__foot">
+                <span>Prefer the public site?</span>
+                <Link href="/">Back to home</Link>
+            </div>
         </GuestLayout>
     );
 }

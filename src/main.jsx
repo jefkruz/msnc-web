@@ -10,6 +10,7 @@ import './css/portal-ui.css';
 import './css/msnc-overrides.css';
 import './css/portal-compat.css';
 import './css/msnc-pages.css';
+import './css/public.css';
 import './css/app.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
