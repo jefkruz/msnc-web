@@ -41,6 +41,7 @@ const routeToPath = {
     'admins.index': '/administrator/admins',
     'posting-recommendations.index': '/administrator/posting-recommendations',
     'posting-recommendations.create': '/administrator/posting-recommendations/create',
+    'applicant.biodata': '/applicant',
 };
 
 function getHref(item) {

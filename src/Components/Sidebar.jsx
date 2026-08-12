@@ -72,6 +72,7 @@ const routeToPath = {
     'panelist.interviews.index': '/panelist/interviews',
     'panelist.recommendations.index': '/panelist/recommendations',
     'director.index': '/director',
+    'applicant.biodata': '/applicant',
 };
 
 function getHref(item) {
