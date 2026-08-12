@@ -99,11 +99,10 @@ export default function DepartmentsIndex({ regionId, departments = [], regionNam
                                         <td className="px-6 py-4">
                                             <Link
                                                 href={`/administrator/applicants?department_id=${d.id}`}
-                                                className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+                                                className="btn btn-sm btn-outline-primary"
                                                 title={`View applicants in ${departmentName(d)}`}
                                             >
-                                                {d.applicants_count ?? 0}
-                                                <span className="material-symbols-outlined text-base">arrow_forward</span>
+                                                {d.applicants_count ?? 0} staff
                                             </Link>
                                         </td>
                                         <td className="px-6 py-4 text-right">

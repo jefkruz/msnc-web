@@ -2,7 +2,7 @@ export const SOURCE_PUBLIC = 'public';
 export const SOURCE_STAFF = 'staff';
 
 export function applicantSourceLabel(source) {
-    if (source === SOURCE_PUBLIC) return 'Ministry registration';
+    if (source === SOURCE_PUBLIC) return 'Self registration';
     if (source === SOURCE_STAFF) return 'Added by staff';
     return 'Added by staff';
 }

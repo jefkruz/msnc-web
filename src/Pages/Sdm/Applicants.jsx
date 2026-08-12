@@ -17,7 +17,7 @@ import {
 const SOURCE_TABS = [
     { value: null, label: 'All applicants', countKey: 'all' },
     { value: SOURCE_STAFF, label: 'Added by staff', countKey: 'staff' },
-    { value: SOURCE_PUBLIC, label: 'Ministry registration', countKey: 'public' },
+    { value: SOURCE_PUBLIC, label: 'Self registration', countKey: 'public' },
 ];
 
 function statusBadgeClass(status) {

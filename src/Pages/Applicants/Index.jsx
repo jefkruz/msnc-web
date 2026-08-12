@@ -27,7 +27,7 @@ const MONTH_OPTIONS = MONTH_NAMES.slice(1).map((name, index) => ({
 const SOURCE_TABS = [
     { value: null, label: 'All applicants', countKey: 'all' },
     { value: SOURCE_STAFF, label: 'Added by staff', countKey: 'staff' },
-    { value: SOURCE_PUBLIC, label: 'Ministry registration', countKey: 'public' },
+    { value: SOURCE_PUBLIC, label: 'Self registration', countKey: 'public' },
 ];
 
 function periodSummary({ filterMonth, filterYear, count }) {
@@ -40,14 +40,21 @@ function periodSummary({ filterMonth, filterYear, count }) {
     return null;
 }
 
-function listParams({ search, source, filterMonth, filterYear, departmentId }) {
+function listParams({ search, source, filterMonth, filterYear, departmentId, sort = 'date', dir = 'desc' }) {
     const params = {};
     if (search) params.search = search;
     if (source) params.source = source;
     if (departmentId) params.department_id = departmentId;
     if (filterYear) params.year = filterYear;
     if (filterMonth) params.month = filterMonth;
+    if (sort !== 'date') params.sort = sort;
+    if (dir !== 'desc') params.dir = dir;
     return params;
+}
+
+function sortIcon(sort, dir, column) {
+    if (sort !== column) return 'unfold_more';
+    return dir === 'asc' ? 'arrow_upward' : 'arrow_downward';
 }
 
 function statusBadgeClass(status) {
@@ -80,6 +87,8 @@ export default function Index({
     filterMonth = null,
     filterYear = null,
     availableYears = [],
+    sort = 'date',
+    dir = 'desc',
 }) {
     const { auth, authRole, menu, appName } = usePage().props;
     const { can } = useCan();
@@ -89,58 +98,52 @@ export default function Index({
     const activeDepartment = departments.find((d) => String(d.id) === departmentId);
     const visibleApplicants = applicants;
 
-    const handleSearchSubmit = (e) => {
-        e.preventDefault();
-        const q = (e.currentTarget.search?.value || '').trim();
+    const visitList = (overrides = {}) => {
         router.get('/administrator/applicants', listParams({
-            search: q || undefined,
+            search: initialSearch || undefined,
             source: initialSource,
             departmentId,
             filterMonth,
             filterYear,
+            sort,
+            dir,
+            ...overrides,
         }), { preserveState: false });
+    };
+
+    const toggleSort = (column) => {
+        if (sort === column) {
+            visitList({ dir: dir === 'asc' ? 'desc' : 'asc' });
+            return;
+        }
+        visitList({ sort: column, dir: column === 'date' ? 'desc' : 'asc' });
+    };
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        const q = (e.currentTarget.search?.value || '').trim();
+        visitList({ search: q || undefined });
     };
 
     const handleYearChange = (v) => {
         const nextYear = v ? Number(v) : null;
-        router.get('/administrator/applicants', listParams({
-            search: initialSearch || undefined,
-            source: initialSource,
-            departmentId,
+        visitList({
             filterYear: nextYear || undefined,
             filterMonth: nextYear ? filterMonth || undefined : undefined,
-        }), { preserveState: false });
+        });
     };
 
     const handleMonthChange = (v) => {
         if (!filterYear) return;
-        router.get('/administrator/applicants', listParams({
-            search: initialSearch || undefined,
-            source: initialSource,
-            departmentId,
-            filterYear,
-            filterMonth: v ? Number(v) : undefined,
-        }), { preserveState: false });
+        visitList({ filterMonth: v ? Number(v) : undefined });
     };
 
     const handleSourceChange = (nextSource) => {
-        router.get('/administrator/applicants', listParams({
-            search: initialSearch || undefined,
-            source: nextSource,
-            departmentId,
-            filterMonth,
-            filterYear,
-        }), { preserveState: false });
+        visitList({ source: nextSource });
     };
 
     const handleDepartmentChange = (nextDepartmentId) => {
-        router.get('/administrator/applicants', listParams({
-            search: initialSearch || undefined,
-            source: initialSource,
-            departmentId: nextDepartmentId || undefined,
-            filterMonth,
-            filterYear,
-        }), { preserveState: false });
+        visitList({ departmentId: nextDepartmentId || undefined });
     };
 
     const activeSourceTab = SOURCE_TABS.find((tab) => tab.value === initialSource) ?? SOURCE_TABS[0];
@@ -154,7 +157,7 @@ export default function Index({
                 : departmentId
                 ? 'No applicants in this department.'
                 : initialSource === SOURCE_PUBLIC
-                    ? 'No ministry registrations yet.'
+                    ? 'No self registrations yet.'
                     : initialSource === SOURCE_STAFF
                         ? 'No staff-added applicants yet.'
                         : 'Create an applicant to get started.';
@@ -170,7 +173,7 @@ export default function Index({
                                 activeDepartment ? (
                                     <>Applicants in <strong>{departmentName(activeDepartment)}</strong>.</>
                                 ) : initialSource === SOURCE_PUBLIC ? (
-                                    'Self-registered through Opportunity to work in ministry.'
+                                    'Applicants who self-registered online.'
                                 ) : initialSource === SOURCE_STAFF ? (
                                     'Applicants created by administrators or SDMs.'
                                 ) : (
@@ -267,12 +270,37 @@ export default function Index({
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Name &amp; contact</th>
-                                            <th>Source</th>
-                                            <th>Department</th>
+                                            <th>
+                                                <button type="button" className="table-sort" onClick={() => toggleSort('name')}>
+                                                    Name &amp; contact
+                                                    <span className="material-symbols-outlined">{sortIcon(sort, dir, 'name')}</span>
+                                                </button>
+                                            </th>
+                                            <th>
+                                                <button type="button" className="table-sort" onClick={() => toggleSort('source')}>
+                                                    Source
+                                                    <span className="material-symbols-outlined">{sortIcon(sort, dir, 'source')}</span>
+                                                </button>
+                                            </th>
+                                            <th>
+                                                <button type="button" className="table-sort" onClick={() => toggleSort('department')}>
+                                                    Department
+                                                    <span className="material-symbols-outlined">{sortIcon(sort, dir, 'department')}</span>
+                                                </button>
+                                            </th>
                                             <th>Job family</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
+                                            <th>
+                                                <button type="button" className="table-sort" onClick={() => toggleSort('status')}>
+                                                    Status
+                                                    <span className="material-symbols-outlined">{sortIcon(sort, dir, 'status')}</span>
+                                                </button>
+                                            </th>
+                                            <th>
+                                                <button type="button" className="table-sort" onClick={() => toggleSort('date')}>
+                                                    Date
+                                                    <span className="material-symbols-outlined">{sortIcon(sort, dir, 'date')}</span>
+                                                </button>
+                                            </th>
                                             <th className="admin-table-actions">Actions</th>
                                         </tr>
                                     </thead>
