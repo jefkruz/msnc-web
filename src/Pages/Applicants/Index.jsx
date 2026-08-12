@@ -6,11 +6,49 @@ import EmptyState from '../../Components/EmptyState';
 import ActionButton, { ActionGroup } from '../../Components/ActionButton';
 import SearchableSelect from '../../Components/SearchableSelect';
 import { useCan } from '../../lib/can';
-import { formatDate } from '../../lib/formatDate';
+import { formatDisplayDate } from '../../lib/formatDate';
 import { formatStatusLabel } from '../../lib/formatStatus';
 import { departmentName, personName } from '../../lib/titleCase';
+import {
+    SOURCE_PUBLIC,
+    SOURCE_STAFF,
+    applicantSourceBadgeClass,
+    applicantSourceFromRecord,
+    applicantSourceLabel,
+} from '../../lib/applicantSource';
 
 const MONTH_NAMES = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+const MONTH_OPTIONS = MONTH_NAMES.slice(1).map((name, index) => ({
+    value: String(index + 1),
+    label: name,
+}));
+
+const SOURCE_TABS = [
+    { value: null, label: 'All applicants', countKey: 'all' },
+    { value: SOURCE_STAFF, label: 'Added by staff', countKey: 'staff' },
+    { value: SOURCE_PUBLIC, label: 'Ministry registration', countKey: 'public' },
+];
+
+function periodSummary({ filterMonth, filterYear, count }) {
+    if (filterMonth && filterYear) {
+        return <>Showing <strong>{count}</strong> applicants for {MONTH_NAMES[filterMonth]} {filterYear}</>;
+    }
+    if (filterYear) {
+        return <>Showing <strong>{count}</strong> applicants for {filterYear}</>;
+    }
+    return null;
+}
+
+function listParams({ search, source, filterMonth, filterYear, departmentId }) {
+    const params = {};
+    if (search) params.search = search;
+    if (source) params.source = source;
+    if (departmentId) params.department_id = departmentId;
+    if (filterYear) params.year = filterYear;
+    if (filterMonth) params.month = filterMonth;
+    return params;
+}
 
 function statusBadgeClass(status) {
     const s = (status || '').toLowerCase();
@@ -20,13 +58,8 @@ function statusBadgeClass(status) {
     return 'badge badge-primary';
 }
 
-function formatInterviewSummary(interviews) {
-    if (!Array.isArray(interviews) || interviews.length === 0) return '—';
-    const first = interviews[0];
-    const dateStr = first.date ? formatDate(first.date, '') : '';
-    const status = formatStatusLabel(first.status || 'scheduled');
-    const extra = interviews.length > 1 ? ` (+${interviews.length - 1})` : '';
-    return dateStr ? `${dateStr} – ${status}${extra}` : `${status}${extra}`;
+function applicantAddedDate(applicant) {
+    return formatDisplayDate(applicant.created_at ?? applicant.date);
 }
 
 function applicantName(applicant) {
@@ -41,48 +74,90 @@ export default function Index({
     applicants = [],
     departments = [],
     search: initialSearch = '',
+    source: initialSource = null,
+    sourceCounts = { all: 0, staff: 0, public: 0 },
+    filterDepartmentId = null,
     filterMonth = null,
     filterYear = null,
-    monthsWithApplicants = [],
+    availableYears = [],
 }) {
     const { auth, authRole, menu, appName } = usePage().props;
     const { can } = useCan();
     const [deleteId, setDeleteId] = useState(null);
-    const [departmentId, setDepartmentId] = useState('');
 
-    const visibleApplicants = departmentId
-        ? applicants.filter((a) => String(a.department_id ?? a.department?.id) === String(departmentId))
-        : applicants;
+    const departmentId = filterDepartmentId ? String(filterDepartmentId) : '';
+    const activeDepartment = departments.find((d) => String(d.id) === departmentId);
+    const visibleApplicants = applicants;
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         const q = (e.currentTarget.search?.value || '').trim();
-        const params = q ? { search: q } : {};
-        if (filterMonth && filterYear) {
-            params.month = filterMonth;
-            params.year = filterYear;
-        }
-        router.get('/administrator/applicants', params, { preserveState: false });
+        router.get('/administrator/applicants', listParams({
+            search: q || undefined,
+            source: initialSource,
+            departmentId,
+            filterMonth,
+            filterYear,
+        }), { preserveState: false });
+    };
+
+    const handleYearChange = (v) => {
+        const nextYear = v ? Number(v) : null;
+        router.get('/administrator/applicants', listParams({
+            search: initialSearch || undefined,
+            source: initialSource,
+            departmentId,
+            filterYear: nextYear || undefined,
+            filterMonth: nextYear ? filterMonth || undefined : undefined,
+        }), { preserveState: false });
     };
 
     const handleMonthChange = (v) => {
-        if (!v) {
-            router.get('/administrator/applicants', { search: initialSearch || undefined }, { preserveState: false });
-            return;
-        }
-        const [y, m] = String(v).split('-').map(Number);
-        const params = { month: m, year: y };
-        if (initialSearch) params.search = initialSearch;
-        router.get('/administrator/applicants', params, { preserveState: false });
+        if (!filterYear) return;
+        router.get('/administrator/applicants', listParams({
+            search: initialSearch || undefined,
+            source: initialSource,
+            departmentId,
+            filterYear,
+            filterMonth: v ? Number(v) : undefined,
+        }), { preserveState: false });
     };
+
+    const handleSourceChange = (nextSource) => {
+        router.get('/administrator/applicants', listParams({
+            search: initialSearch || undefined,
+            source: nextSource,
+            departmentId,
+            filterMonth,
+            filterYear,
+        }), { preserveState: false });
+    };
+
+    const handleDepartmentChange = (nextDepartmentId) => {
+        router.get('/administrator/applicants', listParams({
+            search: initialSearch || undefined,
+            source: initialSource,
+            departmentId: nextDepartmentId || undefined,
+            filterMonth,
+            filterYear,
+        }), { preserveState: false });
+    };
+
+    const activeSourceTab = SOURCE_TABS.find((tab) => tab.value === initialSource) ?? SOURCE_TABS[0];
 
     const emptyDescription = initialSearch
         ? 'Try a different search term.'
         : (filterMonth && filterYear)
             ? `No applicants in ${MONTH_NAMES[filterMonth]} ${filterYear}.`
-            : departmentId
+            : filterYear
+                ? `No applicants in ${filterYear}.`
+                : departmentId
                 ? 'No applicants in this department.'
-                : 'Create an applicant to get started.';
+                : initialSource === SOURCE_PUBLIC
+                    ? 'No ministry registrations yet.'
+                    : initialSource === SOURCE_STAFF
+                        ? 'No staff-added applicants yet.'
+                        : 'Create an applicant to get started.';
 
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Applicants">
@@ -91,10 +166,16 @@ export default function Index({
                     <div className="min-w-0">
                         <h2>Applicants</h2>
                         <p>
-                            {filterMonth && filterYear ? (
-                                <>Showing <strong>{visibleApplicants.length}</strong> applicants for {MONTH_NAMES[filterMonth]} {filterYear}</>
-                            ) : (
-                                'Manage and track all recruitment candidates.'
+                            {periodSummary({ filterMonth, filterYear, count: visibleApplicants.length }) ?? (
+                                activeDepartment ? (
+                                    <>Applicants in <strong>{departmentName(activeDepartment)}</strong>.</>
+                                ) : initialSource === SOURCE_PUBLIC ? (
+                                    'Self-registered through Opportunity to work in ministry.'
+                                ) : initialSource === SOURCE_STAFF ? (
+                                    'Applicants created by administrators or SDMs.'
+                                ) : (
+                                    'Manage and track all recruitment candidates.'
+                                )
                             )}
                         </p>
                     </div>
@@ -107,10 +188,28 @@ export default function Index({
                 </div>
 
                 <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm min-w-0">
+                    <div className="px-4 sm:px-6 py-4 border-b border-slate-200 dark:border-border-dark flex flex-wrap gap-2">
+                        {SOURCE_TABS.map((tab) => {
+                            const active = tab.value === initialSource;
+                            const count = sourceCounts?.[tab.countKey] ?? 0;
+                            return (
+                                <button
+                                    key={tab.countKey}
+                                    type="button"
+                                    className={`btn btn-sm ${active ? 'btn-primary' : 'btn-outline-primary'}`}
+                                    onClick={() => handleSourceChange(tab.value)}
+                                    aria-pressed={active}
+                                >
+                                    {tab.label}
+                                    <span className="ml-1 opacity-80">({count})</span>
+                                </button>
+                            );
+                        })}
+                    </div>
                     <div className="px-4 sm:px-6 py-4 border-b border-slate-200 dark:border-border-dark">
                         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">All applicants</h3>
-                            <form onSubmit={handleSearchSubmit} className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-[minmax(12rem,1fr)_11rem_12rem_auto] gap-2 w-full min-w-0 lg:max-w-3xl">
+                            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">{activeSourceTab.label}</h3>
+                            <form onSubmit={handleSearchSubmit} className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-[minmax(12rem,1fr)_7rem_8rem_12rem_auto] gap-2 w-full min-w-0 lg:max-w-4xl">
                                 <div className="relative sm:col-span-2 xl:col-span-1">
                                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-text-muted text-xl pointer-events-none">search</span>
                                     <input
@@ -122,17 +221,24 @@ export default function Index({
                                     />
                                 </div>
                                 <SearchableSelect
-                                    value={filterMonth && filterYear ? `${filterYear}-${filterMonth}` : ''}
-                                    onChange={handleMonthChange}
-                                    options={monthsWithApplicants.map(({ year, month }) => ({
-                                        value: `${year}-${month}`,
-                                        label: `${MONTH_NAMES[month]} ${year}`,
+                                    value={filterYear ? String(filterYear) : ''}
+                                    onChange={handleYearChange}
+                                    options={(availableYears.length ? availableYears : [new Date().getFullYear()]).map((year) => ({
+                                        value: String(year),
+                                        label: String(year),
                                     }))}
-                                    placeholder="All months"
+                                    placeholder="All years"
+                                />
+                                <SearchableSelect
+                                    value={filterMonth ? String(filterMonth) : ''}
+                                    onChange={handleMonthChange}
+                                    options={MONTH_OPTIONS}
+                                    placeholder={filterYear ? 'All months' : 'Select year'}
+                                    disabled={!filterYear}
                                 />
                                 <SearchableSelect
                                     value={departmentId}
-                                    onChange={setDepartmentId}
+                                    onChange={handleDepartmentChange}
                                     options={departments}
                                     placeholder="All departments"
                                     getOptionValue={(d) => d.id}
@@ -148,9 +254,9 @@ export default function Index({
                     {visibleApplicants.length === 0 ? (
                         <EmptyState
                             icon="group"
-                            title={initialSearch || departmentId || (filterMonth && filterYear) ? 'No matches' : 'No applicants yet'}
+                            title={initialSearch || departmentId || filterYear || (filterMonth && filterYear) ? 'No matches' : 'No applicants yet'}
                             description={emptyDescription}
-                            actionLabel={can('applicants.create') && !initialSearch && !departmentId ? 'Create applicant' : undefined}
+                            actionLabel={can('applicants.create') && !initialSearch && !departmentId && !filterYear ? 'Create applicant' : undefined}
                             onAction={() => router.visit('/administrator/applicants/create')}
                             className="m-8"
                         />
@@ -162,10 +268,11 @@ export default function Index({
                                         <tr>
                                             <th>#</th>
                                             <th>Name &amp; contact</th>
+                                            <th>Source</th>
                                             <th>Department</th>
                                             <th>Job family</th>
                                             <th>Status</th>
-                                            <th>Interview</th>
+                                            <th>Date</th>
                                             <th className="admin-table-actions">Actions</th>
                                         </tr>
                                     </thead>
@@ -177,6 +284,16 @@ export default function Index({
                                                     <Link href={`/authorised/view/${applicant.id}`}>{applicantName(applicant)}</Link>
                                                     <div className="msnc-data-table__meta">KingsChat: {applicantContact(applicant)}</div>
                                                 </td>
+                                                <td data-label="Source">
+                                                    {(() => {
+                                                        const src = applicantSourceFromRecord(applicant);
+                                                        return (
+                                                            <span className={applicantSourceBadgeClass(src)}>
+                                                                {applicantSourceLabel(src)}
+                                                            </span>
+                                                        );
+                                                    })()}
+                                                </td>
                                                 <td data-label="Department">{departmentName(applicant.department)}</td>
                                                 <td data-label="Job family">{applicant.family?.name ?? '—'}</td>
                                                 <td data-label="Status">
@@ -184,7 +301,7 @@ export default function Index({
                                                         {formatStatusLabel(applicant.status || 'Applied')}
                                                     </span>
                                                 </td>
-                                                <td data-label="Interview">{formatInterviewSummary(applicant.interviews)}</td>
+                                                <td data-label="Date">{applicantAddedDate(applicant)}</td>
                                                 <td className="admin-table-actions msnc-data-table__actions" data-label="Actions">
                                                     <ActionGroup>
                                                         <ActionButton action="view" href={`/authorised/view/${applicant.id}`} />
@@ -202,6 +319,7 @@ export default function Index({
                             <div className="px-4 sm:px-6 py-3 border-t border-slate-200 dark:border-border-dark text-sm text-slate-500 dark:text-text-muted">
                                 {visibleApplicants.length} {visibleApplicants.length === 1 ? 'applicant' : 'applicants'}
                                 {departmentId ? ' in this department' : ''}
+                                {filterYear && !departmentId ? (filterMonth ? ` in ${MONTH_NAMES[filterMonth]} ${filterYear}` : ` in ${filterYear}`) : ''}
                             </div>
                         </>
                     )}
