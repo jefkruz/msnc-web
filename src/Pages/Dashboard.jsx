@@ -4,7 +4,6 @@ import DashKpiGrid from '../Components/DashKpiGrid';
 import { AreaChart, StatBars } from '../Components/Charts';
 
 export default function Dashboard({
-    applicants = 0,
     applicantsStaff = 0,
     applicantsPublic = 0,
     interviews = 0,
@@ -21,9 +20,8 @@ export default function Dashboard({
     const org = appName === 'AMDL' ? 'AMDL' : appName?.includes('MSNC') ? 'MSNC' : appName;
 
     const kpis = [
-        { label: 'Applicants added', href: '/administrator/applicants?source=staff', value: applicantsStaff, hint: 'Created by admin or SDM', icon: 'person_add' },
-        { label: 'Opportunity to work in ministry', href: '/administrator/applicants?source=public', value: applicantsPublic, hint: 'Self-registered online', icon: 'work' },
-        { label: 'All applicants', href: '/administrator/applicants', value: applicants, hint: 'Staff-added and self registrations', icon: 'group' },
+        { label: 'Applicants added', href: '/administrator/applicants/staff', value: applicantsStaff, hint: 'Created by admin or SDM', icon: 'person_add' },
+        { label: 'Opportunity to work in ministry', href: '/administrator/applicants/self-registration', value: applicantsPublic, hint: 'Self-registered online', icon: 'work' },
         { label: 'Users', href: '/administrator/tbl-users', value: users, hint: 'Staff records', icon: 'badge' },
         { label: 'Personnel in waiting', href: '/authorised/personnel-in-waiting', value: personnelInWaiting, hint: 'Active waiting list', icon: 'hourglass_top' },
         { label: 'Interviews', href: '/administrator/interviews', value: interviews, hint: 'Scheduled & completed', icon: 'event_available' },

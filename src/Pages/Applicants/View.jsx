@@ -3,6 +3,7 @@ import { Link, usePage, useForm, router } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import ConfirmModal from '../../Components/ConfirmModal';
 import ActionButton from '../../Components/ActionButton';
+import LoginAsButton from '../../Components/LoginAsButton';
 import { storageUrl } from '../../lib/api';
 import { useCan } from '../../lib/can';
 import { formatStatusLabel } from '../../lib/formatStatus';
@@ -46,6 +47,9 @@ export default function ApplicantsView({ applicant }) {
     const isAdmin = authRole === 'Administrator';
     const company = applicant.department?.company || '';
     const canPrintIdCard = Boolean(applicant.image && applicant.signature && company);
+    const applicantsListHref = applicant.registration_source === 'public'
+        ? '/administrator/applicants/self-registration'
+        : '/administrator/applicants/staff';
 
     const submitIdCardAssets = (e) => {
         e.preventDefault();
@@ -65,7 +69,7 @@ export default function ApplicantsView({ applicant }) {
                         {can('applicants.delete') && (
                             <ActionButton action="delete" size="" variant="danger" onClick={() => setConfirmDelete(true)} />
                         )}
-                        <ActionButton action="back" href="/administrator/applicants" size="" />
+                        <ActionButton action="back" href={applicantsListHref} size="" />
                     </div>
                 </div>
 
@@ -157,6 +161,12 @@ export default function ApplicantsView({ applicant }) {
                                                     Manage Status
                                                 </Link>
                                             </>
+                                        )}
+                                        {isAdmin && can(['applicants.impersonate', 'applicants.view']) && (
+                                            <LoginAsButton
+                                                href={`/administrator/applicants/${applicant.id}/login-as`}
+                                                label={`Log in as ${fullName}`}
+                                            />
                                         )}
                                         <Link
                                             href={`/administrator/applicants/edit/${applicant.id}`}

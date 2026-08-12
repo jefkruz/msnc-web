@@ -24,7 +24,9 @@ function getMaterialIcon(icon) {
 const routeToPath = {
     admin: '/administrator',
     'admin.activity-log': '/administrator/activity-log',
-    'applicants.index': '/administrator/applicants',
+    'applicants.index': '/administrator/applicants/staff',
+    'applicants.staff': '/administrator/applicants/staff',
+    'applicants.self-registration': '/administrator/applicants/self-registration',
     'interviews.index': '/administrator/interviews',
     'interviews.create': '/administrator/interviews/create',
     'administration': '/administrator/menu',

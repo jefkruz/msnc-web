@@ -4,7 +4,12 @@ export default function ImpersonationBanner() {
     const { impersonation } = usePage().props || {};
     if (!impersonation?.active) return null;
 
-    const roleLabel = impersonation.as === 'director' ? 'Director' : 'SDM';
+    const roleLabels = {
+        director: 'Director',
+        sdm: 'SDM',
+        applicant: 'Applicant',
+    };
+    const roleLabel = roleLabels[impersonation.as] ?? 'User';
 
     return (
         <div className="impersonation-banner" role="status">

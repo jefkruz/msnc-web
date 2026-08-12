@@ -39,7 +39,8 @@ import {
   PostingRecommendationsIndex,
   PostingRecommendationsCreate,
   PostingRecommendationsEdit,
-  ApplicantsIndex,
+  ApplicantsList,
+  ApplicantsRedirect,
   ApplicantsCreate,
   ApplicantsEdit,
   ApplicantsView,
@@ -129,7 +130,9 @@ export default function App() {
       <Route path="/administrator/panelists/:id" element={<ApiPage endpoint={(p) => `/administrator/panelists/${p.id}`} component={PanelistsShow} />} />
       <Route path="/administrator/panelists/:id/edit" element={<ApiPage endpoint={(p) => `/administrator/panelists/${p.id}/edit`} component={PanelistsEdit} />} />
 
-      <Route path="/administrator/applicants" element={<ApiPage endpoint="/administrator/applicants" component={ApplicantsIndex} />} />
+      <Route path="/administrator/applicants/staff" element={<ApiPage endpoint="/administrator/applicants/staff" component={ApplicantsList} />} />
+      <Route path="/administrator/applicants/self-registration" element={<ApiPage endpoint="/administrator/applicants/self-registration" component={ApplicantsList} />} />
+      <Route path="/administrator/applicants" element={<ApplicantsRedirect />} />
       <Route path="/administrator/applicants/create" element={<ApiPage endpoint="/administrator/applicants/create" component={ApplicantsCreate} />} />
       <Route path="/administrator/applicants/edit/:id" element={<ApiPage endpoint={(p) => `/administrator/applicants/edit/${p.id}`} component={ApplicantsEdit} />} />
       <Route path="/administrator/applicants/status/:id" element={<ApiPage endpoint={(p) => `/administrator/applicants/status/${p.id}`} component={ApplicantsProgress} />} />

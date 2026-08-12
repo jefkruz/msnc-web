@@ -64,7 +64,7 @@ function fallbackPath(pathname, authRole) {
     }
 
     if (path.startsWith('/authorised/view')) {
-        return authRole === 'SDM' ? '/sdm/applicants' : '/administrator/applicants';
+        return authRole === 'SDM' ? '/sdm/applicants' : '/administrator/applicants/staff';
     }
 
     if (path.startsWith('/authorised/personnel-in-waiting/')) {

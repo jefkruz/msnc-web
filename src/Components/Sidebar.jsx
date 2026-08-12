@@ -29,6 +29,7 @@ const iconMap = {
     'solar:star-outline': 'star',
     'fa fa-user-lock': 'admin_panel_settings',
     'fa fa-cog': 'settings',
+    'fa fa-user-plus': 'person_add',
     'fa fa-globe': 'language',
 };
 
@@ -50,7 +51,9 @@ const routeToPath = {
     administration: '/administrator/menu',
     admin: '/administrator',
     'admin.activity-log': '/administrator/activity-log',
-    'applicants.index': '/administrator/applicants',
+    'applicants.index': '/administrator/applicants/staff',
+    'applicants.staff': '/administrator/applicants/staff',
+    'applicants.self-registration': '/administrator/applicants/self-registration',
     'interviews.index': '/administrator/interviews',
     'interviews.create': '/administrator/interviews/create',
     'personnel-in-waiting.index': '/authorised/personnel-in-waiting',
