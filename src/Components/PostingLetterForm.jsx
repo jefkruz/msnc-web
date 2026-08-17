@@ -11,7 +11,7 @@ export default function PostingLetterForm({ data, setData, errors = {}, applican
                 <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-white/5">
                     <h3 className="font-semibold text-slate-900 dark:text-white">Letter details</h3>
                     <p className="text-sm text-slate-500 dark:text-text-muted mt-1">
-                        These fields fill both Sample 1 (posting letter) and Sample 2 (terms and conditions).
+                        These fields fill Sample 1 (posting letter) and Sample 2 (terms and conditions).
                     </p>
                 </div>
                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">

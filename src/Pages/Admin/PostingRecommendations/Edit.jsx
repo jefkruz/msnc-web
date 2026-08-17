@@ -76,26 +76,14 @@ export default function PostingRecommendationsEdit({ postingRecommendation, appl
                     </Link>
                     <div className="flex flex-wrap items-center gap-2">
                         {r.id && (
-                            <>
-                                <button
-                                    type="button"
-                                    onClick={() => openApiPdf(`/administrator/posting-recommendations/print/${r.id}`, 'posting-recommendation.pdf')}
-                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/10"
-                                >
-                                    <span className="material-symbols-outlined text-lg">print</span>
-                                    Print memo
-                                </button>
-                                {can('posting-letters.create') && (
-                                    <button
-                                        type="button"
-                                        onClick={() => router.post('/administrator/posting-letters/generate', { posting_recommendation_id: r.id })}
-                                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-amber-500 text-amber-700 dark:text-amber-400 text-sm font-medium hover:bg-amber-50 dark:hover:bg-amber-900/20"
-                                    >
-                                        <span className="material-symbols-outlined text-lg">mail</span>
-                                        Generate letter
-                                    </button>
-                                )}
-                            </>
+                            <button
+                                type="button"
+                                onClick={() => openApiPdf(`/administrator/posting-recommendations/print/${r.id}`, 'posting-recommendation.pdf')}
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/10"
+                            >
+                                <span className="material-symbols-outlined text-lg">print</span>
+                                Print memo
+                            </button>
                         )}
                         {can('posting-recommendations.delete') && r.id && (
                             <ActionButton action="delete" size="" variant="danger" onClick={() => setConfirmDelete(true)} />

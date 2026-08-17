@@ -11,6 +11,7 @@ export default function Dashboard({
     users = 0,
     stakeholders = 0,
     postingRecommendations = 0,
+    postingLetters = 0,
     greeting = 'Good morning',
     charts = null,
 }) {
@@ -26,6 +27,7 @@ export default function Dashboard({
         { label: 'Personnel in waiting', href: '/authorised/personnel-in-waiting', value: personnelInWaiting, hint: 'Active waiting list', icon: 'hourglass_top' },
         { label: 'Interviews', href: '/administrator/interviews', value: interviews, hint: 'Scheduled & completed', icon: 'event_available' },
         { label: 'Posting recommendations', href: '/administrator/posting-recommendations', value: postingRecommendations, hint: 'Placement recommendations', icon: 'recommend' },
+        { label: 'Posting letters', href: '/administrator/posting-letters', value: postingLetters, hint: 'Offer letters and terms', icon: 'mail' },
         { label: 'Administration', href: '/administrator/menu', value: 5, hint: 'Setup & catalogues', icon: 'admin_panel_settings' },
         { label: 'Stakeholders', href: '/administrator/stakeholders', value: stakeholders, hint: 'SDMs, panelists, directors & admins', icon: 'groups' },
     ];

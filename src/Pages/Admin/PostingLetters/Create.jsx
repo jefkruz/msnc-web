@@ -4,10 +4,9 @@ import Layout from '../../../Components/Layout';
 import PostingLetterForm from '../../../Components/PostingLetterForm';
 import SearchableSelect from '../../../Components/SearchableSelect';
 
-export default function PostingLettersCreate({ applicants = [], recommendations = [] }) {
+export default function PostingLettersCreate({ applicants = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
     const [selectedApplicantId, setSelectedApplicantId] = useState('');
-    const [selectedRecommendationId, setSelectedRecommendationId] = useState('');
     const [generating, setGenerating] = useState(false);
 
     const { data, setData, post, processing, errors } = useForm({
@@ -30,9 +29,9 @@ export default function PostingLettersCreate({ applicants = [], recommendations 
         post('/administrator/posting-letters/store', { preserveScroll: true });
     };
 
-    const generate = (payload) => {
+    const generate = () => {
         setGenerating(true);
-        router.post('/administrator/posting-letters/generate', payload, {
+        router.post('/administrator/posting-letters/generate', { applicant_id: selectedApplicantId }, {
             preserveScroll: false,
             onFinish: () => setGenerating(false),
         });
@@ -56,10 +55,10 @@ export default function PostingLettersCreate({ applicants = [], recommendations 
                             Generate from sample
                         </h3>
                         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                            Auto-fill using MSNC Sample 1 (posting letter) and Sample 2 (terms). Applicant data and any posting recommendation are used.
+                            Auto-fill using MSNC Sample 1 (posting letter) and Sample 2 (terms) from the applicant record.
                         </p>
                     </div>
-                    <div className="p-6 space-y-4">
+                    <div className="p-6">
                         <div className="flex flex-wrap items-end gap-4">
                             <div className="flex-1 min-w-[200px]">
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Applicant</label>
@@ -75,36 +74,13 @@ export default function PostingLettersCreate({ applicants = [], recommendations 
                             <button
                                 type="button"
                                 disabled={!selectedApplicantId || generating}
-                                onClick={() => generate({ applicant_id: selectedApplicantId })}
+                                onClick={generate}
                                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-amber-500 text-white font-medium text-sm hover:bg-amber-600 disabled:opacity-50"
                             >
                                 <span className="material-symbols-outlined text-lg">description</span>
                                 {generating ? 'Generating…' : 'Generate letter'}
                             </button>
                         </div>
-                        {recommendations.length > 0 && (
-                            <div className="flex flex-wrap items-end gap-4 pt-2 border-t border-slate-200 dark:border-border-dark">
-                                <div className="flex-1 min-w-[200px]">
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Or from posting recommendation</label>
-                                    <SearchableSelect
-                                        value={selectedRecommendationId}
-                                        onChange={(val) => setSelectedRecommendationId(val)}
-                                        options={recommendations}
-                                        placeholder="Select recommendation"
-                                        getOptionValue={(r) => r?.id ?? ''}
-                                        getOptionLabel={(r) => r?.label ?? '—'}
-                                    />
-                                </div>
-                                <button
-                                    type="button"
-                                    disabled={!selectedRecommendationId || generating}
-                                    onClick={() => generate({ posting_recommendation_id: selectedRecommendationId })}
-                                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-amber-500 text-amber-700 dark:text-amber-400 font-medium text-sm hover:bg-amber-50 dark:hover:bg-amber-900/20 disabled:opacity-50"
-                                >
-                                    Generate from recommendation
-                                </button>
-                            </div>
-                        )}
                     </div>
                 </div>
 

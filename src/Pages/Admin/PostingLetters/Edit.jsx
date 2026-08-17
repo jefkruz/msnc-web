@@ -21,7 +21,6 @@ export default function PostingLettersEdit({ postingLetter, applicants = [] }) {
 
     const { data, setData, put, processing, errors } = useForm({
         applicant_id: String(letter.applicant_id ?? ''),
-        posting_recommendation_id: letter.posting_recommendation_id ?? '',
         letter_date: dateInputValue(letter.letter_date),
         recipient_address: letter.recipient_address ?? '',
         salutation: letter.salutation ?? '',
