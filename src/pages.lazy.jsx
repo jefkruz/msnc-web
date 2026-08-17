@@ -23,6 +23,9 @@ export const PanelistsEdit = lazy(() => import('./Pages/Admin/Panelists/Edit'));
 export const PostingRecommendationsIndex = lazy(() => import('./Pages/Admin/PostingRecommendations/Index'));
 export const PostingRecommendationsCreate = lazy(() => import('./Pages/Admin/PostingRecommendations/Create'));
 export const PostingRecommendationsEdit = lazy(() => import('./Pages/Admin/PostingRecommendations/Edit'));
+export const PostingLettersIndex = lazy(() => import('./Pages/Admin/PostingLetters/Index'));
+export const PostingLettersCreate = lazy(() => import('./Pages/Admin/PostingLetters/Create'));
+export const PostingLettersEdit = lazy(() => import('./Pages/Admin/PostingLetters/Edit'));
 
 export const ApplicantsList = lazy(() => import('./Pages/Applicants/List'));
 export const ApplicantsRedirect = lazy(() => import('./Pages/Applicants/Redirect'));

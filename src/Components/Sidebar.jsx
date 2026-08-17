@@ -67,6 +67,8 @@ const routeToPath = {
     'settings.kc': '/administrator/settings?tab=kc',
     'posting-recommendations.index': '/administrator/posting-recommendations',
     'posting-recommendations.create': '/administrator/posting-recommendations/create',
+    'posting-letters.index': '/administrator/posting-letters',
+    'posting-letters.create': '/administrator/posting-letters/create',
     sdmHome: '/sdm',
     'sdm.applicants': '/sdm/applicants',
     'sdm.applicants.create': '/sdm/applicants/create',

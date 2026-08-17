@@ -41,6 +41,8 @@ const routeToPath = {
     'admins.index': '/administrator/admins',
     'posting-recommendations.index': '/administrator/posting-recommendations',
     'posting-recommendations.create': '/administrator/posting-recommendations/create',
+    'posting-letters.index': '/administrator/posting-letters',
+    'posting-letters.create': '/administrator/posting-letters/create',
     'applicant.dashboard': '/applicant',
     'applicant.biodata': '/applicant/biodata',
     'applicant.documents': '/applicant/documents',

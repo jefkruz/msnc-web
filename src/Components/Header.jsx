@@ -38,6 +38,10 @@ function fallbackPath(pathname, authRole) {
         return '/administrator/posting-recommendations';
     }
 
+    if (path.startsWith('/administrator/posting-letters/')) {
+        return '/administrator/posting-letters';
+    }
+
     if (path.startsWith('/administrator/job-families')
         || path.startsWith('/administrator/ranks')
         || path.startsWith('/administrator/departments')) {

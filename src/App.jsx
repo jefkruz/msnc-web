@@ -39,6 +39,9 @@ import {
   PostingRecommendationsIndex,
   PostingRecommendationsCreate,
   PostingRecommendationsEdit,
+  PostingLettersIndex,
+  PostingLettersCreate,
+  PostingLettersEdit,
   ApplicantsList,
   ApplicantsRedirect,
   ApplicantsCreate,
@@ -158,6 +161,10 @@ export default function App() {
       <Route path="/administrator/posting-recommendations" element={<ApiPage endpoint="/administrator/posting-recommendations" component={PostingRecommendationsIndex} />} />
       <Route path="/administrator/posting-recommendations/create" element={<ApiPage endpoint="/administrator/posting-recommendations/create" component={PostingRecommendationsCreate} />} />
       <Route path="/administrator/posting-recommendations/edit/:id" element={<ApiPage endpoint={(p) => `/administrator/posting-recommendations/edit/${p.id}`} component={PostingRecommendationsEdit} />} />
+
+      <Route path="/administrator/posting-letters" element={<ApiPage endpoint="/administrator/posting-letters" component={PostingLettersIndex} />} />
+      <Route path="/administrator/posting-letters/create" element={<ApiPage endpoint="/administrator/posting-letters/create" component={PostingLettersCreate} />} />
+      <Route path="/administrator/posting-letters/edit/:id" element={<ApiPage endpoint={(p) => `/administrator/posting-letters/edit/${p.id}`} component={PostingLettersEdit} />} />
 
       <Route path="/administrator/tbl-users" element={<ApiPage endpoint="/administrator/tbl-users" component={TblUsersIndex} />} />
       <Route path="/administrator/tbl-users/year/:year" element={<ApiPage endpoint={(p) => `/administrator/tbl-users/year/${p.year}`} component={TblUsersYear} />} />
