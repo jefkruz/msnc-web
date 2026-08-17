@@ -3,6 +3,7 @@ import { Link, router, usePage } from '@inertiajs/react';
 import { prefetchGet, toSpaHref } from '../lib/api';
 import { brandLogoUrl } from '../lib/siteFavicon';
 import { toggleTheme, getTheme } from '../theme';
+import UserAvatar from './UserAvatar';
 
 const iconMap = {
     'solar:home-smile-angle-outline': 'dashboard',
@@ -19,6 +20,8 @@ const iconMap = {
     'fa fa-users-rectangle': 'group',
     'fa fa-clock': 'schedule',
     'fa fa-file-lines': 'recommend',
+    'fa fa-folder-open': 'folder_open',
+    'fa fa-id-card': 'badge',
     'fa fa-plus': 'add',
     'fa fa-history': 'history',
     'fa fa-power-off': 'logout',
@@ -72,22 +75,17 @@ const routeToPath = {
     'panelist.interviews.index': '/panelist/interviews',
     'panelist.recommendations.index': '/panelist/recommendations',
     'director.index': '/director',
-    'applicant.biodata': '/applicant',
+    'applicant.dashboard': '/applicant',
+    'applicant.biodata': '/applicant/biodata',
+    'applicant.documents': '/applicant/documents',
+    'applicant.id-card': '/applicant/id-card',
+    'applicant.interview': '/applicant/interview',
 };
 
 function getHref(item) {
     const href = item?.href;
     if (href && href !== '#') return toSpaHref(href);
     return routeToPath[item?.route] || '#';
-}
-
-function initials(name = '') {
-    const parts = String(name).trim().split(/\s+/).filter(Boolean);
-    if (!parts.length) return 'U';
-    return parts
-        .slice(0, 2)
-        .map((p) => p[0].toUpperCase())
-        .join('');
 }
 
 export default function Sidebar({ menu = [], appName, auth, authRole, onClose }) {
@@ -134,9 +132,7 @@ export default function Sidebar({ menu = [], appName, auth, authRole, onClose })
             </div>
 
             <div className="app-sidebar__user">
-                <span className="user-avatar user-avatar--md user-avatar--tone-1">
-                    {auth?.image ? <img src={auth.image} alt="" /> : <span className="user-avatar__initials">{initials(auth?.name)}</span>}
-                </span>
+                <UserAvatar name={auth?.name} src={auth?.image} size="md" tone={1} />
                 <div>
                     <strong>{auth?.name || 'Guest'}</strong>
                     <span>{authRole || 'User'}</span>

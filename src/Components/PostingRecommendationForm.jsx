@@ -128,7 +128,11 @@ export default function PostingRecommendationForm({ data, setData, errors = {}, 
             <FullWidthSection title="Panel recommendation" icon="groups">
                 <div>
                     <label className={labelClass}>Recommendation from the panel</label>
-                    <textarea value={data.panel_recommendation || ''} onChange={(e) => setData('panel_recommendation', e.target.value)} className={inputClass} rows={3} placeholder="Applicant is recommended for posting on Contract..." />
+                    <textarea value={data.panel_recommendation || ''} onChange={(e) => setData('panel_recommendation', e.target.value)} className={inputClass} rows={3} placeholder="Written and oral interviews were conducted for the candidate..." />
+                </div>
+                <div>
+                    <label className={labelClass}>Oral interview panelists</label>
+                    <textarea value={data.oral_interview_panelists || ''} onChange={(e) => setData('oral_interview_panelists', e.target.value)} className={inputClass} rows={3} placeholder="Sister Clementina Bedford – AMDL CSO" />
                 </div>
                 <div>
                     <label className={labelClass}>Panelist comments (each panelist said: ...)</label>
@@ -146,7 +150,15 @@ export default function PostingRecommendationForm({ data, setData, errors = {}, 
                     <input type="number" step="0.01" value={data.average_score ?? ''} onChange={(e) => setData('average_score', e.target.value)} className={inputClass} placeholder="41" />
                 </div>
                 <div>
-                    <label className={labelClass}>Salary expectation</label>
+                    <label className={labelClass}>Understanding of the job</label>
+                    <textarea value={data.understanding_of_the_job || ''} onChange={(e) => setData('understanding_of_the_job', e.target.value)} className={inputClass} rows={2} placeholder="Candidate understanding of the role" />
+                </div>
+                <div>
+                    <label className={labelClass}>Overall score in the written interview</label>
+                    <input type="text" value={data.written_interview_score || ''} onChange={(e) => setData('written_interview_score', e.target.value)} className={inputClass} placeholder="e.g. 72%" />
+                </div>
+                <div>
+                    <label className={labelClass}>Salary the applicant will like to be paid</label>
                     <input type="text" value={data.salary_expectation || ''} onChange={(e) => setData('salary_expectation', e.target.value)} className={inputClass} placeholder="e.g. #150,000.00 and above" />
                 </div>
             </Section>
@@ -174,6 +186,20 @@ export default function PostingRecommendationForm({ data, setData, errors = {}, 
                 <div>
                     <label className={labelClass}>Placement analysis</label>
                     <textarea value={data.placement_analysis || ''} onChange={(e) => setData('placement_analysis', e.target.value)} className={inputClass} rows={3} placeholder="Graduated 2023 (B.Sc.) 2023 – 2024 = Financial Analyst Trainee 2" />
+                </div>
+                <div>
+                    <label className={labelClass}>Closing</label>
+                    <textarea value={data.memo_closing || ''} onChange={(e) => setData('memo_closing', e.target.value)} className={inputClass} rows={2} placeholder="We expect your response to our recommendation on whether we may go ahead to produce the Posting letter..." />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className={labelClass}>Signatory name</label>
+                        <input type="text" value={data.signatory_name || ''} onChange={(e) => setData('signatory_name', e.target.value)} className={inputClass} placeholder="Pastor Ifeoma Chiemeka" />
+                    </div>
+                    <div>
+                        <label className={labelClass}>Signatory title</label>
+                        <input type="text" value={data.signatory_title || ''} onChange={(e) => setData('signatory_title', e.target.value)} className={inputClass} placeholder="Director, Advantage Management Definition Limited" />
+                    </div>
                 </div>
             </FullWidthSection>
 

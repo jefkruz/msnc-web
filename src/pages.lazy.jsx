@@ -32,6 +32,10 @@ export const ApplicantsView = lazy(() => import('./Pages/Applicants/View'));
 export const ApplicantsUploads = lazy(() => import('./Pages/Applicants/Uploads'));
 export const ApplicantsProgress = lazy(() => import('./Pages/Applicants/Progress'));
 export const BiodataForm = lazy(() => import('./Pages/Applicant/BiodataForm'));
+export const ApplicantDashboard = lazy(() => import('./Pages/Applicant/Dashboard'));
+export const ApplicantDocuments = lazy(() => import('./Pages/Applicant/Documents'));
+export const ApplicantIdCard = lazy(() => import('./Pages/Applicant/IdCard'));
+export const ApplicantInterview = lazy(() => import('./Pages/Applicant/Interview'));
 
 export const InterviewsIndex = lazy(() => import('./Pages/Interviews/Index'));
 export const InterviewsCreate = lazy(() => import('./Pages/Interviews/Create'));

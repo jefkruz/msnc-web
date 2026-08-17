@@ -47,6 +47,10 @@ import {
   ApplicantsUploads,
   ApplicantsProgress,
   BiodataForm,
+  ApplicantDashboard,
+  ApplicantDocuments,
+  ApplicantIdCard,
+  ApplicantInterview,
   InterviewsIndex,
   InterviewsCreate,
   InterviewsEdit,
@@ -101,7 +105,11 @@ export default function App() {
       <Route path="/auth/error" element={<StaticShell><AuthError /></StaticShell>} />
 
       {/* Applicant */}
-      <Route path="/applicant" element={<ApiPage endpoint="/applicant" component={BiodataForm} />} />
+      <Route path="/applicant" element={<ApiPage endpoint="/applicant" component={ApplicantDashboard} />} />
+      <Route path="/applicant/biodata" element={<ApiPage endpoint="/applicant/biodata" component={BiodataForm} />} />
+      <Route path="/applicant/documents" element={<ApiPage endpoint="/applicant/documents" component={ApplicantDocuments} />} />
+      <Route path="/applicant/id-card" element={<ApiPage endpoint="/applicant/id-card" component={ApplicantIdCard} />} />
+      <Route path="/applicant/interview" element={<ApiPage endpoint="/applicant/interview" component={ApplicantInterview} />} />
 
       {/* Admin */}
       <Route path="/administrator" element={<ApiPage endpoint="/administrator" component={Dashboard} />} />

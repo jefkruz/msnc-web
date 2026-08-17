@@ -6,6 +6,7 @@ import EmptyState from '../../../Components/EmptyState';
 import ActionButton, { ActionGroup } from '../../../Components/ActionButton';
 import { useCan } from '../../../lib/can';
 import { formatDate } from '../../../lib/formatDate';
+import { openApiPdf } from '../../../lib/api';
 
 export default function PostingRecommendationsIndex({ postingRecommendations = [] }) {
     const { auth, authRole, menu, appName } = usePage().props;
@@ -71,6 +72,12 @@ export default function PostingRecommendationsIndex({ postingRecommendations = [
                                             <td className="px-4 sm:px-6 py-3 text-right">
                                                 <ActionGroup>
                                                     <ActionButton action="edit" href={`/administrator/posting-recommendations/edit/${r.id}`} />
+                                                    <ActionButton
+                                                        action="view"
+                                                        icon="print"
+                                                        label="Print"
+                                                        onClick={() => openApiPdf(`/administrator/posting-recommendations/print/${r.id}`, 'posting-recommendation.pdf')}
+                                                    />
                                                     {can('posting-recommendations.delete') && (
                                                         <ActionButton action="delete" onClick={() => setDeleteId(r.id)} />
                                                     )}

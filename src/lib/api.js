@@ -220,4 +220,23 @@ export async function downloadApiFile(path, fallbackName = 'export.csv', params 
   URL.revokeObjectURL(href);
 }
 
+export async function openApiPdf(path, fallbackName = 'document.pdf') {
+  const response = await api.get(path, { responseType: 'blob' });
+  const type = String(response.headers['content-type'] || '');
+  if (type.includes('application/json')) {
+    const text = await response.data.text();
+    let message = 'Unable to open document';
+    try {
+      message = JSON.parse(text).message || message;
+    } catch {
+      // keep fallback
+    }
+    throw new Error(message);
+  }
+  const blob = response.data instanceof Blob ? response.data : new Blob([response.data], { type: 'application/pdf' });
+  const href = URL.createObjectURL(blob);
+  window.open(href, '_blank', 'noopener');
+  return fallbackName;
+}
+
 export default api;

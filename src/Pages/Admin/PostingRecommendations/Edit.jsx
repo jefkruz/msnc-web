@@ -5,6 +5,7 @@ import ConfirmModal from '../../../Components/ConfirmModal';
 import ActionButton from '../../../Components/ActionButton';
 import PostingRecommendationForm from '../../../Components/PostingRecommendationForm';
 import { useCan } from '../../../lib/can';
+import { openApiPdf } from '../../../lib/api';
 
 function dateInputValue(val) {
     if (!val) return '';
@@ -39,14 +40,20 @@ export default function PostingRecommendationsEdit({ postingRecommendation, appl
         work_experience: r.work_experience ?? '',
         panel_recommendation: r.panel_recommendation ?? '',
         panelist_comments: r.panelist_comments ?? '',
+        oral_interview_panelists: r.oral_interview_panelists ?? '',
         other_assessment: r.other_assessment ?? '',
         average_score: r.average_score != null ? String(r.average_score) : '',
+        understanding_of_the_job: r.understanding_of_the_job ?? '',
+        written_interview_score: r.written_interview_score ?? '',
         salary_expectation: r.salary_expectation ?? '',
         referee_pastor_comment: r.referee_pastor_comment ?? '',
         referee_ministry_comment: r.referee_ministry_comment ?? '',
         referee_guarantor_comment: r.referee_guarantor_comment ?? '',
         director_recommendation: r.director_recommendation ?? '',
         placement_analysis: r.placement_analysis ?? '',
+        memo_closing: r.memo_closing ?? '',
+        signatory_name: r.signatory_name ?? '',
+        signatory_title: r.signatory_title ?? '',
     });
 
     const submit = (e) => {
@@ -67,9 +74,21 @@ export default function PostingRecommendationsEdit({ postingRecommendation, appl
                         <span className="material-symbols-outlined text-lg">arrow_back</span>
                         Back to Posting Recommendations
                     </Link>
-                    {can('posting-recommendations.delete') && r.id && (
-                        <ActionButton action="delete" size="" variant="danger" onClick={() => setConfirmDelete(true)} />
-                    )}
+                    <div className="flex flex-wrap items-center gap-2">
+                        {r.id && (
+                            <button
+                                type="button"
+                                onClick={() => openApiPdf(`/administrator/posting-recommendations/print/${r.id}`, 'posting-recommendation.pdf')}
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 dark:border-border-dark text-slate-700 dark:text-white text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/10"
+                            >
+                                <span className="material-symbols-outlined text-lg">print</span>
+                                Print memo
+                            </button>
+                        )}
+                        {can('posting-recommendations.delete') && r.id && (
+                            <ActionButton action="delete" size="" variant="danger" onClick={() => setConfirmDelete(true)} />
+                        )}
+                    </div>
                 </div>
 
                 <PostingRecommendationForm

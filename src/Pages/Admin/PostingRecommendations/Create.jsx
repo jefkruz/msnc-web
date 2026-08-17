@@ -31,14 +31,20 @@ export default function PostingRecommendationsCreate({ applicants = [], intervie
         work_experience: '',
         panel_recommendation: '',
         panelist_comments: '',
+        oral_interview_panelists: '',
         other_assessment: '',
         average_score: '',
+        understanding_of_the_job: '',
+        written_interview_score: '',
         salary_expectation: '',
         referee_pastor_comment: '',
         referee_ministry_comment: '',
         referee_guarantor_comment: '',
         director_recommendation: '',
         placement_analysis: '',
+        memo_closing: '',
+        signatory_name: '',
+        signatory_title: '',
     });
 
     const submit = (e) => {
@@ -82,7 +88,7 @@ export default function PostingRecommendationsCreate({ applicants = [], intervie
                             Generate from interview
                         </h3>
                         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                            Auto-fill a posting recommendation from applicant data, biodata, and panelist recommendations. You can then review and edit before saving.
+                            Auto-fill a memo from applicant data, biodata, and panelist recommendations using the posting recommendation sample. Review, edit, then print.
                         </p>
                     </div>
                     <div className="p-6 flex flex-wrap items-end gap-4">
