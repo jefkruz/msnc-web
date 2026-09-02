@@ -1,25 +1,48 @@
+import { useState } from 'react';
 import { router } from '@inertiajs/react';
 
-export default function LoginAsButton({ href, label = 'Log in as', compact = false, className = '' }) {
+export default function LoginAsButton({
+    href,
+    label = 'Log in as',
+    compact = false,
+    block = false,
+    className = '',
+}) {
+    const [processing, setProcessing] = useState(false);
+    const text = compact ? 'Log in as' : label;
+
     const handleClick = () => {
-        router.post(href);
+        if (processing) return;
+        setProcessing(true);
+        router.post(href, {}, {
+            onFinish: () => setProcessing(false),
+            onError: () => setProcessing(false),
+        });
     };
 
-    const text = compact ? 'Log in as' : label;
+    const classes = [
+        'login-as-btn',
+        compact ? 'login-as-btn--compact action-btn' : '',
+        block ? 'login-as-btn--block' : '',
+        processing ? 'login-as-btn--processing' : '',
+        className,
+    ]
+        .filter(Boolean)
+        .join(' ');
 
     return (
         <button
             type="button"
             onClick={handleClick}
+            disabled={processing}
             title={label}
-            className={
-                compact
-                    ? `btn btn-sm action-btn btn-outline-primary ${className}`
-                    : `inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-emerald-600 text-emerald-700 dark:text-emerald-400 dark:border-emerald-500 font-medium text-sm hover:bg-emerald-50 dark:hover:bg-emerald-500/10 ${className}`
-            }
+            aria-busy={processing}
+            className={classes}
         >
-            <span className="material-symbols-outlined" aria-hidden="true">switch_account</span>
-            <span>{text}</span>
+            <span className="material-symbols-outlined" aria-hidden="true">
+                {processing ? 'hourglass_top' : 'switch_account'}
+            </span>
+            <span>{processing ? 'Switching…' : text}</span>
         </button>
     );
 }

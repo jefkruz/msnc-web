@@ -39,13 +39,21 @@ import {
   PostingRecommendationsIndex,
   PostingRecommendationsCreate,
   PostingRecommendationsEdit,
-  ApplicantsIndex,
+  PostingLettersIndex,
+  PostingLettersCreate,
+  PostingLettersEdit,
+  ApplicantsList,
+  ApplicantsRedirect,
   ApplicantsCreate,
   ApplicantsEdit,
   ApplicantsView,
   ApplicantsUploads,
   ApplicantsProgress,
   BiodataForm,
+  ApplicantDashboard,
+  ApplicantDocuments,
+  ApplicantIdCard,
+  ApplicantInterview,
   InterviewsIndex,
   InterviewsCreate,
   InterviewsEdit,
@@ -100,7 +108,11 @@ export default function App() {
       <Route path="/auth/error" element={<StaticShell><AuthError /></StaticShell>} />
 
       {/* Applicant */}
-      <Route path="/applicant" element={<ApiPage endpoint="/applicant" component={BiodataForm} />} />
+      <Route path="/applicant" element={<ApiPage endpoint="/applicant" component={ApplicantDashboard} />} />
+      <Route path="/applicant/biodata" element={<ApiPage endpoint="/applicant/biodata" component={BiodataForm} />} />
+      <Route path="/applicant/documents" element={<ApiPage endpoint="/applicant/documents" component={ApplicantDocuments} />} />
+      <Route path="/applicant/id-card" element={<ApiPage endpoint="/applicant/id-card" component={ApplicantIdCard} />} />
+      <Route path="/applicant/interview" element={<ApiPage endpoint="/applicant/interview" component={ApplicantInterview} />} />
 
       {/* Admin */}
       <Route path="/administrator" element={<ApiPage endpoint="/administrator" component={Dashboard} />} />
@@ -129,7 +141,9 @@ export default function App() {
       <Route path="/administrator/panelists/:id" element={<ApiPage endpoint={(p) => `/administrator/panelists/${p.id}`} component={PanelistsShow} />} />
       <Route path="/administrator/panelists/:id/edit" element={<ApiPage endpoint={(p) => `/administrator/panelists/${p.id}/edit`} component={PanelistsEdit} />} />
 
-      <Route path="/administrator/applicants" element={<ApiPage endpoint="/administrator/applicants" component={ApplicantsIndex} />} />
+      <Route path="/administrator/applicants/staff" element={<ApiPage endpoint="/administrator/applicants/staff" component={ApplicantsList} />} />
+      <Route path="/administrator/applicants/self-registration" element={<ApiPage endpoint="/administrator/applicants/self-registration" component={ApplicantsList} />} />
+      <Route path="/administrator/applicants" element={<ApplicantsRedirect />} />
       <Route path="/administrator/applicants/create" element={<ApiPage endpoint="/administrator/applicants/create" component={ApplicantsCreate} />} />
       <Route path="/administrator/applicants/edit/:id" element={<ApiPage endpoint={(p) => `/administrator/applicants/edit/${p.id}`} component={ApplicantsEdit} />} />
       <Route path="/administrator/applicants/status/:id" element={<ApiPage endpoint={(p) => `/administrator/applicants/status/${p.id}`} component={ApplicantsProgress} />} />
@@ -147,6 +161,10 @@ export default function App() {
       <Route path="/administrator/posting-recommendations" element={<ApiPage endpoint="/administrator/posting-recommendations" component={PostingRecommendationsIndex} />} />
       <Route path="/administrator/posting-recommendations/create" element={<ApiPage endpoint="/administrator/posting-recommendations/create" component={PostingRecommendationsCreate} />} />
       <Route path="/administrator/posting-recommendations/edit/:id" element={<ApiPage endpoint={(p) => `/administrator/posting-recommendations/edit/${p.id}`} component={PostingRecommendationsEdit} />} />
+
+      <Route path="/administrator/posting-letters" element={<ApiPage endpoint="/administrator/posting-letters" component={PostingLettersIndex} />} />
+      <Route path="/administrator/posting-letters/create" element={<ApiPage endpoint="/administrator/posting-letters/create" component={PostingLettersCreate} />} />
+      <Route path="/administrator/posting-letters/edit/:id" element={<ApiPage endpoint={(p) => `/administrator/posting-letters/edit/${p.id}`} component={PostingLettersEdit} />} />
 
       <Route path="/administrator/tbl-users" element={<ApiPage endpoint="/administrator/tbl-users" component={TblUsersIndex} />} />
       <Route path="/administrator/tbl-users/year/:year" element={<ApiPage endpoint={(p) => `/administrator/tbl-users/year/${p.year}`} component={TblUsersYear} />} />

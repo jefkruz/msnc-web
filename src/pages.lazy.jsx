@@ -23,14 +23,22 @@ export const PanelistsEdit = lazy(() => import('./Pages/Admin/Panelists/Edit'));
 export const PostingRecommendationsIndex = lazy(() => import('./Pages/Admin/PostingRecommendations/Index'));
 export const PostingRecommendationsCreate = lazy(() => import('./Pages/Admin/PostingRecommendations/Create'));
 export const PostingRecommendationsEdit = lazy(() => import('./Pages/Admin/PostingRecommendations/Edit'));
+export const PostingLettersIndex = lazy(() => import('./Pages/Admin/PostingLetters/Index'));
+export const PostingLettersCreate = lazy(() => import('./Pages/Admin/PostingLetters/Create'));
+export const PostingLettersEdit = lazy(() => import('./Pages/Admin/PostingLetters/Edit'));
 
-export const ApplicantsIndex = lazy(() => import('./Pages/Applicants/Index'));
+export const ApplicantsList = lazy(() => import('./Pages/Applicants/List'));
+export const ApplicantsRedirect = lazy(() => import('./Pages/Applicants/Redirect'));
 export const ApplicantsCreate = lazy(() => import('./Pages/Applicants/Create'));
 export const ApplicantsEdit = lazy(() => import('./Pages/Applicants/Edit'));
 export const ApplicantsView = lazy(() => import('./Pages/Applicants/View'));
 export const ApplicantsUploads = lazy(() => import('./Pages/Applicants/Uploads'));
 export const ApplicantsProgress = lazy(() => import('./Pages/Applicants/Progress'));
 export const BiodataForm = lazy(() => import('./Pages/Applicant/BiodataForm'));
+export const ApplicantDashboard = lazy(() => import('./Pages/Applicant/Dashboard'));
+export const ApplicantDocuments = lazy(() => import('./Pages/Applicant/Documents'));
+export const ApplicantIdCard = lazy(() => import('./Pages/Applicant/IdCard'));
+export const ApplicantInterview = lazy(() => import('./Pages/Applicant/Interview'));
 
 export const InterviewsIndex = lazy(() => import('./Pages/Interviews/Index'));
 export const InterviewsCreate = lazy(() => import('./Pages/Interviews/Create'));

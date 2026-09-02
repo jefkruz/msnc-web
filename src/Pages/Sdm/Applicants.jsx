@@ -3,9 +3,22 @@ import Layout from '../../Components/Layout';
 import EmptyState from '../../Components/EmptyState';
 import ActionButton, { ActionGroup } from '../../Components/ActionButton';
 import { useCan } from '../../lib/can';
-import { formatDate } from '../../lib/formatDate';
+import { formatDisplayDate } from '../../lib/formatDate';
 import { formatStatusLabel } from '../../lib/formatStatus';
 import { departmentName, personName } from '../../lib/titleCase';
+import {
+    SOURCE_PUBLIC,
+    SOURCE_STAFF,
+    applicantSourceBadgeClass,
+    applicantSourceFromRecord,
+    applicantSourceLabel,
+} from '../../lib/applicantSource';
+
+const SOURCE_TABS = [
+    { value: null, label: 'All applicants', countKey: 'all' },
+    { value: SOURCE_STAFF, label: 'Added by staff', countKey: 'staff' },
+    { value: SOURCE_PUBLIC, label: 'Self registration', countKey: 'public' },
+];
 
 function statusBadgeClass(status) {
     const s = (status || '').toLowerCase();
@@ -15,13 +28,8 @@ function statusBadgeClass(status) {
     return 'badge badge-primary';
 }
 
-function formatInterviewSummary(interviews) {
-    if (!Array.isArray(interviews) || interviews.length === 0) return '—';
-    const first = interviews[0];
-    const dateStr = first.date ? formatDate(first.date, '') : '';
-    const status = formatStatusLabel(first.status || 'scheduled');
-    const extra = interviews.length > 1 ? ` (+${interviews.length - 1})` : '';
-    return dateStr ? `${dateStr} – ${status}${extra}` : `${status}${extra}`;
+function applicantAddedDate(applicant) {
+    return formatDisplayDate(applicant.created_at ?? applicant.date);
 }
 
 function applicantName(applicant) {
@@ -32,7 +40,12 @@ function applicantContact(applicant) {
     return applicant.username || applicant.email || applicant.phone || '—';
 }
 
-export default function SdmApplicants({ applicants = [], search: initialSearch = '' }) {
+export default function SdmApplicants({
+    applicants = [],
+    search: initialSearch = '',
+    source: initialSource = null,
+    sourceCounts = { all: 0, staff: 0, public: 0 },
+}) {
     const { auth, authRole, menu, appName } = usePage().props;
     const { can } = useCan();
     const canCreate = can('applicants.create');
@@ -40,8 +53,20 @@ export default function SdmApplicants({ applicants = [], search: initialSearch =
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         const q = (e.currentTarget.search?.value || '').trim();
-        router.get('/sdm/applicants', q ? { search: q } : {}, { preserveState: false });
+        const params = {};
+        if (q) params.search = q;
+        if (initialSource) params.source = initialSource;
+        router.get('/sdm/applicants', params, { preserveState: false });
     };
+
+    const handleSourceChange = (nextSource) => {
+        const params = {};
+        if (initialSearch) params.search = initialSearch;
+        if (nextSource) params.source = nextSource;
+        router.get('/sdm/applicants', params, { preserveState: false });
+    };
+
+    const activeSourceTab = SOURCE_TABS.find((tab) => tab.value === initialSource) ?? SOURCE_TABS[0];
 
     return (
         <Layout auth={auth} authRole={authRole} menu={menu} appName={appName} pageTitle="Applicants">
@@ -60,9 +85,27 @@ export default function SdmApplicants({ applicants = [], search: initialSearch =
                 </div>
 
                 <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl overflow-hidden shadow-sm min-w-0">
+                    <div className="px-4 sm:px-6 py-4 border-b border-slate-200 dark:border-border-dark flex flex-wrap gap-2">
+                        {SOURCE_TABS.map((tab) => {
+                            const active = tab.value === initialSource;
+                            const count = sourceCounts?.[tab.countKey] ?? 0;
+                            return (
+                                <button
+                                    key={tab.countKey}
+                                    type="button"
+                                    className={`btn btn-sm ${active ? 'btn-primary' : 'btn-outline-primary'}`}
+                                    onClick={() => handleSourceChange(tab.value)}
+                                    aria-pressed={active}
+                                >
+                                    {tab.label}
+                                    <span className="ml-1 opacity-80">({count})</span>
+                                </button>
+                            );
+                        })}
+                    </div>
                     <div className="px-4 sm:px-6 py-4 border-b border-slate-200 dark:border-border-dark">
                         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Department applicants</h3>
+                            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">{activeSourceTab.label}</h3>
                             <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-2 w-full min-w-0 lg:max-w-md">
                                 <div className="relative flex-1 min-w-0">
                                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-text-muted text-xl pointer-events-none">search</span>
@@ -98,10 +141,11 @@ export default function SdmApplicants({ applicants = [], search: initialSearch =
                                         <tr>
                                             <th>#</th>
                                             <th>Name &amp; contact</th>
+                                            <th>Source</th>
                                             <th>Department</th>
                                             <th>Job family</th>
                                             <th>Status</th>
-                                            <th>Interview</th>
+                                            <th>Date</th>
                                             <th className="admin-table-actions">Actions</th>
                                         </tr>
                                     </thead>
@@ -113,6 +157,16 @@ export default function SdmApplicants({ applicants = [], search: initialSearch =
                                                     <Link href={`/authorised/view/${applicant.id}`}>{applicantName(applicant)}</Link>
                                                     <div className="msnc-data-table__meta">KingsChat: {applicantContact(applicant)}</div>
                                                 </td>
+                                                <td data-label="Source">
+                                                    {(() => {
+                                                        const src = applicantSourceFromRecord(applicant);
+                                                        return (
+                                                            <span className={applicantSourceBadgeClass(src)}>
+                                                                {applicantSourceLabel(src)}
+                                                            </span>
+                                                        );
+                                                    })()}
+                                                </td>
                                                 <td data-label="Department">{departmentName(applicant.department)}</td>
                                                 <td data-label="Job family">{applicant.family?.name ?? applicant.category?.name ?? '—'}</td>
                                                 <td data-label="Status">
@@ -120,7 +174,7 @@ export default function SdmApplicants({ applicants = [], search: initialSearch =
                                                         {formatStatusLabel(applicant.status || 'Applied')}
                                                     </span>
                                                 </td>
-                                                <td data-label="Interview">{formatInterviewSummary(applicant.interviews)}</td>
+                                                <td data-label="Date">{applicantAddedDate(applicant)}</td>
                                                 <td className="admin-table-actions msnc-data-table__actions" data-label="Actions">
                                                     <ActionGroup>
                                                         <ActionButton action="view" href={`/authorised/view/${applicant.id}`} />

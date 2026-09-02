@@ -38,6 +38,10 @@ function fallbackPath(pathname, authRole) {
         return '/administrator/posting-recommendations';
     }
 
+    if (path.startsWith('/administrator/posting-letters/')) {
+        return '/administrator/posting-letters';
+    }
+
     if (path.startsWith('/administrator/job-families')
         || path.startsWith('/administrator/ranks')
         || path.startsWith('/administrator/departments')) {
@@ -64,7 +68,7 @@ function fallbackPath(pathname, authRole) {
     }
 
     if (path.startsWith('/authorised/view')) {
-        return authRole === 'SDM' ? '/sdm/applicants' : '/administrator/applicants';
+        return authRole === 'SDM' ? '/sdm/applicants' : '/administrator/applicants/staff';
     }
 
     if (path.startsWith('/authorised/personnel-in-waiting/')) {

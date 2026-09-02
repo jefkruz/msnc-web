@@ -24,7 +24,9 @@ function getMaterialIcon(icon) {
 const routeToPath = {
     admin: '/administrator',
     'admin.activity-log': '/administrator/activity-log',
-    'applicants.index': '/administrator/applicants',
+    'applicants.index': '/administrator/applicants/staff',
+    'applicants.staff': '/administrator/applicants/staff',
+    'applicants.self-registration': '/administrator/applicants/self-registration',
     'interviews.index': '/administrator/interviews',
     'interviews.create': '/administrator/interviews/create',
     'administration': '/administrator/menu',
@@ -39,6 +41,13 @@ const routeToPath = {
     'admins.index': '/administrator/admins',
     'posting-recommendations.index': '/administrator/posting-recommendations',
     'posting-recommendations.create': '/administrator/posting-recommendations/create',
+    'posting-letters.index': '/administrator/posting-letters',
+    'posting-letters.create': '/administrator/posting-letters/create',
+    'applicant.dashboard': '/applicant',
+    'applicant.biodata': '/applicant/biodata',
+    'applicant.documents': '/applicant/documents',
+    'applicant.id-card': '/applicant/id-card',
+    'applicant.interview': '/applicant/interview',
 };
 
 function getHref(item) {

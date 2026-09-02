@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
+import UserAvatar from '../../Components/UserAvatar';
 import { storageUrl } from '../../lib/api';
 import { formatDisplayDate } from '../../lib/formatDate';
 import { formatStatusLabel } from '../../lib/formatStatus';
@@ -25,7 +26,7 @@ export default function InterviewsManage({ interview, applicant, panelistNames =
     const { auth, authRole, menu, appName } = usePage().props;
     const doc = applicant?.document || {};
     const fullName = applicant ? [applicant.first_name, applicant.last_name].filter(Boolean).join(' ') : '—';
-    const imageUrl = storageUrl(applicant?.image) || '/images/default.png';
+    const profilePhotoUrl = storageUrl(applicant?.kc_avatar);
     const interviewDate = formatDisplayDate(interview?.date);
 
     const hasDocuments = Object.keys(DOCUMENT_LABELS).some((field) => doc[field]);
@@ -163,10 +164,11 @@ export default function InterviewsManage({ interview, applicant, panelistNames =
                                 <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">{interviewDate}</p>
                             </div>
                             <div className="p-6 text-center">
-                                <img
-                                    src={imageUrl}
-                                    alt={fullName}
-                                    className="w-28 h-28 rounded-full object-cover border-2 border-slate-200 dark:border-border-dark mx-auto mb-4"
+                                <UserAvatar
+                                    name={fullName}
+                                    src={profilePhotoUrl}
+                                    size="xl"
+                                    className="mx-auto mb-4 border-2 border-slate-200 dark:border-border-dark"
                                 />
                                 <div className="font-semibold text-slate-900 dark:text-white mb-1">{fullName}</div>
                                 <div className="text-slate-500 dark:text-text-muted text-sm mb-1">{applicant?.department?.name ?? 'N/A'}</div>

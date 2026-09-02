@@ -68,14 +68,8 @@ export const api = axios.create({
 
 const inflightGets = new Map();
 const originalGet = api.get.bind(api);
-let signalSeq = 0;
-function signalId(signal) {
-  if (!signal) return '';
-  if (!signal.__sigId) signal.__sigId = ++signalSeq;
-  return `|${signal.__sigId}`;
-}
 api.get = function get(url, config) {
-  const key = cacheKey(url, config?.params) + signalId(config?.signal);
+  const key = cacheKey(url, config?.params);
   if (inflightGets.has(key)) {
     return inflightGets.get(key);
   }
@@ -224,6 +218,25 @@ export async function downloadApiFile(path, fallbackName = 'export.csv', params 
   a.click();
   a.remove();
   URL.revokeObjectURL(href);
+}
+
+export async function openApiPdf(path, fallbackName = 'document.pdf') {
+  const response = await api.get(path, { responseType: 'blob' });
+  const type = String(response.headers['content-type'] || '');
+  if (type.includes('application/json')) {
+    const text = await response.data.text();
+    let message = 'Unable to open document';
+    try {
+      message = JSON.parse(text).message || message;
+    } catch {
+      // keep fallback
+    }
+    throw new Error(message);
+  }
+  const blob = response.data instanceof Blob ? response.data : new Blob([response.data], { type: 'application/pdf' });
+  const href = URL.createObjectURL(blob);
+  window.open(href, '_blank', 'noopener');
+  return fallbackName;
 }
 
 export default api;

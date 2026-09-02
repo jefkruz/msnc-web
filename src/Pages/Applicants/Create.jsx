@@ -241,7 +241,7 @@ export default function Create({ families = [], departments = [], groups = [], n
 
                     <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4 pt-4">
                         <Link
-                            href={isSdm ? '/sdm/applicants' : '/administrator/applicants'}
+                            href={isSdm ? '/sdm/applicants' : '/administrator/applicants/staff'}
                             className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
                         >
                             <span className="material-symbols-outlined text-lg">arrow_back</span>

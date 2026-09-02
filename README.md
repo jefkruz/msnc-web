@@ -33,21 +33,6 @@ This deletes `dist/` and any previous `msnc-web.zip`, then builds a clean archiv
 
 Unzip into the frontend docroot (`index.html` at the root). **Delete the existing `assets/` folder on the server first** (or empty the docroot) so old hashed JS like `index-C3_P_Zqn.js` is not left behind. Apache `.htaccess` is included for React Router.
 
-## Netlify deployment
-
-1. Push this repo to GitHub, then in Netlify: **Add new site → Import an existing project → pick the repo**.
-2. Build settings:
-   - Build command: `npm run build`
-   - Publish directory: `dist`
-3. Environment variables (Site settings → Environment variables):
-   - `VITE_API_URL=https://api.missionsupportnetworkcenter.org`
-   - `VITE_APP_NAME=MSNC Recruitment`
-   - `NODE_VERSION=20`
-4. `public/_redirects` (`/* /index.html 200`) is included, so deep links like `/login/applicant` work with client-side routing.
-
-> Note: the API is cross-origin from the Netlify domain, so make sure
-> `api.missionsupportnetworkcenter.org` allows CORS from your site URL.
-
 ## Notes
 
 - Pages under `src/Pages` were migrated from the Inertia app.

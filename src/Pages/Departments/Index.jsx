@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm, usePage, router } from '@inertiajs/react';
+import { useForm, usePage, router, Link } from '@inertiajs/react';
 import Layout from '../../Components/Layout';
 import Modal from '../../Components/Modal';
 import ConfirmModal from '../../Components/ConfirmModal';
@@ -86,6 +86,7 @@ export default function DepartmentsIndex({ regionId, departments = [], regionNam
                                     <th className="px-6 py-4">#</th>
                                     <th className="px-6 py-4">Name</th>
                                     <th className="px-6 py-4">Company</th>
+                                    <th className="px-6 py-4">Applicants</th>
                                     <th className="px-6 py-4 text-right">Actions</th>
                                 </tr>
                             </thead>
@@ -95,6 +96,15 @@ export default function DepartmentsIndex({ regionId, departments = [], regionNam
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{i + 1}</td>
                                         <td className="px-6 py-4 text-slate-900 dark:text-white font-medium">{departmentName(d)}</td>
                                         <td className="px-6 py-4 text-slate-700 dark:text-slate-300">{d.company ?? '—'}</td>
+                                        <td className="px-6 py-4">
+                                            <Link
+                                                href={`/administrator/applicants/staff?department_id=${d.id}`}
+                                                className="btn btn-sm btn-outline-primary"
+                                                title={`View applicants in ${departmentName(d)}`}
+                                            >
+                                                {d.applicants_count ?? 0} staff
+                                            </Link>
+                                        </td>
                                         <td className="px-6 py-4 text-right">
                                             <ActionGroup>
                                                 <ActionButton action="edit" onClick={() => openEdit(d)} />

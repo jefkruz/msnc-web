@@ -4,12 +4,14 @@ import DashKpiGrid from '../Components/DashKpiGrid';
 import { AreaChart, StatBars } from '../Components/Charts';
 
 export default function Dashboard({
-    applicants = 0,
+    applicantsStaff = 0,
+    applicantsPublic = 0,
     interviews = 0,
     personnelInWaiting = 0,
     users = 0,
     stakeholders = 0,
     postingRecommendations = 0,
+    postingLetters = 0,
     greeting = 'Good morning',
     charts = null,
 }) {
@@ -19,11 +21,13 @@ export default function Dashboard({
     const org = appName === 'AMDL' ? 'AMDL' : appName?.includes('MSNC') ? 'MSNC' : appName;
 
     const kpis = [
-        { label: 'Applicants', href: '/administrator/applicants', value: applicants, hint: 'All applications', icon: 'group' },
+        { label: 'Applicants added', href: '/administrator/applicants/staff', value: applicantsStaff, hint: 'Created by admin or SDM', icon: 'person_add' },
+        { label: 'Opportunity to work in ministry', href: '/administrator/applicants/self-registration', value: applicantsPublic, hint: 'Self-registered online', icon: 'work' },
         { label: 'Users', href: '/administrator/tbl-users', value: users, hint: 'Staff records', icon: 'badge' },
         { label: 'Personnel in waiting', href: '/authorised/personnel-in-waiting', value: personnelInWaiting, hint: 'Active waiting list', icon: 'hourglass_top' },
         { label: 'Interviews', href: '/administrator/interviews', value: interviews, hint: 'Scheduled & completed', icon: 'event_available' },
         { label: 'Posting recommendations', href: '/administrator/posting-recommendations', value: postingRecommendations, hint: 'Placement recommendations', icon: 'recommend' },
+        { label: 'Posting letters', href: '/administrator/posting-letters', value: postingLetters, hint: 'Offer letters and terms', icon: 'mail' },
         { label: 'Administration', href: '/administrator/menu', value: 5, hint: 'Setup & catalogues', icon: 'admin_panel_settings' },
         { label: 'Stakeholders', href: '/administrator/stakeholders', value: stakeholders, hint: 'SDMs, panelists, directors & admins', icon: 'groups' },
     ];
