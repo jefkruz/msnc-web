@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import PublicLayout from '../Components/PublicLayout';
 
 const trustItems = [
@@ -47,13 +47,6 @@ const steps = [
     },
 ];
 
-const opportunityPoints = [
-    { icon: 'how_to_reg', text: 'Register once, apply at any time' },
-    { icon: 'description', text: 'Upload your credentials securely online' },
-    { icon: 'track_changes', text: 'Track every stage of your application' },
-    { icon: 'event_available', text: 'Be scheduled for interview when you are ready' },
-];
-
 const roles = [
     { label: 'Administration & Secretarial', icon: 'badge' },
     { label: 'Office Management', icon: 'business_center' },
@@ -81,7 +74,7 @@ const featureCards = [
         icon: 'account_balance',
         kicker: 'Our story',
         titleKey: 'about_title',
-        titleFallback: 'Who we are',
+        titleFallback: 'About Us',
         href: '/about',
         cta: 'Read our story',
         bodyKey: 'about_body',
@@ -93,12 +86,80 @@ const featureCards = [
         icon: 'menu_book',
         kicker: 'Our conviction',
         titleKey: 'faith_title',
-        titleFallback: 'What we believe',
+        titleFallback: 'Statement of Faith',
         href: '/statement-of-faith',
         cta: 'Read the statement',
         bodyKey: 'faith_intro',
         bodyFallback:
-            'Our Statement of Faith has its source in the Bible. These are the Bible doctrines we believe and the foundation for every person we recruit, train and post.',
+            'This is the statement of Bible doctrine as believed by the Mission Support Network Center. This Statement of Faith has its source in the Bible and is the foundation for every person we recruit, train and post.',
+    },
+];
+
+const faqItems = [
+    {
+        id: 'vision',
+        icon: 'visibility',
+        title: 'The Vision',
+        body: 'To provide a unique platform for every citizen of Loveworld Nation across the globe, including experts and professionals, to bring their God-given skills into active service for the Kingdom. Thereby building the Kingdom economy by empowering citizens financially and directing their professional capacity toward the work of the ministry.',
+        list: [
+            'Strengthen the Nation economy — a structured path for skills, services and enterprise capacity to flow within the Nation.',
+            'Create job opportunities — empower citizens financially through income opportunities, assignments, contracts and ministry roles.',
+            'Connect capacity to Kingdom work — turn everyday expertise into active Kingdom service on terms that fit each person.',
+        ],
+    },
+    {
+        id: 'who',
+        icon: 'groups',
+        title: 'Who can participate?',
+        list: [
+            'Partner — must be a partner of the ministry.',
+            'Active Member — must have been an active member of the ministry for not less than 3 years.',
+            'Foundation School — must be a graduate of Foundation School.',
+            'Spiritual Readiness — must be baptized by immersion and full of the Holy Ghost.',
+            'Professional Capability — must be qualified in a professional, technical, creative or operational field.',
+        ],
+    },
+    {
+        id: 'engagement',
+        icon: 'work',
+        title: 'Engagement types',
+        list: [
+            'Full Time — permanent ministry roles.',
+            'Contract — fixed-term specialized projects.',
+            'Project — task-based assignments.',
+            'Part Time — support and backup roles.',
+            'Voluntary — service-based contributions.',
+        ],
+    },
+    {
+        id: 'fields',
+        icon: 'category',
+        title: 'Fields of contribution',
+        list: [
+            'Creative & Media — media, editing, script writing, branding, lighting, sound and public relations.',
+            'Technical & Operations — programming, administration, facility management, operations management, power maintenance and project management.',
+            'Professional Services — accounting, marketing, sales, legal, medical, social and humanitarian services, human capital development, and consultancy.',
+        ],
+    },
+    {
+        id: 'benefits',
+        icon: 'emoji_events',
+        title: 'Benefits',
+        list: [
+            'For the Nation — global professional expertise, a stronger Kingdom economy, specialised skill capacity, and enhanced service delivery.',
+            'For Citizens — global visibility for professional skills, financial empowerment, spiritual fulfilment, professional growth and meaningful opportunities.',
+        ],
+    },
+    {
+        id: 'how',
+        icon: 'route',
+        title: 'How to participate',
+        body: 'The first action is simple: register on the MSNC website and submit your profile for matching to opportunities.',
+        list: [
+            'Register — visit the MSNC website and complete the registration process.',
+            'Submit Skill Profile — share your field, qualifications, experience and preferred engagement type.',
+            'Be Matched — connect with relevant ministry needs, projects, teams or employment opportunities.',
+        ],
     },
 ];
 
@@ -119,13 +180,24 @@ export default function Welcome({ branding = {}, home = {} }) {
     const siteName = branding.site_name || 'Mission Support Network Center';
     const heroImage = home.hero_image_url || '/images/hero.jpg';
     const heroVideoRef = useRef(null);
+    const lgVideoRef = useRef(null);
+    const [lgMuted, setLgMuted] = useState(true);
+    const [openFaq, setOpenFaq] = useState(null);
 
     useEffect(() => {
         const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
-        if (reduceMotion?.matches && heroVideoRef.current) {
-            heroVideoRef.current.pause();
+        if (reduceMotion?.matches) {
+            if (heroVideoRef.current) heroVideoRef.current.pause();
+            if (lgVideoRef.current) lgVideoRef.current.pause();
         }
     }, []);
+
+    const toggleLgVideoMute = () => {
+        if (lgVideoRef.current) {
+            lgVideoRef.current.muted = !lgMuted;
+            setLgMuted(!lgMuted);
+        }
+    };
 
     return (
         <PublicLayout branding={branding} active="home">
@@ -164,10 +236,10 @@ export default function Welcome({ branding = {}, home = {} }) {
                     <div className="hero__caption" data-stagger>
                         <span className="eyebrow eyebrow--on-dark" data-reveal>
                             <span className="eyebrow__dot" aria-hidden="true" />
-                            Recruitment &middot; Training &middot; Posting
+                            Mission Support Network Center
                         </span>
                         <h1 data-split data-reveal>
-                            {home.hero_title || 'Opportunity to work in ministry'}
+                            {home.hero_title || 'Mission Support Network Center'}
                         </h1>
                         {home.hero_lead && (
                             <p className="hero__lead" data-reveal>
@@ -176,9 +248,11 @@ export default function Welcome({ branding = {}, home = {} }) {
                         )}
                         {!home.hero_lead && (
                             <p className="hero__lead" data-reveal>
-                                The <strong>{siteName}</strong> recruits, trains and posts missionaries —
-                                people of the right skill and the right character — for the work of the
-                                Mission Station.
+                                We are committed to providing support for Missionary work engaged in
+                                taking the gospel of our Lord Jesus Christ to the ends of the earth. We
+                                recruit and manage the best people ensuring that they have not only the
+                                right skills but also the right character fit and a passion to be part
+                                of the great initiative championed by the Mission Station.
                             </p>
                         )}
                         {home.hero_tagline && (
@@ -222,26 +296,6 @@ export default function Welcome({ branding = {}, home = {} }) {
                                 </span>
                             </Link>
                         </p>
-                        <ul className="hero__chips" data-reveal>
-                            <li>
-                                <span className="material-symbols-outlined" aria-hidden="true">
-                                    verified
-                                </span>
-                                Registered charity
-                            </li>
-                            <li>
-                                <span className="material-symbols-outlined" aria-hidden="true">
-                                    location_on
-                                </span>
-                                Abuja, Nigeria
-                            </li>
-                            <li>
-                                <span className="material-symbols-outlined" aria-hidden="true">
-                                    phone_in_talk
-                                </span>
-                                +234 813 302 6781
-                            </li>
-                        </ul>
                     </div>
 
                     <div className="hero__visual" data-reveal="zoom">
@@ -329,65 +383,138 @@ export default function Welcome({ branding = {}, home = {} }) {
                 </div>
             </div>
 
-            <section className="opp-band" id="opportunity" aria-label="Opportunity to work in ministry">
+            <section className="lg-band" id="opportunity" aria-label="Loveworld Global Workforce Engagement Initiative">
                 <span className="opp-band__deco" aria-hidden="true" />
                 <span className="opp-band__deco opp-band__deco--2" aria-hidden="true" />
-                <div className="public-container opp-grid">
-                    <div className="opp-grid__copy" data-stagger>
-                        <span className="eyebrow" data-reveal>
+
+                <div className="public-container">
+                    <div className="feature-header" data-reveal>
+                        <span className="eyebrow">
                             <span className="eyebrow__dot" aria-hidden="true" />
-                            {home.staff_eyebrow || 'Opportunity to work in ministry'}
+                            A Kingdom Workforce Platform
                         </span>
-                        <h2 data-reveal>{home.staff_title || 'Answer the call to serve this season'}</h2>
-                        <p data-reveal>
-                            {home.staff_body ||
-                                'Want to serve in ministry? We are recruiting trained personnel of the right skill and character for the Mission Station. Begin your application and take the first step toward a missionary posting.'}
+                        <h2>Loveworld Global Workforce Engagement Initiative</h2>
+                        <p>
+                            A deliberate structure through which talent already resident in the Nation
+                            is directed toward building the Kingdom. It connects the skills and
+                            expertise of Loveworld citizens to practical ministry needs, transforming
+                            professional capacity into measurable service and impact.
                         </p>
-                        <ul className="opp-points" data-reveal>
-                            {opportunityPoints.map((point) => (
-                                <li key={point.text}>
-                                    <span className="material-symbols-outlined" aria-hidden="true">
-                                        {point.icon}
-                                    </span>
-                                    {point.text}
-                                </li>
-                            ))}
-                        </ul>
-                        <div className="opp-actions" data-reveal>
-                            <Link
-                                href="/opportunity-to-work-in-ministry#register"
-                                className="btn-mca btn-mca-blue btn-mca-lg btn-mca-arrow lift"
+                    </div>
+
+                    <div className="lg-grid" data-stagger>
+                        <div className="lg-video-frame" data-reveal="right">
+                            <video
+                                ref={lgVideoRef}
+                                className="lg-video-frame__video"
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                                preload="auto"
+                                disablePictureInPicture
+                                poster={heroImage}
                             >
-                                {home.staff_button || 'Register to apply'}
+                                <source
+                                    src="https://s3.eu-west-2.amazonaws.com/lodams-videoshare/videos/LGWFEIVd_539587ca73312e4421140000.mp4"
+                                    type="video/mp4"
+                                />
+                            </video>
+                            <button
+                                type="button"
+                                className="lg-video-frame__toggle"
+                                onClick={toggleLgVideoMute}
+                                aria-label={lgMuted ? 'Unmute video' : 'Mute video'}
+                            >
                                 <span className="material-symbols-outlined" aria-hidden="true">
-                                    arrow_forward
+                                    {lgMuted ? 'volume_off' : 'volume_up'}
                                 </span>
-                            </Link>
-                            <Link
-                                href="/opportunity-to-work-in-ministry"
-                                className="btn-mca btn-mca-outline btn-mca-lg lift"
-                            >
-                                Read the full description
-                            </Link>
+                                {lgMuted ? 'Unmute' : 'Mute'}
+                            </button>
+                        </div>
+
+                        <div className="lg-copy" data-reveal="left">
+                            <h3>Opportunity to work in ministry</h3>
+                            <p>
+                                Want to serve in ministry? Sign in to begin your application for a
+                                missionary posting and take the first step toward working with the
+                                Mission Station.
+                            </p>
+                            <ul className="opp-points" data-reveal>
+                                <li>
+                                    <span className="material-symbols-outlined" aria-hidden="true">
+                                        how_to_reg
+                                    </span>
+                                    Register once, apply at any time
+                                </li>
+                                <li>
+                                    <span className="material-symbols-outlined" aria-hidden="true">
+                                        description
+                                    </span>
+                                    Upload your credentials securely online
+                                </li>
+                                <li>
+                                    <span className="material-symbols-outlined" aria-hidden="true">
+                                        track_changes
+                                    </span>
+                                    Track every stage of your application
+                                </li>
+                                <li>
+                                    <span className="material-symbols-outlined" aria-hidden="true">
+                                        event_available
+                                    </span>
+                                    Be scheduled for interview when you are ready
+                                </li>
+                            </ul>
+                            <div className="opp-actions" data-reveal>
+                                <Link
+                                    href="/opportunity-to-work-in-ministry#register"
+                                    className="btn-mca btn-mca-blue btn-mca-lg btn-mca-arrow lift"
+                                >
+                                    Register now
+                                    <span className="material-symbols-outlined" aria-hidden="true">
+                                        arrow_forward
+                                    </span>
+                                </Link>
+                            </div>
                         </div>
                     </div>
-                    <div className="opp-media" data-reveal="right">
-                        <img
-                            src="/images/orientation.jpg"
-                            alt="MSNC Orientation Program"
-                            decoding="async"
-                            width="640"
-                            height="480"
-                        />
-                        <span className="opp-chip">
-                            <span className="opp-chip__ring">
-                                <span className="material-symbols-outlined" aria-hidden="true">
-                                    school
-                                </span>
-                            </span>
-                            Preparation for the field
-                        </span>
-                    </div>
+                </div>
+
+                <div className="lg-faq public-container" data-stagger>
+                    {faqItems.map((item) => {
+                        const open = openFaq === item.id;
+                        return (
+                            <div key={item.id} className="faq-row">
+                                <button
+                                    type="button"
+                                    className="faq-row__head"
+                                    onClick={() => setOpenFaq(open ? null : item.id)}
+                                    aria-expanded={open}
+                                >
+                                    <span className="faq-row__icon material-symbols-outlined" aria-hidden="true">
+                                        {item.icon}
+                                    </span>
+                                    <span className="faq-row__title">{item.title}</span>
+                                    <span className="faq-row__chev material-symbols-outlined" aria-hidden="true">
+                                        {open ? 'expand_less' : 'expand_more'}
+                                    </span>
+                                </button>
+                                <div className="faq-row__panel" style={{ maxHeight: open ? '900px' : '0px' }}>
+                                    <div className="faq-row__body">
+                                        {item.body && <p>{item.body}</p>}
+                                        {item.list && (
+                                            <ul className="faq-row__list">
+                                                {item.list.map((line, i) => (
+                                                    <li key={i}>{line}</li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </section>
 
@@ -507,8 +634,8 @@ export default function Welcome({ branding = {}, home = {} }) {
 
             <section className="photo-band" aria-label="Prepared for ministry">
                 <img
-                    src="/images/photo28@2x.jpg"
-                    alt="Mission Support Network Center programme"
+                    src="/images/orientation.jpg"
+                    alt="MSNC Orientation Program"
                     className="photo-band__img"
                     decoding="async"
                     data-parallax="0.14"
@@ -542,15 +669,14 @@ export default function Welcome({ branding = {}, home = {} }) {
                 </div>
             </section>
 
-            <section className="feature-section" id="about" aria-label="About us and statement of faith">
+            <section className="feature-section" id="about" aria-label="Who we are">
                 <div className="public-container">
                     <div className="feature-header" data-reveal>
                         <span className="section-label">Who we are</span>
-                        <h2>Our story, and what we believe</h2>
-                        <p>
+                        <h2>
                             The Mission Support Network Center recruits, trains, posts and manages
                             missionaries for Christian work.
-                        </p>
+                        </h2>
                     </div>
                     <div className="feature-grid" data-stagger>
                         {featureCards.map((card) => (
