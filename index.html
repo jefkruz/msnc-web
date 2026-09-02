@@ -50,11 +50,12 @@
         try {
           var tp = new URLSearchParams(window.location.search).get('theme');
           var t = tp === 'dark' || tp === 'light' ? tp : localStorage.getItem('mca_theme') || localStorage.getItem('theme');
-          var dark = t === 'dark' || (t !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          var dark = t === 'dark';
           if (dark) {
             document.documentElement.classList.add('dark');
             document.documentElement.style.colorScheme = 'dark';
           } else {
+            document.documentElement.classList.remove('dark');
             document.documentElement.style.colorScheme = 'light';
           }
         } catch (e) {}

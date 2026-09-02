@@ -13,7 +13,7 @@ export default function RegistrationSuccess({
                     <span className="hero__grid" />
                 </div>
                 <div className="public-container page-hero__inner" data-stagger>
-                    <span className="eyebrow" data-reveal>
+                    <span className="eyebrow eyebrow--on-dark" data-reveal>
                         <span className="eyebrow__dot" aria-hidden="true" />
                         Registration
                     </span>

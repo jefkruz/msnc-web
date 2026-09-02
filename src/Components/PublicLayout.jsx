@@ -5,11 +5,12 @@ import { brandLogoUrl } from '../lib/siteFavicon';
 import { getTheme, toggleTheme } from '../theme';
 import { useReveal, useScrolled, useParallax } from '../lib/useReveal';
 
-const navLinks = [
-    { href: '/', label: 'Home', key: 'home' },
-    { href: '/about', label: 'About', key: 'about' },
-    { href: '/statement-of-faith', label: 'Statement of Faith', key: 'faith' },
-    { href: '/opportunity-to-work-in-ministry', label: 'Opportunity', key: 'opportunity-to-work-in-ministry' },
+const navSections = [
+    { id: 'opportunity', label: 'Opportunity', icon: 'handshake' },
+    { id: 'how', label: 'How it works', icon: 'route' },
+    { id: 'services', label: 'Our work', icon: 'work' },
+    { id: 'about', label: 'About & Faith', icon: 'menu_book' },
+    { id: 'connect', label: 'Contact', icon: 'call' },
 ];
 
 const marqueeItems = [
@@ -19,7 +20,32 @@ const marqueeItems = [
     'Personnel Management',
     'Character & Skill',
     'Mission Station Support',
+    'Opportunity to work in ministry',
 ];
+
+const footerLinks = [
+    { href: '/about', label: 'About Us', icon: 'info' },
+    { href: '/statement-of-faith', label: 'Statement of Faith', icon: 'menu_book' },
+    { href: '/opportunity-to-work-in-ministry', label: 'Opportunity to work in ministry', icon: 'handshake' },
+    { href: '/#opportunity', label: 'How it works', icon: 'route' },
+    { href: '/#services', label: 'How we serve', icon: 'work' },
+    { href: '/#connect', label: 'Contact', icon: 'call' },
+];
+
+const signInLinks = [
+    { href: '/login/applicant', label: 'Applicant login', icon: 'person' },
+    { href: '/login/admin', label: 'Administrator', icon: 'admin_panel_settings' },
+    { href: '/login/sdm', label: 'SDM', icon: 'supervised_user_circle' },
+    { href: '/login/panelist', label: 'Panelist', icon: 'fact_check' },
+    { href: '/login/director', label: 'Director', icon: 'account_balance' },
+];
+
+const actively = { about: 'about', faith: 'about', 'opportunity-to-work-in-ministry': 'opportunity' };
+
+function toSectionId(href) {
+    const i = typeof href === 'string' ? href.indexOf('#') : -1;
+    return i >= 0 ? href.slice(i + 1) : '';
+}
 
 export default function PublicLayout({ children, active = 'home', branding: brandingProp = {} }) {
     const { appName = 'Recruitment Portal', branding: brandingShared = {}, auth } = usePage().props || {};
@@ -38,7 +64,8 @@ export default function PublicLayout({ children, active = 'home', branding: bran
     useParallax();
 
     useEffect(() => {
-        document.body.className = 'public-body';
+        const onHome = window.location.pathname === '/';
+        document.body.className = `public-body${onHome ? ' public-body--navy' : ''}`;
         return () => {
             document.body.className = '';
         };
@@ -65,9 +92,43 @@ export default function PublicLayout({ children, active = 'home', branding: bran
         };
     }, []);
 
+    /* Arrive from a subpage with /#section — scroll after the SPA settles. */
+    useEffect(() => {
+        const scrollToHash = () => {
+            const id = toSectionId(window.location.hash);
+            if (!id) return;
+            let tries = 0;
+            const poll = setInterval(() => {
+                const el = document.getElementById(id);
+                if (el) {
+                    clearInterval(poll);
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else if (++tries > 40) {
+                    clearInterval(poll);
+                }
+            }, 120);
+        };
+        window.addEventListener('hashchange', scrollToHash);
+        if (window.location.hash) {
+            setTimeout(scrollToHash, 350);
+        }
+        return () => window.removeEventListener('hashchange', scrollToHash);
+    }, []);
+
     const closeMobile = () => setMobileOpen(false);
 
     const scrollTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const goSection = (e, id) => {
+        e.preventDefault();
+        const el = document.getElementById(id);
+        if (window.location.pathname === '/' && el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            return;
+        }
+        const nav = window.__inertiaNavigate || ((p) => { window.location.href = p; });
+        nav(`/#${id}`);
+    };
 
     const Brand = () => (
         <Link href="/" className="public-brand" onClick={closeMobile} aria-label={`${siteName} — home`}>
@@ -89,13 +150,23 @@ export default function PublicLayout({ children, active = 'home', branding: bran
             Dashboard
         </Link>
     ) : (
-        <Link href="/login/applicant" className="btn-mca btn-mca-blue btn-mca-sm public-nav__auth">
-            Sign In
-            <span className="material-symbols-outlined" aria-hidden="true">
-                arrow_forward
-            </span>
-        </Link>
+        <div className="public-nav__actions">
+            <Link href="/login/applicant" className="btn-mca btn-mca-outline btn-mca-sm">
+                Sign In
+            </Link>
+            <Link
+                href="/opportunity-to-work-in-ministry#register"
+                className="btn-mca btn-mca-blue btn-mca-sm btn-mca-arrow public-nav__apply"
+            >
+                Apply now
+                <span className="material-symbols-outlined" aria-hidden="true">
+                    arrow_forward
+                </span>
+            </Link>
+        </div>
     );
+
+    const activeSection = actively[active] || null;
 
     return (
         <div className="public-shell">
@@ -105,15 +176,21 @@ export default function PublicLayout({ children, active = 'home', branding: bran
                 <div className="public-nav__inner">
                     <Brand />
 
-                    <ul className="public-nav__links">
-                        {navLinks.map((link) => (
-                            <li key={link.key}>
-                                <Link href={link.href} className={active === link.key ? 'active' : ''}>
-                                    {link.label}
-                                </Link>
-                            </li>
+                    <nav className="public-nav__links" aria-label="Page sections">
+                        {navSections.map((section) => (
+                            <a
+                                key={section.id}
+                                href={`/#${section.id}`}
+                                className={activeSection === section.id ? 'active' : ''}
+                                onClick={(e) => goSection(e, section.id)}
+                            >
+                                <span className="material-symbols-outlined" aria-hidden="true">
+                                    {section.icon}
+                                </span>
+                                {section.label}
+                            </a>
                         ))}
-                    </ul>
+                    </nav>
 
                     <div className="public-nav__actions">
                         <button
@@ -144,13 +221,21 @@ export default function PublicLayout({ children, active = 'home', branding: bran
                 </div>
 
                 <nav className={`public-mobile-nav${mobileOpen ? ' open' : ''}`} aria-label="Mobile">
-                    {navLinks.map((link, i) => (
-                        <Link key={link.key} href={link.href} onClick={closeMobile} style={{ '--i': i }}>
-                            {link.label}
+                    {navSections.map((section, i) => (
+                        <a
+                            key={section.id}
+                            href={`/#${section.id}`}
+                            onClick={(e) => {
+                                goSection(e, section.id);
+                                closeMobile();
+                            }}
+                            style={{ '--i': i }}
+                        >
+                            {section.label}
                             <span className="material-symbols-outlined" aria-hidden="true">
                                 arrow_forward
                             </span>
-                        </Link>
+                        </a>
                     ))}
                     <div className="public-mobile-nav__cta">
                         {auth?.id ? (
@@ -158,9 +243,26 @@ export default function PublicLayout({ children, active = 'home', branding: bran
                                 Dashboard
                             </Link>
                         ) : (
-                            <Link href="/login/applicant" className="btn-mca btn-mca-blue btn-mca-block" onClick={closeMobile}>
-                                Sign In to apply
-                            </Link>
+                            <>
+                                <Link
+                                    href="/opportunity-to-work-in-ministry#register"
+                                    className="btn-mca btn-mca-blue btn-mca-block btn-mca-arrow"
+                                    onClick={closeMobile}
+                                >
+                                    Apply to work in ministry
+                                    <span className="material-symbols-outlined" aria-hidden="true">
+                                        arrow_forward
+                                    </span>
+                                </Link>
+                                <Link
+                                    href="/login/applicant"
+                                    className="btn-mca btn-mca-outline btn-mca-block"
+                                    style={{ marginTop: '0.6rem' }}
+                                    onClick={closeMobile}
+                                >
+                                    Sign in
+                                </Link>
+                            </>
                         )}
                     </div>
                 </nav>
@@ -217,13 +319,29 @@ export default function PublicLayout({ children, active = 'home', branding: bran
                         <div className="public-footer__col">
                             <h4>Contact</h4>
                             <p className="public-footer__meta">
+                                <span className="material-symbols-outlined" aria-hidden="true">
+                                    location_on
+                                </span>
                                 Plot 589 Utako, TOS Benson Crescent, Opposite Uturu Plaza, Utako District,
                                 Abuja, Nigeria
                             </p>
                             <div className="public-footer__contact">
-                                <a href="tel:+2348133026781">+234 813 302 6781</a>
-                                <a href="tel:+2348025513653">+234 802 551 3653</a>
+                                <a href="tel:+2348133026781">
+                                    <span className="material-symbols-outlined" aria-hidden="true">
+                                        call
+                                    </span>
+                                    +234 813 302 6781
+                                </a>
+                                <a href="tel:+2348025513653">
+                                    <span className="material-symbols-outlined" aria-hidden="true">
+                                        call
+                                    </span>
+                                    +234 802 551 3653
+                                </a>
                                 <a href="mailto:info@missionsupportnetworkcenter.org">
+                                    <span className="material-symbols-outlined" aria-hidden="true">
+                                        mail
+                                    </span>
                                     info@missionsupportnetworkcenter.org
                                 </a>
                             </div>
@@ -231,19 +349,26 @@ export default function PublicLayout({ children, active = 'home', branding: bran
 
                         <div className="public-footer__col">
                             <h4>Explore</h4>
-                            <Link href="/about">About Us</Link>
-                            <Link href="/statement-of-faith">Statement of Faith</Link>
-                            <Link href="/opportunity-to-work-in-ministry">Opportunity to work in ministry</Link>
-                            <Link href="/opportunity-to-work-in-ministry#register">Register</Link>
+                            {footerLinks.map((link) => (
+                                <Link key={link.href} href={link.href}>
+                                    <span className="material-symbols-outlined" aria-hidden="true">
+                                        {link.icon}
+                                    </span>
+                                    {link.label}
+                                </Link>
+                            ))}
                         </div>
 
                         <div className="public-footer__col">
                             <h4>Sign in</h4>
-                            <Link href="/login/applicant">Applicant login</Link>
-                            <Link href="/login/admin">Administrator</Link>
-                            <Link href="/login/sdm">SDM</Link>
-                            <Link href="/login/panelist">Panelist</Link>
-                            <Link href="/login/director">Director</Link>
+                            {signInLinks.map((link) => (
+                                <Link key={link.href} href={link.href}>
+                                    <span className="material-symbols-outlined" aria-hidden="true">
+                                        {link.icon}
+                                    </span>
+                                    {link.label}
+                                </Link>
+                            ))}
                         </div>
                     </div>
 

@@ -57,7 +57,7 @@ export default function About({ branding = {}, home = {} }) {
                 </div>
                 <div className="public-container page-hero__inner" data-stagger>
                     {home.about_eyebrow && (
-                        <span className="eyebrow" data-reveal>
+                        <span className="eyebrow eyebrow--on-dark" data-reveal>
                             <span className="eyebrow__dot" aria-hidden="true" />
                             {home.about_eyebrow}
                         </span>

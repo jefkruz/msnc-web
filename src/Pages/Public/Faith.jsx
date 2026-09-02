@@ -19,7 +19,7 @@ export default function Faith({ branding = {}, home = {} }) {
                 </div>
                 <div className="public-container page-hero__inner" data-stagger>
                     {home.faith_eyebrow && (
-                        <span className="eyebrow" data-reveal>
+                        <span className="eyebrow eyebrow--on-dark" data-reveal>
                             <span className="eyebrow__dot" aria-hidden="true" />
                             {home.faith_eyebrow}
                         </span>
