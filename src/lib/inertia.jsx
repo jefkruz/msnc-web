@@ -88,6 +88,39 @@ function handleRedirect(data, navigate) {
   return true;
 }
 
+/**
+ * Build multipart FormData Laravel can validate.
+ * Booleans become "1"/"0" (not "true"/"false"); nested objects use PHP bracket keys.
+ */
+function appendFormValue(fd, key, value) {
+  if (value === undefined || value === null) return;
+  if (value instanceof File || value instanceof Blob) {
+    fd.append(key, value);
+    return;
+  }
+  if (typeof value === 'boolean') {
+    fd.append(key, value ? '1' : '0');
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => appendFormValue(fd, `${key}[${index}]`, item));
+    return;
+  }
+  if (typeof value === 'object') {
+    Object.entries(value).forEach(([childKey, childValue]) => {
+      appendFormValue(fd, `${key}[${childKey}]`, childValue);
+    });
+    return;
+  }
+  fd.append(key, value);
+}
+
+function objectToFormData(data) {
+  const fd = new FormData();
+  Object.entries(data || {}).forEach(([key, value]) => appendFormValue(fd, key, value));
+  return fd;
+}
+
 async function visit(url, options = {}) {
   const {
     method = 'get',
@@ -109,18 +142,7 @@ async function visit(url, options = {}) {
       response = await api.get(path, { params: data });
     } else if (forceFormData || data instanceof FormData) {
       await ensureCsrf();
-      const form =
-        data instanceof FormData
-          ? data
-          : (() => {
-              const fd = new FormData();
-              Object.entries(data || {}).forEach(([k, v]) => {
-                if (v === undefined || v === null) return;
-                if (Array.isArray(v)) v.forEach((item) => fd.append(`${k}[]`, item));
-                else fd.append(k, v);
-              });
-              return fd;
-            })();
+      const form = data instanceof FormData ? data : objectToFormData(data);
 
       if (m !== 'post') {
         form.append('_method', m);
