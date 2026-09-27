@@ -5,8 +5,8 @@ import ApplicantProfilePhoto from '../../Components/ApplicantProfilePhoto';
 import BiodataStepNav from '../../Components/BiodataStepNav';
 import SearchableSelect from '../../Components/SearchableSelect';
 import SearchableMultiSelect from '../../Components/SearchableMultiSelect';
+import DatePicker from '../../Components/DatePicker';
 import TitleCaseInput from '../../Components/TitleCaseInput';
-import { monthName } from '../../lib/formatDate';
 import {
     BIODATA_SECTIONS,
     ENGAGEMENT_OPTIONS,
@@ -31,9 +31,9 @@ const defaultWorkEntry = () => ({
     reason_for_leaving: '',
 });
 
-function formatBirthday(day, month) {
-    if (!day || !month) return '—';
-    return `${Number(day)} ${monthName(month)}`;
+function isoDate(value) {
+    const match = String(value || '').match(/^(\d{4}-\d{2}-\d{2})/);
+    return match ? match[1] : '';
 }
 
 function sectionFromHash() {
@@ -41,7 +41,7 @@ function sectionFromHash() {
     return BIODATA_SECTIONS.some((section) => section.id === hash) ? hash : null;
 }
 
-export default function BiodataForm({ biodata = null, applicant = null, zones = [] }) {
+export default function BiodataForm({ biodata = null, applicant = null, zones = [], languages = [] }) {
     const { auth, authRole, menu = [], appName } = usePage().props;
 
     const workHistory = Array.isArray(biodata?.work_history) && biodata.work_history.length > 0
@@ -53,9 +53,11 @@ export default function BiodataForm({ biodata = null, applicant = null, zones = 
         residence_city: biodata?.residence_city ?? '',
         residence_state: biodata?.residence_state ?? '',
         residence_country: biodata?.residence_country ?? '',
+        preferred_language: biodata?.preferred_language || 'English',
         applicant_zone: biodata?.applicant_zone ?? '',
         marital_status: biodata?.marital_status ?? '',
         gender: biodata?.gender ?? '',
+        date_of_birth: isoDate(biodata?.date_of_birth),
         is_christian: biodata?.is_christian ?? null,
         born_again_when: biodata?.born_again_when ?? '',
         born_again_where: biodata?.born_again_where ?? '',
@@ -198,23 +200,6 @@ export default function BiodataForm({ biodata = null, applicant = null, zones = 
                             <div className="p-6">
                                 {activeSection === 'personal' && (
                                     <div className="space-y-6">
-                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                        <div>
-                                            <label className={labelClass}>City of residence</label>
-                                            <TitleCaseInput value={data.residence_city} onChange={(val) => setData('residence_city', val)} className={inputClass} placeholder="City" />
-                                            {fieldError('residence_city') && <p className="text-red-500 text-xs mt-1">{fieldError('residence_city')}</p>}
-                                        </div>
-                                        <div>
-                                            <label className={labelClass}>State of residence</label>
-                                            <TitleCaseInput value={data.residence_state} onChange={(val) => setData('residence_state', val)} className={inputClass} placeholder="State" />
-                                            {fieldError('residence_state') && <p className="text-red-500 text-xs mt-1">{fieldError('residence_state')}</p>}
-                                        </div>
-                                        <div>
-                                            <label className={labelClass}>Country of residence</label>
-                                            <TitleCaseInput value={data.residence_country} onChange={(val) => setData('residence_country', val)} className={inputClass} placeholder="Country" />
-                                            {fieldError('residence_country') && <p className="text-red-500 text-xs mt-1">{fieldError('residence_country')}</p>}
-                                        </div>
-                                    </div>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
                                             <label className={labelClass}>Title</label>
@@ -268,10 +253,41 @@ export default function BiodataForm({ biodata = null, applicant = null, zones = 
                                         </div>
                                         <div>
                                             <label className={labelClass}>Date of birth</label>
-                                            <div className="px-4 py-2.5 rounded-lg border border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-slate-300">
-                                                {formatBirthday(applicant?.dob_day, applicant?.dob_month)}
-                                            </div>
+                                            <DatePicker
+                                                value={data.date_of_birth}
+                                                onChange={(val) => setData('date_of_birth', val)}
+                                                placeholder="Select date of birth"
+                                                max={new Date().toISOString().slice(0, 10)}
+                                            />
+                                            {fieldError('date_of_birth') && <p className="text-red-500 text-xs mt-1">{fieldError('date_of_birth')}</p>}
                                         </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                        <div>
+                                            <label className={labelClass}>City of residence</label>
+                                            <TitleCaseInput value={data.residence_city} onChange={(val) => setData('residence_city', val)} className={inputClass} placeholder="City" />
+                                            {fieldError('residence_city') && <p className="text-red-500 text-xs mt-1">{fieldError('residence_city')}</p>}
+                                        </div>
+                                        <div>
+                                            <label className={labelClass}>State of residence</label>
+                                            <TitleCaseInput value={data.residence_state} onChange={(val) => setData('residence_state', val)} className={inputClass} placeholder="State" />
+                                            {fieldError('residence_state') && <p className="text-red-500 text-xs mt-1">{fieldError('residence_state')}</p>}
+                                        </div>
+                                        <div>
+                                            <label className={labelClass}>Country of residence</label>
+                                            <TitleCaseInput value={data.residence_country} onChange={(val) => setData('residence_country', val)} className={inputClass} placeholder="Country" />
+                                            {fieldError('residence_country') && <p className="text-red-500 text-xs mt-1">{fieldError('residence_country')}</p>}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className={labelClass}>Preferred language</label>
+                                        <SearchableSelect
+                                            value={data.preferred_language}
+                                            onChange={(val) => setData('preferred_language', val || 'English')}
+                                            options={(languages.length ? languages : ['English']).map((language) => ({ value: language, label: language }))}
+                                            placeholder="Select language"
+                                        />
+                                        {fieldError('preferred_language') && <p className="text-red-500 text-xs mt-1">{fieldError('preferred_language')}</p>}
                                     </div>
                                     </div>
                                 )}

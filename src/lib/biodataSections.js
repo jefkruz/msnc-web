@@ -60,7 +60,9 @@ export function isBiodataSectionComplete(sectionId, data, applicant = {}) {
                 && hasText(data.residence_state)
                 && hasText(data.residence_country)
                 && hasText(data.marital_status)
-                && hasText(data.gender);
+                && hasText(data.gender)
+                && hasText(data.date_of_birth)
+                && hasText(data.preferred_language);
 
         case 'faith':
             if (!hasText(data.applicant_zone)) {
@@ -152,6 +154,8 @@ export function sectionValidationErrors(sectionId, data, applicant = {}) {
             if (!hasText(data.residence_country)) errors.residence_country = 'Country of residence is required.';
             if (!hasText(data.marital_status)) errors.marital_status = 'Marital status is required.';
             if (!hasText(data.gender)) errors.gender = 'Gender is required.';
+            if (!hasText(data.date_of_birth)) errors.date_of_birth = 'Date of birth is required.';
+            if (!hasText(data.preferred_language)) errors.preferred_language = 'Preferred language is required.';
             break;
 
         case 'faith':
