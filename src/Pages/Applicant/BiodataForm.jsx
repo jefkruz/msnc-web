@@ -4,10 +4,12 @@ import Layout from '../../Components/Layout';
 import ApplicantProfilePhoto from '../../Components/ApplicantProfilePhoto';
 import BiodataStepNav from '../../Components/BiodataStepNav';
 import SearchableSelect from '../../Components/SearchableSelect';
+import SearchableMultiSelect from '../../Components/SearchableMultiSelect';
 import TitleCaseInput from '../../Components/TitleCaseInput';
 import { monthName } from '../../lib/formatDate';
 import {
     BIODATA_SECTIONS,
+    ENGAGEMENT_OPTIONS,
     biodataSectionStatuses,
     firstIncompleteSectionId,
     nextSectionId,
@@ -39,7 +41,7 @@ function sectionFromHash() {
     return BIODATA_SECTIONS.some((section) => section.id === hash) ? hash : null;
 }
 
-export default function BiodataForm({ biodata = null, applicant = null }) {
+export default function BiodataForm({ biodata = null, applicant = null, zones = [] }) {
     const { auth, authRole, menu = [], appName } = usePage().props;
 
     const workHistory = Array.isArray(biodata?.work_history) && biodata.work_history.length > 0
@@ -48,6 +50,10 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
 
     const initialFormData = {
         other_names: biodata?.other_names ?? '',
+        residence_city: biodata?.residence_city ?? '',
+        residence_state: biodata?.residence_state ?? '',
+        residence_country: biodata?.residence_country ?? '',
+        applicant_zone: biodata?.applicant_zone ?? '',
         marital_status: biodata?.marital_status ?? '',
         gender: biodata?.gender ?? '',
         is_christian: biodata?.is_christian ?? null,
@@ -66,6 +72,7 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
         referee2_name: biodata?.referee2_name ?? '',
         referee2_contact: biodata?.referee2_contact ?? '',
         work_history: workHistory,
+        engagement_preference: Array.isArray(biodata?.engagement_preference) ? biodata.engagement_preference : [],
         cv: null,
     };
 
@@ -190,6 +197,24 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
 
                             <div className="p-6">
                                 {activeSection === 'personal' && (
+                                    <div className="space-y-6">
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                        <div>
+                                            <label className={labelClass}>City of residence</label>
+                                            <TitleCaseInput value={data.residence_city} onChange={(val) => setData('residence_city', val)} className={inputClass} placeholder="City" />
+                                            {fieldError('residence_city') && <p className="text-red-500 text-xs mt-1">{fieldError('residence_city')}</p>}
+                                        </div>
+                                        <div>
+                                            <label className={labelClass}>State of residence</label>
+                                            <TitleCaseInput value={data.residence_state} onChange={(val) => setData('residence_state', val)} className={inputClass} placeholder="State" />
+                                            {fieldError('residence_state') && <p className="text-red-500 text-xs mt-1">{fieldError('residence_state')}</p>}
+                                        </div>
+                                        <div>
+                                            <label className={labelClass}>Country of residence</label>
+                                            <TitleCaseInput value={data.residence_country} onChange={(val) => setData('residence_country', val)} className={inputClass} placeholder="Country" />
+                                            {fieldError('residence_country') && <p className="text-red-500 text-xs mt-1">{fieldError('residence_country')}</p>}
+                                        </div>
+                                    </div>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
                                             <label className={labelClass}>Title</label>
@@ -248,10 +273,21 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
                                             </div>
                                         </div>
                                     </div>
+                                    </div>
                                 )}
 
                                 {activeSection === 'faith' && (
                                     <div className="space-y-4">
+                                        <div>
+                                            <label className={labelClass}>Applicant zone</label>
+                                            <SearchableSelect
+                                                value={data.applicant_zone}
+                                                onChange={(val) => setData('applicant_zone', val)}
+                                                options={(zones || []).map((zone) => ({ value: zone, label: zone }))}
+                                                placeholder="Select zone"
+                                            />
+                                            {fieldError('applicant_zone') && <p className="text-red-500 text-xs mt-1">{fieldError('applicant_zone')}</p>}
+                                        </div>
                                         <div>
                                             <label className={labelClass}>Are you a Christian?</label>
                                             <SearchableSelect
@@ -410,7 +446,24 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
                                 )}
 
                                 {activeSection === 'cv' && (
-                                    <div className="space-y-3">
+                                    <div className="space-y-6">
+                                        <div>
+                                            <label className={labelClass}>Engagement preference</label>
+                                            <p className="text-sm text-slate-500 dark:text-text-muted mb-2">
+                                                Select every option that applies.
+                                            </p>
+                                            <SearchableMultiSelect
+                                                value={data.engagement_preference}
+                                                onChange={(val) => setData('engagement_preference', val)}
+                                                options={ENGAGEMENT_OPTIONS}
+                                                placeholder="Select engagement preference"
+                                                error={fieldError('engagement_preference')}
+                                            />
+                                            {fieldError('engagement_preference') && (
+                                                <p className="mt-1.5 text-sm text-red-600" role="alert">{fieldError('engagement_preference')}</p>
+                                            )}
+                                        </div>
+                                        <div className="space-y-3">
                                         <p className="text-sm text-slate-500 dark:text-text-muted">
                                             Upload your CV (PDF, DOC, DOCX, JPG, or PNG — max 10MB).
                                         </p>
@@ -437,6 +490,7 @@ export default function BiodataForm({ biodata = null, applicant = null }) {
                                             )}
                                             {fieldError('cv') && <p className="mt-1.5 text-sm text-red-600" role="alert">{fieldError('cv')}</p>}
                                             {progress && <p className="mt-1.5 text-sm text-slate-500">Uploading… {progress.percentage}%</p>}
+                                        </div>
                                         </div>
                                     </div>
                                 )}

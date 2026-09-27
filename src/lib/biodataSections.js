@@ -3,13 +3,13 @@ export const BIODATA_SECTIONS = [
         id: 'personal',
         label: 'Personal',
         icon: 'person',
-        description: 'Family and identity details',
+        description: 'Residence, family, and identity details',
     },
     {
         id: 'faith',
         label: 'Faith',
         icon: 'church',
-        description: 'Christian experience and church membership',
+        description: 'Zone, Christian experience, and church membership',
     },
     {
         id: 'referees',
@@ -27,7 +27,7 @@ export const BIODATA_SECTIONS = [
         id: 'cv',
         label: 'CV',
         icon: 'upload_file',
-        description: 'Upload your curriculum vitae',
+        description: 'Engagement preference and curriculum vitae',
     },
 ];
 
@@ -39,12 +39,33 @@ function workEntryComplete(entry) {
     return hasText(entry?.organisation) && hasText(entry?.designation);
 }
 
+export const ENGAGEMENT_OPTIONS = [
+    { value: 'full_time', label: 'Full time' },
+    { value: 'part_time', label: 'Part time' },
+    { value: 'project', label: 'Project' },
+    { value: 'contract', label: 'Contract' },
+    { value: 'volunteer', label: 'Volunteer' },
+    { value: 'remote', label: 'Remote' },
+];
+
+function hasEngagementPreference(data) {
+    const selected = Array.isArray(data.engagement_preference) ? data.engagement_preference : [];
+    return selected.some((value) => ENGAGEMENT_OPTIONS.some((option) => option.value === value));
+}
+
 export function isBiodataSectionComplete(sectionId, data, applicant = {}) {
     switch (sectionId) {
         case 'personal':
-            return hasText(data.marital_status) && hasText(data.gender);
+            return hasText(data.residence_city)
+                && hasText(data.residence_state)
+                && hasText(data.residence_country)
+                && hasText(data.marital_status)
+                && hasText(data.gender);
 
         case 'faith':
+            if (!hasText(data.applicant_zone)) {
+                return false;
+            }
             if (data.is_christian === null || data.is_christian === undefined || data.is_christian === '') {
                 return false;
             }
@@ -78,7 +99,7 @@ export function isBiodataSectionComplete(sectionId, data, applicant = {}) {
         }
 
         case 'cv':
-            return Boolean(applicant?.cv_url || data.cv);
+            return hasEngagementPreference(data) && Boolean(applicant?.cv_url || data.cv);
 
         default:
             return false;
@@ -126,11 +147,15 @@ export function sectionValidationErrors(sectionId, data, applicant = {}) {
 
     switch (sectionId) {
         case 'personal':
+            if (!hasText(data.residence_city)) errors.residence_city = 'City of residence is required.';
+            if (!hasText(data.residence_state)) errors.residence_state = 'State of residence is required.';
+            if (!hasText(data.residence_country)) errors.residence_country = 'Country of residence is required.';
             if (!hasText(data.marital_status)) errors.marital_status = 'Marital status is required.';
             if (!hasText(data.gender)) errors.gender = 'Gender is required.';
             break;
 
         case 'faith':
+            if (!hasText(data.applicant_zone)) errors.applicant_zone = 'Applicant zone is required.';
             if (data.is_christian === null || data.is_christian === undefined || data.is_christian === '') {
                 errors.is_christian = 'Please indicate if you are a Christian.';
                 break;
@@ -165,6 +190,9 @@ export function sectionValidationErrors(sectionId, data, applicant = {}) {
         }
 
         case 'cv':
+            if (!hasEngagementPreference(data)) {
+                errors.engagement_preference = 'Select at least one engagement preference.';
+            }
             if (!applicant?.cv_url && !data.cv) {
                 errors.cv = 'Please upload your CV to continue.';
             }
