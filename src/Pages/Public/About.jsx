@@ -178,7 +178,7 @@ export default function About({ branding = {}, home = {} }) {
                         <p data-reveal>Begin your application today and take the first step toward the work.</p>
                         <div className="cta-band__actions" data-reveal>
                             <Link
-                                href="/opportunity-to-work-in-ministry#register"
+                                href="/gwei#register"
                                 className="btn-mca btn-mca-white btn-mca-lg btn-mca-arrow lift"
                             >
                                 Register

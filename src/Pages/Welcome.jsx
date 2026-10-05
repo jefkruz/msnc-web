@@ -267,16 +267,16 @@ export default function Welcome({ branding = {}, home = {} }) {
                         )}
                         <div className="hero__ctas" data-reveal>
                             <Link
-                                href="/opportunity-to-work-in-ministry#register"
+                                href="/gwei#register"
                                 className="btn-mca btn-mca-white btn-mca-lg btn-mca-arrow lift"
                                 title="Begin your application today"
                             >
-                                Begin your application
+                                LOGIN TO CONTINUE YOUR MSNC REGISTRATION
                                 <span className="material-symbols-outlined" aria-hidden="true">
                                     arrow_forward
                                 </span>
                             </Link>
-                            <a
+                            {/* <a
                                 href="#how"
                                 className="btn-mca btn-mca-outline-on-dark btn-mca-lg lift"
                                 onClick={scrollTo('how')}
@@ -285,9 +285,9 @@ export default function Welcome({ branding = {}, home = {} }) {
                                 <span className="material-symbols-outlined" aria-hidden="true">
                                     keyboard_arrow_down
                                 </span>
-                            </a>
+                            </a> */}
                         </div>
-                        <p className="hero__subnote" data-reveal>
+                        {/* <p className="hero__subnote" data-reveal>
                             Already registered?
                             <Link href="/login/applicant">
                                 Sign in to continue your application
@@ -295,7 +295,7 @@ export default function Welcome({ branding = {}, home = {} }) {
                                     arrow_forward
                                 </span>
                             </Link>
-                        </p>
+                        </p> */}
                     </div>
 
                     <div className="hero__visual" data-reveal="zoom">
@@ -309,36 +309,6 @@ export default function Welcome({ branding = {}, home = {} }) {
                                 width="720"
                                 height="540"
                             />
-                            <div className="hero-frame__badge">
-                                <span
-                                    className="hero-frame__badge-icon material-symbols-outlined"
-                                    aria-hidden="true"
-                                >
-                                    handshake
-                                </span>
-                                <span>
-                                    <strong>Serving the Mission Station</strong>
-                                    <small>Recruiting people of the right skill and character</small>
-                                </span>
-                            </div>
-                            <div className="hero-frame__stat hero-frame__stat--1">
-                                <span className="material-symbols-outlined" aria-hidden="true">
-                                    track_changes
-                                </span>
-                                <span>
-                                    <strong>Every stage</strong>
-                                    <small>tracked end-to-end</small>
-                                </span>
-                            </div>
-                            <div className="hero-frame__stat hero-frame__stat--2">
-                                <span className="material-symbols-outlined" aria-hidden="true">
-                                    groups
-                                </span>
-                                <span>
-                                    <strong>Right fit</strong>
-                                    <small>skill and character</small>
-                                </span>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -383,7 +353,7 @@ export default function Welcome({ branding = {}, home = {} }) {
                 </div>
             </div>
 
-            <section className="lg-band" id="opportunity" aria-label="Loveworld Global Workforce Engagement Initiative">
+            <section className="lg-band" id="gwei" aria-label="GLOBAL WORKFORCE ENGAGEMENT INITIATIVE FOR LOVEWORLD">
                 <span className="opp-band__deco" aria-hidden="true" />
                 <span className="opp-band__deco opp-band__deco--2" aria-hidden="true" />
 
@@ -393,7 +363,7 @@ export default function Welcome({ branding = {}, home = {} }) {
                             <span className="eyebrow__dot" aria-hidden="true" />
                             A Kingdom Workforce Platform
                         </span>
-                        <h2>Loveworld Global Workforce Engagement Initiative</h2>
+                        <h2>GLOBAL WORKFORCE ENGAGEMENT INITIATIVE FOR LOVEWORLD</h2>
                         <p>
                             A deliberate structure through which talent already resident in the Nation
                             is directed toward building the Kingdom. It connects the skills and
@@ -468,7 +438,7 @@ export default function Welcome({ branding = {}, home = {} }) {
                             </ul>
                             <div className="opp-actions" data-reveal>
                                 <Link
-                                    href="/opportunity-to-work-in-ministry#register"
+                                    href="/gwei#register"
                                     className="btn-mca btn-mca-blue btn-mca-lg btn-mca-arrow lift"
                                 >
                                     Register now
@@ -521,8 +491,8 @@ export default function Welcome({ branding = {}, home = {} }) {
             <section className="steps-band" id="how" aria-label="How it works">
                 <div className="public-container">
                     <div className="steps-head" data-reveal>
-                        <span className="section-label">A simple pathway</span>
-                        <h2>From first step to missionary posting</h2>
+                        <span className="section-label">How it works</span>
+                        <h2>Quick Steps</h2>
                         <p>
                             Three clear stages take you from registration all the way to serving with the
                             Mission Station.
@@ -542,17 +512,7 @@ export default function Welcome({ branding = {}, home = {} }) {
                             </div>
                         ))}
                     </div>
-                    <div className="steps-cta" data-reveal>
-                        <Link
-                            href="/opportunity-to-work-in-ministry#register"
-                            className="btn-mca btn-mca-blue btn-mca-lg btn-mca-arrow lift"
-                        >
-                            Start your application
-                            <span className="material-symbols-outlined" aria-hidden="true">
-                                arrow_forward
-                            </span>
-                        </Link>
-                    </div>
+                  
                 </div>
             </section>
 
@@ -579,58 +539,11 @@ export default function Welcome({ branding = {}, home = {} }) {
                             </span>
                         ))}
                     </div>
-                    <p className="roles-foot" data-reveal>
-                        Think your role belongs here?{' '}
-                        <Link href="/opportunity-to-work-in-ministry#register">
-                            Apply today
-                            <span className="material-symbols-outlined" aria-hidden="true">
-                                arrow_forward
-                            </span>
-                        </Link>
-                    </p>
+                  
                 </div>
             </section>
 
-            <section className="stats-band" id="services" aria-label="How we serve">
-                <div className="public-container">
-                    <div className="stats-head" data-reveal>
-                        <span className="section-label">How we serve</span>
-                        <h2>Four core services, one mission</h2>
-                        <p>
-                            From the first application to a missionary posting, the Mission Support Network
-                            Center walks with every candidate at every stage.
-                        </p>
-                    </div>
-                    <ul className="stats-grid" data-stagger>
-                        {trustItems.map((item, i) => (
-                            <li key={item.key} className="stats-item lift" data-reveal="up">
-                                <span className="stats-item__num" aria-hidden="true">
-                                    {String(i + 1).padStart(2, '0')}
-                                </span>
-                                <span className="stats-item__icon material-symbols-outlined" aria-hidden="true">
-                                    {item.icon}
-                                </span>
-                                <strong>{home[item.key] || item.fallback}</strong>
-                                <small>{item.note}</small>
-                            </li>
-                        ))}
-                    </ul>
-
-                    <div className="count-band" data-reveal="zoom">
-                        {counts.map((count) => (
-                            <div key={count.label} className="count-item">
-                                <span
-                                    className="count-item__num"
-                                    data-countup={count.value}
-                                    data-prefix={count.prefix}
-                                    data-suffix={count.suffix}
-                                />
-                                <span className="count-item__label">{count.label}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
+           
 
             <section className="photo-band" aria-label="Prepared for ministry">
                 <img
@@ -656,7 +569,7 @@ export default function Welcome({ branding = {}, home = {} }) {
                             in character.
                         </p>
                         <Link
-                            href="/opportunity-to-work-in-ministry#register"
+                            href="/gwei#register"
                             className="btn-mca btn-mca-white btn-mca-lg btn-mca-arrow lift"
                             data-reveal
                         >
@@ -713,7 +626,7 @@ export default function Welcome({ branding = {}, home = {} }) {
                         </p>
                         <div className="cta-band__actions" data-reveal>
                             <Link
-                                href="/opportunity-to-work-in-ministry#register"
+                                href="/gwei#register"
                                 className="btn-mca btn-mca-white btn-mca-lg btn-mca-arrow lift"
                             >
                                 Register
@@ -729,26 +642,17 @@ export default function Welcome({ branding = {}, home = {} }) {
                             </Link>
                         </div>
                         <div className="cta-contact" data-reveal>
-                            <a href="tel:+2348133026781">
+                            <a href="tel:+2348081690112">
                                 <span className="material-symbols-outlined" aria-hidden="true">
                                     call
                                 </span>
-                                +234 813 302 6781
+                                +234 808 169 0112
                             </a>
                             <a href="mailto:info@missionsupportnetworkcenter.org">
                                 <span className="material-symbols-outlined" aria-hidden="true">
                                     mail
                                 </span>
                                 info@missionsupportnetworkcenter.org
-                            </a>
-                            <a
-                                href="#services"
-                                onClick={scrollTo('services')}
-                            >
-                                <span className="material-symbols-outlined" aria-hidden="true">
-                                    work
-                                </span>
-                                How we serve
                             </a>
                         </div>
                     </div>

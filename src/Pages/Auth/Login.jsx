@@ -53,7 +53,7 @@ export default function Login({ role = 'admin', authLoginUrl = '#' }) {
                     {isApplicant ? (
                         <>
                             New to the portal?{' '}
-                            <Link href="/opportunity-to-work-in-ministry#register">
+                            <Link href="/gwei#register">
                                 Register to apply
                             </Link>
                         </>

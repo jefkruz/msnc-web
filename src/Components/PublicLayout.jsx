@@ -151,14 +151,11 @@ export default function PublicLayout({ children, active = 'home', branding: bran
         </Link>
     ) : (
         <div className="public-nav__actions">
-            <Link href="/login/applicant" className="btn-mca btn-mca-outline btn-mca-sm">
-                Sign In
-            </Link>
             <Link
-                href="/opportunity-to-work-in-ministry#register"
+                href="/gwei#register"
                 className="btn-mca btn-mca-blue btn-mca-sm btn-mca-arrow public-nav__apply"
             >
-                Apply now
+                Register
                 <span className="material-symbols-outlined" aria-hidden="true">
                     arrow_forward
                 </span>
@@ -245,7 +242,7 @@ export default function PublicLayout({ children, active = 'home', branding: bran
                         ) : (
                             <>
                                 <Link
-                                    href="/opportunity-to-work-in-ministry#register"
+                                    href="/gwei#register"
                                     className="btn-mca btn-mca-blue btn-mca-block btn-mca-arrow"
                                     onClick={closeMobile}
                                 >
@@ -303,7 +300,7 @@ export default function PublicLayout({ children, active = 'home', branding: bran
                                         mail
                                     </span>
                                 </a>
-                                <a href="tel:+2348133026781" aria-label="Call us">
+                                <a href="tel:+2348081690112" aria-label="Call us">
                                     <span className="material-symbols-outlined" aria-hidden="true">
                                         call
                                     </span>
@@ -326,17 +323,17 @@ export default function PublicLayout({ children, active = 'home', branding: bran
                                 Abuja, Nigeria
                             </p>
                             <div className="public-footer__contact">
-                                <a href="tel:+2348133026781">
+                                <a href="tel:+2348081690112">
                                     <span className="material-symbols-outlined" aria-hidden="true">
                                         call
                                     </span>
-                                    +234 813 302 6781
+                                    +234 808 169 0112
                                 </a>
                                 <a href="tel:+2348025513653">
                                     <span className="material-symbols-outlined" aria-hidden="true">
                                         call
                                     </span>
-                                    +234 802 551 3653
+                                    +234 808 169 0112
                                 </a>
                                 <a href="mailto:info@missionsupportnetworkcenter.org">
                                     <span className="material-symbols-outlined" aria-hidden="true">

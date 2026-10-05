@@ -142,10 +142,7 @@ export default function MissionaryPosting({ branding = {}, home = {} }) {
                             <header className="register-card__header">
                                 <span className="section-label">Start your application</span>
                                 <h2>Registration Form</h2>
-                                <p>
-                                    Fill in your details below to register with The Mission Support Network
-                                    Center. Fields marked with an asterisk are required.
-                                </p>
+                             
                             </header>
 
                             {(errors.registration || hasFieldErrors) && (
@@ -330,11 +327,11 @@ export default function MissionaryPosting({ branding = {}, home = {} }) {
                             <h3>Need help?</h3>
                             <p>Reach out and our team will guide you through the process.</p>
                             <div className="posting-card__contact">
-                                <a href="tel:+2348133026781">
+                                <a href="tel:+2348081690112">
                                     <span className="material-symbols-outlined" aria-hidden="true">
                                         call
                                     </span>
-                                    +234 813 302 6781
+                                    +234 808 169 0112
                                 </a>
                                 <a href="mailto:info@missionsupportnetworkcenter.org">
                                     <span className="material-symbols-outlined" aria-hidden="true">
