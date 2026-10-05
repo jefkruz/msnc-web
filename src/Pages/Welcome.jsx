@@ -314,10 +314,10 @@ export default function Welcome({ branding = {}, home = {} }) {
                 </div>
 
                 <a
-                    href="#opportunity"
+                    href="#gwei"
                     className="hero__scroll"
                     aria-label="Scroll to opportunity"
-                    onClick={scrollTo('opportunity')}
+                    onClick={scrollTo('gwei')}
                 >
                     <span className="hero__scroll-mouse" aria-hidden="true">
                         <span />
@@ -545,7 +545,7 @@ export default function Welcome({ branding = {}, home = {} }) {
 
            
 
-            <section className="photo-band" aria-label="Prepared for ministry">
+            <section className="photo-band photo-band--resource" aria-label="Resource Center">
                 <img
                     src="/images/orientation.jpg"
                     alt="MSNC Orientation Program"
@@ -558,22 +558,53 @@ export default function Welcome({ branding = {}, home = {} }) {
                     <div className="photo-band__inner">
                         <span className="eyebrow eyebrow--on-dark" data-reveal>
                             <span className="eyebrow__dot" aria-hidden="true" />
-                            Trained for the work
+                            Resource Center
                         </span>
                         <h2 data-reveal>
-                            Prepared for the <span className="text-accent">work of ministry</span>
+                            Everything you need to <span className="text-accent">serve well</span>
                         </h2>
                         <p data-reveal>
-                            The personnel we recruit are trained for Administration, ICT, Human Resources,
-                            Broadcasting, New Media, Accounts, Security and more — equipped in skill, formed
-                            in character.
+                            Once you are part of the Mission Station, these resources are always within
+                            reach — guidance, policies and the agreements that keep our work accountable.
                         </p>
+                        <ul className="resource-grid" data-stagger>
+                            <li className="resource-card lift" data-reveal="up">
+                                <span
+                                    className="resource-card__icon material-symbols-outlined"
+                                    aria-hidden="true"
+                                >
+                                    psychology
+                                </span>
+                                <strong>Staff Counselling</strong>
+                                <small>Confidential, one-to-one support for your wellbeing and growth.</small>
+                            </li>
+                            <li className="resource-card lift" data-reveal="up">
+                                <span
+                                    className="resource-card__icon material-symbols-outlined"
+                                    aria-hidden="true"
+                                >
+                                    menu_book
+                                </span>
+                                <strong>Staff Handbook</strong>
+                                <small>The policies, standards and practices that guide our daily work.</small>
+                            </li>
+                            <li className="resource-card lift" data-reveal="up">
+                                <span
+                                    className="resource-card__icon material-symbols-outlined"
+                                    aria-hidden="true"
+                                >
+                                    description
+                                </span>
+                                <strong>NDA Form</strong>
+                                <small>Sign and review your non-disclosure agreement in one place.</small>
+                            </li>
+                        </ul>
                         <Link
-                            href="/gwei#register"
+                            href="/login/applicant"
                             className="btn-mca btn-mca-white btn-mca-lg btn-mca-arrow lift"
                             data-reveal
                         >
-                            Begin your application
+                            Login to access resources
                             <span className="material-symbols-outlined" aria-hidden="true">
                                 arrow_forward
                             </span>

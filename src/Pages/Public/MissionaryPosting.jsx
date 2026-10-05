@@ -1,4 +1,5 @@
 import { useForm } from '@inertiajs/react';
+import { useEffect, useRef, useState } from 'react';
 import PublicLayout from '../../Components/PublicLayout';
 import SearchableSelect from '../../Components/SearchableSelect';
 import TitleCaseInput from '../../Components/TitleCaseInput';
@@ -96,6 +97,23 @@ export default function MissionaryPosting({ branding = {}, home = {} }) {
         dob_day: '',
     });
 
+    const videoRef = useRef(null);
+    const [videoMuted, setVideoMuted] = useState(true);
+
+    useEffect(() => {
+        const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+        if (reduceMotion?.matches && videoRef.current) {
+            videoRef.current.pause();
+        }
+    }, []);
+
+    const toggleVideoMute = () => {
+        if (videoRef.current) {
+            videoRef.current.muted = !videoMuted;
+            setVideoMuted(!videoMuted);
+        }
+    };
+
     const hasFieldErrors = Object.keys(errors).some((key) => key !== 'registration');
 
     const submit = (e) => {
@@ -124,7 +142,7 @@ export default function MissionaryPosting({ branding = {}, home = {} }) {
                     </h1>
                 </div>
             </section>
-
+{/* 
             <section className="public-section public-section--flush-b">
                 <div className="public-container page-content" data-stagger>
                     {paragraphs.map((paragraph, i) => (
@@ -132,6 +150,53 @@ export default function MissionaryPosting({ branding = {}, home = {} }) {
                             {paragraph}
                         </p>
                     ))}
+                </div>
+            </section> */}
+
+            <section className="posting-video-band">
+                <div className="public-container">
+                    <div className="posting-video-head" data-reveal>
+                        <span className="eyebrow">
+                            <span className="eyebrow__dot" aria-hidden="true" />
+                            See it in action
+                        </span>
+                        <h2 data-reveal>
+                            Watch the Global Workforce Engagement Initiative for <span className="text-accent">Loveworld</span>
+                        </h2>
+                        <p data-reveal>
+                            Get a glimpse of the initiative, the people behind it and the work it directs
+                            talent toward — all in one short film.
+                        </p>
+                    </div>
+                    <div className="lg-video-frame posting-video-frame" data-reveal="zoom">
+                        <video
+                            ref={videoRef}
+                            className="lg-video-frame__video"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            preload="metadata"
+                            disablePictureInPicture
+                            poster="/images/orientation.jpg"
+                        >
+                            <source
+                                src="https://s3.eu-west-2.amazonaws.com/lodams-videoshare/videos/LGWFEIVd_539587ca73312e4421140000.mp4"
+                                type="video/mp4"
+                            />
+                        </video>
+                        <button
+                            type="button"
+                            className="lg-video-frame__toggle"
+                            onClick={toggleVideoMute}
+                            aria-label={videoMuted ? 'Unmute video' : 'Mute video'}
+                        >
+                            <span className="material-symbols-outlined" aria-hidden="true">
+                                {videoMuted ? 'volume_off' : 'volume_up'}
+                            </span>
+                            {videoMuted ? 'Unmute' : 'Mute'}
+                        </button>
+                    </div>
                 </div>
             </section>
 
@@ -282,7 +347,8 @@ export default function MissionaryPosting({ branding = {}, home = {} }) {
                                         onChange={(e) => setData('application_statement', e.target.checked)}
                                     />
                                     <span>
-                                        I apply to register for the opportunity to work in ministry initiative
+                                        I apply to register for the opportunity to work in ministry
+                                        initiative to become gwei
                                     </span>
                                 </label>
                                 {errors.application_statement && (

@@ -6,7 +6,7 @@ import { getTheme, toggleTheme } from '../theme';
 import { useReveal, useScrolled, useParallax } from '../lib/useReveal';
 
 const navSections = [
-    { id: 'opportunity', label: 'Opportunity', icon: 'handshake' },
+    { id: 'gwei', label: 'GWEI', icon: 'handshake' },
     { id: 'how', label: 'How it works', icon: 'route' },
     { id: 'services', label: 'Our work', icon: 'work' },
     { id: 'about', label: 'About & Faith', icon: 'menu_book' },
@@ -329,12 +329,7 @@ export default function PublicLayout({ children, active = 'home', branding: bran
                                     </span>
                                     +234 808 169 0112
                                 </a>
-                                <a href="tel:+2348025513653">
-                                    <span className="material-symbols-outlined" aria-hidden="true">
-                                        call
-                                    </span>
-                                    +234 808 169 0112
-                                </a>
+                              
                                 <a href="mailto:info@missionsupportnetworkcenter.org">
                                     <span className="material-symbols-outlined" aria-hidden="true">
                                         mail
