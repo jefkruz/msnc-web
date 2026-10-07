@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import ApiPage from './lib/ApiPage';
 import { PageProvider } from './lib/inertia';
 import PageLoader from './Components/PageLoader';
@@ -97,13 +97,18 @@ export default function App() {
       <Route path="/about" element={<ApiPage endpoint="/about" component={About} />} />
       <Route path="/statement-of-faith" element={<ApiPage endpoint="/statement-of-faith" component={Faith} />} />
       <Route
-        path="/opportunity-to-work-in-ministry"
-        element={<ApiPage endpoint="/opportunity-to-work-in-ministry" component={MissionaryPosting} />}
+        path="/gwei"
+        element={<ApiPage endpoint="/gwei" component={MissionaryPosting} />}
       />
+      <Route path="/gwei/register" element={<Navigate to="/gwei#register" replace />} />
       <Route
-        path="/opportunity-to-work-in-ministry/success"
-        element={<ApiPage endpoint="/opportunity-to-work-in-ministry/success" component={RegistrationSuccess} />}
+        path="/gwei/success"
+        element={<ApiPage endpoint="/gwei/success" component={RegistrationSuccess} />}
       />
+      <Route path="/opportunity-to-work-in-ministry" element={<Navigate to="/gwei#register" replace />} />
+      <Route path="/opportunity-to-work-in-ministry/register" element={<Navigate to="/gwei#register" replace />} />
+      <Route path="/opportunity-to-work-in-ministry/success" element={<Navigate to="/gwei/success" replace />} />
+      <Route path="/opportunity" element={<Navigate to="/gwei#register" replace />} />
       <Route path="/login/:role" element={<ApiPage endpoint={(p) => `/login/${p.role}`} component={Login} />} />
       <Route path="/auth/error" element={<StaticShell><AuthError /></StaticShell>} />
 

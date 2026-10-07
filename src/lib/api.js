@@ -6,7 +6,7 @@ const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const getCache = new Map();
 const PUBLIC_CACHE_MS = 90_000;
 const AUTH_CACHE_MS = 25_000;
-const PUBLIC_PATH = /\/(welcome|about|statement-of-faith|opportunity-to-work-in-ministry)(\/success)?(\?|$)/;
+const PUBLIC_PATH = /\/(welcome|about|statement-of-faith|gwei)(\/success)?(\?|$)/;
 const SKIP_CACHE = /\/(logout|login|sanctum|export)(\/|\?|$)/;
 
 function cacheTtl(url) {

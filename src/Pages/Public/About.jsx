@@ -89,7 +89,7 @@ export default function About({ branding = {}, home = {} }) {
                             ))}
                             <div className="page-content__actions" data-reveal>
                                 <Link
-                                    href="/opportunity-to-work-in-ministry"
+                                    href="/gwei#register"
                                     className="btn-mca btn-mca-blue btn-mca-arrow lift"
                                 >
                                     Opportunity to work in ministry

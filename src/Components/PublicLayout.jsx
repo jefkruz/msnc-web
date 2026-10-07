@@ -26,8 +26,8 @@ const marqueeItems = [
 const footerLinks = [
     { href: '/about', label: 'About Us', icon: 'info' },
     { href: '/statement-of-faith', label: 'Statement of Faith', icon: 'menu_book' },
-    { href: '/opportunity-to-work-in-ministry', label: 'Opportunity to work in ministry', icon: 'handshake' },
-    { href: '/#opportunity', label: 'How it works', icon: 'route' },
+    { href: '/gwei#register', label: 'Opportunity to work in ministry', icon: 'handshake' },
+    { href: '/#how', label: 'How it works', icon: 'route' },
     { href: '/#services', label: 'How we serve', icon: 'work' },
     { href: '/#connect', label: 'Contact', icon: 'call' },
 ];
@@ -40,7 +40,7 @@ const signInLinks = [
     { href: '/login/director', label: 'Director', icon: 'account_balance' },
 ];
 
-const actively = { about: 'about', faith: 'about', 'opportunity-to-work-in-ministry': 'opportunity' };
+const actively = { about: 'about', faith: 'about', gwei: 'gwei' };
 
 function toSectionId(href) {
     const i = typeof href === 'string' ? href.indexOf('#') : -1;

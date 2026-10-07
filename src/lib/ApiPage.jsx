@@ -7,7 +7,7 @@ import Layout from '../Components/Layout';
 import PageLoader from '../Components/PageLoader';
 
 const EMPTY_PROPS = Object.freeze({});
-const GUEST_PATH = /\/(welcome|about|statement-of-faith|opportunity-to-work-in-ministry)/;
+const GUEST_PATH = /\/(welcome|about|statement-of-faith|gwei)/;
 
 function resolveEndpoint(endpoint, params) {
   if (typeof endpoint === 'function') {

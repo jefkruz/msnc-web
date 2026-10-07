@@ -6,7 +6,7 @@ export default function RegistrationSuccess({
     message = 'Registration submitted successfully. An administrator will review your application shortly.',
 }) {
     return (
-        <PublicLayout branding={branding} active="opportunity-to-work-in-ministry">
+        <PublicLayout branding={branding} active="gwei">
             <section className="page-hero page-hero--short">
                 <div className="page-hero__bg" aria-hidden="true">
                     <span className="hero__orb hero__orb--1" />

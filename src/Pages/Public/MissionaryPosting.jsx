@@ -118,13 +118,13 @@ export default function MissionaryPosting({ branding = {}, home = {} }) {
 
     const submit = (e) => {
         e.preventDefault();
-        post('/opportunity-to-work-in-ministry/register', {
+        post('/gwei/register', {
             preserveScroll: true,
         });
     };
 
     return (
-        <PublicLayout branding={branding} active="opportunity-to-work-in-ministry">
+        <PublicLayout branding={branding} active="gwei">
             <section className="page-hero">
                 <div className="page-hero__bg" aria-hidden="true">
                     <span className="hero__orb hero__orb--3" />
